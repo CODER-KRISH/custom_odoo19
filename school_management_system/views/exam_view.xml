@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="exam_form_view" model="ir.ui.view">
+        <field name="name">exam.form.view</field>
+        <field name="model">exam</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Confirm"
+                            name="action_confirm"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button string="Reset to Draft"
+                            name="action_reset_draft"
+                            type="object"
+                            groups="!school_management_system.group_school_student"
+                            invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" class="fw-bold"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Exam Details">
+                            <field name="exam_name" placeholder="Select Exam Type" readonly="state != 'draft'"/>
+                            <field name="standard_id" placeholder="Select Standard" readonly="state != 'draft'"/>
+                            <field name="academic_year" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Schedule">
+                            <field name="exam_start_date" readonly="state != 'draft'"/>
+                            <field name="exam_end_date" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Subjects">
+                            <field name="line_ids"
+                                   readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="subject_id" force_save="1" readonly="1"/>
+                                    <field name="exam_date" width="150"/>
+                                    <field name="start_time" width="100" widget="float_time"/>
+                                    <field name="end_time" width="100" widget="float_time"/>
+                                    <field name="passing_marks" width="150"/>
+                                    <field name="max_marks" width="150"/>
+                                </list>
+                            </field>
+                            <div class="oe_subtotal_footer oe_right" style="margin-top: 10px;">
+                                <div style="display: flex; justify-content: flex-end; font-size: 20px;">
+                                    <span style="font-weight: bold; margin-right: 10px;">Total Marks :</span>
+                                    <field name="total_marks" readonly="1" style="font-weight: bold;"/>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="exam_list_view" model="ir.ui.view">
+        <field name="name">exam.list.view</field>
+        <field name="model">exam</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Reference" optional="hide"/>
+                <field name="exam_name" string="Exam Type" class="fw-bold"/>
+                <field name="standard_id" string="Standard"/>
+                <field name="academic_year"/>
+                <field name="exam_start_date" string="Start Date" class="fw-bold"/>
+                <field name="exam_end_date" string="End Date" class="fw-bold"/>
+                <field name="total_marks" string="Total Marks" width="150"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"
+                       optional="hide"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="exam_action" model="ir.actions.act_window">
+        <field name="name">Exam Timetables</field>
+        <field name="res_model">exam</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Exam!
+            </p>
+        </field>
+    </record>
+
+</odoo>

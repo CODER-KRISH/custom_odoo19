@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_student_fees_payment_form" model="ir.ui.view">
+        <field name="name">student.fees.payment.form</field>
+        <field name="model">student.fees.payment</field>
+        <field name="arch" type="xml">
+            <form string="Fee Payment" create="False">
+                <header>
+                    <button name="pay_fees" string="Pay Fees" type="object" class="btn-primary"
+                            invisible="state != 'fees_due'"/>
+                    <button name="action_print_receipt"
+                            string="Print"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state != 'paid'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+
+                    <!-- Ribbon -->
+                    <widget name="web_ribbon"
+                            title="PAID"
+                            bg_color="bg-success"
+                            invisible="state != 'paid'"/>
+
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <!--<field name="fees_id"/>-->
+                            <field name="student_id" readonly="1"/>
+                            <field name="standard_id" readonly="1"/>
+                            <field name="enrollment_no" readonly="1"/>
+                            <field name="payment_date" readonly="1" invisible="state == 'fees_due'"/>
+                        </group>
+                        <group>
+                            <field name="fee_name" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="payment_mode" readonly="state != 'fees_due'"/>
+                            <field name="notes" readonly="state != 'fees_due'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Fee Types">
+                            <group>
+                                <field name="fee_line_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="fee_type"/>
+                                        <field name="description"/>
+                                        <field name="currency_id" nolabel="1" invisible="1"/>
+                                        <field name="amount" widget="monetary" class="fw-bold"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <div class="oe_subtotal_footer oe_right" style="margin-top: 10px;">
+                                <div style="display: flex; justify-content: flex-end; font-size: 20px;">
+                                    <span style="font-weight: bold; margin-right: 10px;">Total Amount :</span>
+                                    <field name="currency_id" nolabel="1" invisible="1"/>
+                                    <field name="amount" readonly="1" style="font-weight: bold;"
+                                           widget="monetary"/>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter reload_on_attachment="True"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_student_fees_payment_list" model="ir.ui.view">
+        <field name="name">student.fees.payment.list</field>
+        <field name="model">student.fees.payment</field>
+        <field name="arch" type="xml">
+            <list string="Fee Payments" create="False">
+                <field name="name" class="fw-bold" string="Invoice No." width="100"/>
+                <field name="fee_name" class="fw-bold"/>
+                <field name="student_id" width="150"/>
+                <field name="standard_id" width="70"/>
+                <field name="enrollment_no" class="fw-bold" width="100"/>
+                <field name="payment_date" string="Paid Date" width="100 "/>
+                <field name="currency_id" nolabel="1" invisible="1"/>
+                <field name="payment_mode" width="100"/>
+                <field name="state" widget="badge" decoration-warning="state == 'fees_due'"
+                       decoration-success="state == 'paid'" width="90"/>
+                <field name="amount" widget="monetary" class="fw-bold" width="100"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_student_fee_payment_search" model="ir.ui.view">
+        <field name="name">view.student.fees.payment.search</field>
+        <field name="model">student.fees.payment</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="My Payments" name="my_filter" domain="[('student_id.user_id', '=', uid)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_fee_pay_list_inherit_total" model="ir.ui.view">
+        <field name="name">student.fee.payment.total</field>
+        <field name="model">student.fees.payment</field>
+        <field name="inherit_id" ref="school_management_system.view_student_fees_payment_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount']" position="attributes">
+                <attribute name="sum">Total</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_student_fees_payment" model="ir.actions.act_window">
+        <field name="name">Fee Payments</field>
+        <field name="res_model">student.fees.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">
+            {
+            'search_default_my_filter': 1
+            }
+        </field>
+    </record>
+
+</odoo>

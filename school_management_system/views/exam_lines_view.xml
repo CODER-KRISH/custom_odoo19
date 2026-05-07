@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="view_exam_lines_list" model="ir.ui.view">
+        <field name="name">exam.lines.list</field>
+        <field name="model">exam.lines</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="subject_id" force_save="1"/>
+                <field name="exam_name" readonly="1"/>
+                <field name="exam_date"/>
+                <field name="max_marks"/>
+                <field name="passing_marks"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="reject_reason_all_deal_line_wizard_form_view" model="ir.ui.view">
+        <field name="name">reject.reason.all.deal.line.wizard.form.view</field>
+        <field name="model">reject.reason.all.deal.line.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="property_id" string="Property" readonly="1"/>
+                        <field name="reason_id" string="Reason"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="confirm_all_deal_reject" string="Reject" type="object" class="btn-primary"/>
+                    <button class="btn-secondary" string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

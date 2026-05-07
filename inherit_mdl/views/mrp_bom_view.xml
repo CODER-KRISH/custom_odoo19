@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_mrp_bom_inherit_form" model="ir.ui.view">
+        <field name="name">view.mrp.bom.inherit.form</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group" position="inside">
+                <field name="is_master"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

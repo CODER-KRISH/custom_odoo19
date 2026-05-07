@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--    Student Form View-->
+    <record id="student_form_view" model="ir.ui.view">
+        <field name="name">student.form.view</field>
+        <field name="model">student</field>
+        <field name="arch" type="xml">
+            <form create="False">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_fee_payments" type="object"
+                                class="oe_stat_button" icon="fa-dollar" invisible="student_fee_count == 0">
+                            <field string="Fees" name="student_fee_count" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_exam" type="object"
+                                class="oe_stat_button" icon="fa-pencil-square-o" invisible="student_exam_count == 0">
+                            <field string="Exams" name="student_exam_count" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_attendance" type="object" invisible="student_attendance_count == 0"
+                                class="oe_stat_button" icon="fa-list-alt">
+                            <field string="Attendance" name="student_attendance_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <h2>
+                        <field name="enrollment_no" readonly="1"/>
+                    </h2>
+                    <h1>
+                        <field name="student_name"
+                               placeholder="Student Name"
+                               class="text-break"
+                               default_focus="1"
+                               readonly="1"/>
+                    </h1>
+
+                    <!-- Main Content -->
+                    <group>
+
+                        <!-- Left Side -->
+                        <group string="Personal Information">
+                            <field name="email" readonly="1" string="Email"/>
+                            <field name="phone" readonly="1" string="Phone"/>
+                            <field name="dob" readonly="1"/>
+                            <field name="age" readonly="1"/>
+                        </group>
+
+                        <!-- Right Side -->
+                        <group string="Academic Information">
+                            <field name="standard_id" readonly="1"/>
+                            <field name="hobby_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="current_date" readonly="1"/>
+                        </group>
+
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!--    Student List View-->
+    <record id="student_list" model="ir.ui.view">
+        <field name="name">student.list</field>
+        <field name="model">student</field>
+        <field name="arch" type="xml">
+            <list sample="1" multi_edit="1" create="False">
+                <field name="enrollment_no" string="Enrollment No" class="fw-bold fs-10"/>
+                <field name="student_name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="current_date" string="Admission Date" width="150"/>
+                <field name="standard_id"/>
+                <field name="dob"/>
+                <field name="state" string="Status" widget="badge" decoration-info="state == 'approved'"
+                       decoration-success="state == 'in_admission'" decoration-danger="state == 'terminate'"/>
+                <field name="country_id" string="Country"/>
+            </list>
+        </field>
+    </record>
+
+    <!--    Student Kanban View-->
+    <record id="student_kanban_view" model="ir.ui.view">
+        <field name="name">student.kanban.view</field>
+        <field name="model">student</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" create="False">
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
+                            <field name="image" widget="image" class="w-100 h-auto m-0"
+                                   options="{'size': [100,100], 'img_class': 'rounded border'}"/>
+                        </aside>
+                        <main class="ps-2">
+                            <div class="mb-1">
+                                <strong>Name:&amp;nbsp;</strong>
+                                <field name="student_name"/>
+                            </div>
+                            <div>
+                                <strong>Email:&amp;nbsp;</strong>
+                                <field name="email"/>
+                            </div>
+                            <div>
+                                <strong>Phone:&amp;nbsp;</strong>
+                                <field name="phone"/>
+                            </div>
+                            <div>
+                                <strong>DOB:&amp;nbsp;</strong>
+                                <field class="fw-bold fs-7" name="dob"/>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--    Student Search View-->
+    <record id="student_search_view" model="ir.ui.view">
+        <field name="name">student.search</field>
+        <field name="model">student</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_name"/>
+                <field name="age"/>
+                <field name="dob"/>
+                <field name="standard_id"/>
+                <filter string="Age" name="running_contract" domain="[('age', '!=', False)]"/>
+                <filter string="Class 1" name="running_contract" domain="[('standard_id', '=', '1st')]"/>
+                <filter string="Class 2" name="running_contract" domain="[('standard_id', '=', '2nd')]"/>
+                <filter string="Class 3" name="running_contract" domain="[('standard_id', '=', '3rd')]"/>
+                <filter string="Class 4" name="running_contract" domain="[('standard_id', '=', '4th')]"/>
+                <filter string="Class 5" name="running_contract" domain="[('standard_id', '=', '5th')]"/>
+                <filter string="Class 6" name="running_contract" domain="[('standard_id', '=', '6th')]"/>
+                <filter string="Class 7" name="running_contract" domain="[('standard_id', '=', '7th')]"/>
+                <filter string="Class 8" name="running_contract" domain="[('standard_id', '=', '8th')]"/>
+                <filter string="Class 9" name="running_contract" domain="[('standard_id', '=', '9th')]"/>
+                <filter string="Class 10" name="running_contract" domain="[('standard_id', '=', '10th')]"/>
+                <filter name="age_group_by" string="Age" context="{'group_by': 'age'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for Approved Students -->
+    <record id="student_action" model="ir.actions.act_window">
+        <field name="name">Approved Students</field>
+        <field name="domain">[('state', '!=', 'terminate')]</field>
+        <field name="res_model">student</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new Document!
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for Terminated Students -->
+    <record id="student_terminate_action" model="ir.actions.act_window">
+        <field name="name">Terminate Students</field>
+        <field name="domain">[('state','=', 'terminate')]</field>
+        <field name="res_model">student</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new Document!
+            </p>
+        </field>
+    </record>
+</odoo>

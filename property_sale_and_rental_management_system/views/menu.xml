@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <menuitem name="Property"
+              id="parent_menu"
+              web_icon="property_sale_and_rental_management_system,static/description/new.jpeg"
+              sequence="7"
+    />
+
+    <menuitem name="Properties"
+              id="property_menu"
+              parent="parent_menu"
+              action="property_sale_and_rental_management_system.action_property"
+              sequence="10"
+              groups="property_sale_and_rental_management_system.group_property_mgt_admin"
+    />
+
+    <menuitem name="Offers"
+              id="offer_menu"
+              parent="parent_menu"
+              action="property_sale_and_rental_management_system.action_property_offer"
+              sequence="15"
+    />
+
+    <menuitem name="Sale Deals"
+              id="sale_agreements_menu"
+              parent="parent_menu"
+              action="property_sale_and_rental_management_system.action_property_sale_deal"
+              sequence="20"
+    />
+
+    <menuitem name="Rent Deals"
+              id="rent_contracts_menu"
+              parent="parent_menu"
+              action="property_sale_and_rental_management_system.action_property_rent_deal"
+              sequence="25"
+    />
+
+    <menuitem name="Payments"
+              id="payments_menu"
+              parent="parent_menu"
+              action="property_sale_and_rental_management_system.action_property_payment_records"
+              sequence="30"
+    />
+
+    <menuitem name="Partners"
+              id="owners_menu"
+              parent="parent_menu"
+              action="base.action_res_users"
+              sequence="40"
+    />
+</odoo>

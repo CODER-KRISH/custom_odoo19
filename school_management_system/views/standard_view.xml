@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!--    Form View-->
+    <record id="standard_form_view" model="ir.ui.view">
+        <field name="name">standard.form.view</field>
+        <field name="model">standard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="class_name"/>
+                    </group>
+                    <notebook>
+                        <page string="Students">
+                            <field name="student_ids" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Subjects">
+                            <field name="subject_ids" nolabel="1" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="standard_list" model="ir.ui.view">
+        <field name="name">standard.list.view</field>
+        <field name="model">standard</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="class_name" string="Class Name"/>
+                <field name="subject_ids" string="Subjects" widget="many2many_tags"/>
+                <field name="student_ids" string="Students" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <!--    Kanban View-->
+    <record id="standard_kanban_view" model="ir.ui.view">
+        <field name="name">standard.kanban.view</field>
+        <field name="model">standard</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <templates>
+                    <t t-name="card">
+                        <div class="row mb4">
+                            <div>
+                                <span>Standard:&amp;nbsp;</span>
+                                <field name="class_name"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--    Action-->
+    <record id="standard_action" model="ir.actions.act_window">
+        <field name="name">Standard</field>
+        <field name="res_model">standard</field>
+        <field name="view_mode">list,form,kanban</field><field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create Standard!
+            </p>
+        </field>
+    </record>
+</odoo>

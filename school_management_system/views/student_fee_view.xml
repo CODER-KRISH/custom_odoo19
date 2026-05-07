@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_student_fees_form" model="ir.ui.view">
+        <field name="name">student.fees.form</field>
+        <field name="model">student.fees</field>
+        <field name="arch" type="xml">
+            <form string="Student Fees">
+                <header>
+                    <button name="action_confirm"
+                            string="Confirm"
+                            type="object"
+                            class="btn-primary"
+                            invisible="status != 'draft'"
+                    />
+
+                    <button name="confirm_and_next"
+                            string="Confirm &amp; Pay"
+                            type="object"
+                            class="btn-primary"
+                            invisible="status != 'confirmed'"
+                    />
+
+                    <button name="back_to_draft"
+                            string="To Draft"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="status in ['draft', 'done']"
+                    />
+
+
+                    <field name="status" widget="statusbar"/>
+
+                </header>
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="student_id" readonly="status != 'draft'"/>
+                            <field name="standard_id" readonly="1"/>
+                            <field name="enrollment_no" readonly="1"/>
+                            <field name="fee_structure_id"
+                                   domain="[('standard_id', '=', standard_id)]" readonly="status != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="academic_year" readonly="1"/>
+                            <field name="issue_date" readonly="status != 'draft'"/>
+                            <field name="due_date" readonly="status != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Fee Lines">
+                            <group>
+                                <field name="fee_line_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="fee_type"/>
+                                        <field name="description"/>
+                                        <field name="currency_id" nolabel="1" invisible="1"/>
+                                        <field name="amount" widget="monetary" class="fw-bold"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <div class="oe_subtotal_footer oe_right" style="margin-top: 10px;">
+                                <div style="display: flex; justify-content: flex-end; font-size: 20px;">
+                                    <span style="font-weight: bold; margin-right: 10px;">Total Amount :</span>
+                                    <field name="currency_id" nolabel="1" invisible="1"/>
+                                    <field name="total_amount" readonly="1" style="font-weight: bold;"
+                                           widget="monetary"/>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_student_fees_tree" model="ir.ui.view">
+        <field name="name">student.fees.list</field>
+        <field name="model">student.fees</field>
+        <field name="arch" type="xml">
+            <list string="Student Fees">
+                <field name="fee_structure_id"/>
+                <field name="student_id" class="fw-bold"/>
+                <field name="standard_id"/>
+                <field name="enrollment_no" class="fw-bold"/>
+                <field name="academic_year"/>
+                <field name="issue_date" width="150"/>
+                <field name="due_date"/>
+                <field name="currency_id" nolabel="1" invisible="1"/>
+                <field name="net_amount" widget="monetary" class="fw-bold" optional="1"/>
+                <field name="paid_amount" widget="monetary" class="fw-bold"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'done'"
+                       decoration-info="status == 'confirmed'"
+                       decoration-muted="status == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_student_fees" model="ir.actions.act_window">
+        <field name="name">Student Fees</field>
+        <field name="res_model">student.fees</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Pay Your Fees Here!
+            </p>
+        </field>
+    </record>
+
+</odoo>

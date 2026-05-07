@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ====================== -->
+    <!-- Inherit Menu for Sales -->
+    <!-- ====================== -->
+
+    <menuitem id="menu_sales_config"
+              sequence="3"
+              name="Price Templates"
+              parent="sale.menu_sale_config">
+
+        <menuitem id="price_check_list_template_menu"
+                  name="Price Checklist Template"
+                  action="action_price_checklist_template"
+                  sequence="10"/>
+
+        <menuitem id="price_check_list_menu"
+                  name="Price Checklist"
+                  action="action_price_checklist"
+                  sequence="20"/>
+
+    </menuitem>
+
+
+    <!-- ============================== -->
+    <!-- Custom Menu for Current Module -->
+    <!-- ============================== -->
+
+    <menuitem name="Inherit" id="inherit_root_menu" sequence="6"/>
+
+    <menuitem name="Price Checklist" sequence="10" id="price_checklist_menu"
+              action="inherit_mdl.action_price_checklist"
+              parent="inherit_root_menu"/>
+
+    <menuitem name="Price Checklist Template" sequence="15" id="price_checklist_template_menu"
+              action="inherit_mdl.action_price_checklist_template"
+              parent="inherit_root_menu"/>
+
+</odoo>

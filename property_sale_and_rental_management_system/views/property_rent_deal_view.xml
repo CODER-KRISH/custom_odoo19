@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="property_rent_deal_form_view" model="ir.ui.view">
+        <field name="name">property.rent.deal.form.view</field>
+        <field name="model">property.rent.deal</field>
+        <field name="arch" type="xml">
+            <form create="False">
+                <header>
+                    <field name="state" widget="statusbar"/>
+
+                    <!-- Confirm Button -->
+                    <button name="action_confirm"
+                            type="object"
+                            string="Confirm"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                    />
+
+                </header>
+
+                <sheet>
+                    <!-- Ribbon -->
+                    <widget name="web_ribbon"
+                            title="CLOSED"
+                            bg_color="bg-success"
+                            invisible="state != 'done'"/>
+
+                    <h1>
+                        <field name="property_id" readonly="state != 'draft'"/>
+                    </h1>
+
+                    <group>
+                        <group>
+                            <field name="start_date" readonly="state != 'draft'"/>
+                            <field name="end_date" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="rent_amount" widget="monetary" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="owner_id" readonly="1"/>
+                            <field name="tenant_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Monthly Rents">
+
+                            <!-- Rent Lines -->
+                            <field name="rent_line_ids" readonly="1">
+                                <list>
+                                    <field name="property_id"/>
+                                    <field name="due_date" widget="remaining_days"/>
+                                    <field name="currency_id" nolabel="1" invisible="1"/>
+                                    <field name="amount" widget="monetary" class="fs-10 fw-bold"/>
+                                    <field name="status"
+                                           widget="badge"
+                                           decoration-warning="status == 'payment_due'"
+                                           decoration-success="status == 'paid'"/>
+                                    <button name="action_mark_paid"
+                                            type="object"
+                                            string="Pay"
+                                            class="btn-primary"
+                                            invisible="status == 'paid'"/>
+                                </list>
+                            </field>
+
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_rent_amount" string="Total Rent Amount" class="fw-bold h4"/>
+                                <field name="paid_amount" string="Total Paid Rent" class="h5"/>
+                                <field name="remaining_rent_amount" string="Remaining Amount" class="fw-bold h2"/>
+                            </group>
+
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="property_rent_deal_list_view" model="ir.ui.view">
+        <field name="name">property.rent.deal.list.view</field>
+        <field name="model">property.rent.deal</field>
+        <field name="arch" type="xml">
+            <list create="False">
+                <field name="property_id" class="fs-10 fw-bold"/>
+                <field name="owner_id"/>
+                <field name="tenant_id" class="fs-10 fw-bold"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="currency_id" nolabel="1" invisible="1"/>
+                <field name="rent_amount" widget="monetary" class="fs-10 fw-bold"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-primary="state == 'running'"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="search_property_rent_deal_view" model="ir.ui.view">
+        <field name="name">search.property.rent.deal.view</field>
+        <field name="model">property.rent.deal</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="state" string="Status" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_rent_deal" model="ir.actions.act_window">
+        <field name="name">Rent Agreements</field>
+        <field name="res_model">property.rent.deal</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

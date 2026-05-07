@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="owners_form_view" model="ir.ui.view">
+        <field name="name">owners.form.view</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='page_security']" position="after">
+                <page string="Properties">
+                    <field name="property_ids" readonly="1">
+                        <list>
+                            <field name="name" string="Property Name"/>
+                            <field name="owner_id" string="Owner" optional="hide"/>
+                            <field name="currency_id" nolabel="1" invisible="1"/>
+                            <field name="amount" string="Price" widget="monetary" class="fw-bold"/>
+                            <field name="city" string="City"/>
+                            <field name="zip" string="Zip"/>
+                            <field name="state_id" string="State"/>
+                            <field name="country_id" string="Country"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+<!--            <xpath expr="//field[@name='website']" position="attributes">-->
+<!--                <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='category_id']" position="attributes">-->
+<!--                <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='company_type']" position="attributes">-->
+<!--                <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//sheet/div" position="attributes">-->
+<!--                <attribute name="invisible">0</attribute>-->
+<!--            </xpath>-->
+            <xpath expr="//sheet/div" position="inside">
+                <button name="action_view_all_properties" type="object" string="Properties"
+                        class="oe_stat_button" icon="fa-home">
+                    <field string="Properties" name="property_count" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="base.action_res_users" model="ir.actions.act_window">
+        <field name="name">Partners</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">list,kanban,graph,form,pivot</field>
+    </record>
+
+<!--    <record id="partner_base_vat_form_inherit" model="ir.ui.view">-->
+<!--        <field name="name">partner.base.vat.form.inherit</field>-->
+<!--        <field name="model">res.partner</field>-->
+<!--        <field name="inherit_id" ref="base_vat.view_partner_base_vat_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//label[@for='vat']" position="attributes">-->
+<!--                <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//div[@name='vat_vies_container']/field[@name='vat']" position="attributes">-->
+<!--                <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>
+

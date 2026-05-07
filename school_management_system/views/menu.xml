@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+
+    <!--Root Menu of Entire School Management-->
+    <menuitem name="School"
+              id="menu_school"
+              sequence="6"
+              web_icon="school_management_system,static/description/graduate.png"
+    />
+
+    <menuitem name="Admission"
+              sequence="10"
+              id="admission_menu"
+              parent="menu_school"
+              action="admission_action"
+    />
+
+    <!--Sub Menu of School Management for Profiles Student & Teachers-->
+    <menuitem name="Profiles"
+              sequence="20"
+              id="menu_profile"
+              parent="menu_school"
+    />
+
+    <!--Root Menu of Student Profiles (Active/Terminate)-->
+    <menuitem name="Students"
+              sequence="1"
+              id="student_root_menu"
+              parent="menu_profile"
+    />
+
+    <!--Menu for students (Active/Terminate)-->
+    <menuitem name="Approved Students"
+              sequence="1"
+              id="student_menu"
+              parent="student_root_menu"
+              action="student_action"
+    />
+
+    <menuitem name="Terminate Students"
+              sequence="2"
+              id="student_terminate_menu"
+              parent="student_root_menu"
+              action="student_terminate_action"
+    />
+
+    <!--Root Menu of Teachers (Active/Inactive)-->
+    <menuitem name="Teachers"
+              sequence="2"
+              id="teacher_root_menu"
+              parent="menu_profile"
+    />
+
+    <menuitem name="Teachers"
+              sequence="1"
+              id="teacher_menu"
+              parent="teacher_root_menu"
+              action="teacher_action"
+    />
+
+    <menuitem name="Inactive Teachers"
+              sequence="2"
+              id="inactive_teacher_menu"
+              parent="teacher_root_menu"
+              action="teacher_inactive_action"
+    />
+
+    <!-- Root Menu for Attendance -->
+
+    <menuitem name="Attendance"
+              sequence="30"
+              id="root_attendance"
+              parent="menu_school"
+              groups="group_school_mgt_teacher"
+    />
+
+    <menuitem name="Fill Attendance"
+              sequence="1"
+              id="fill_attendance"
+              parent="root_attendance"
+              action="attendance_action"
+    />
+
+    <menuitem name="View All Attendance"
+              sequence="2"
+              id="view_attendance"
+              parent="root_attendance"
+              action="attendance_line_action"
+    />
+
+    <menuitem name="Standard"
+              sequence="40"
+              id="standard_menu"
+              parent="menu_school"
+              action="standard_action"
+    />
+
+    <menuitem name="Subject"
+              sequence="50"
+              id="subject_menu"
+              parent="menu_school"
+              action="subject_action"
+    />
+
+    <menuitem name="Exams"
+              sequence="60"
+              id="exam_menu"
+              parent="menu_school"
+    />
+
+    <menuitem name="Exam Timetables"
+              sequence="45"
+              id="exam_structure_menu"
+              parent="exam_menu"
+              action="exam_action"
+    />
+
+    <menuitem name="Student Results"
+              sequence="47"
+              id="student_exam_menu"
+              parent="exam_menu"
+              action="action_student_exam"
+    />
+
+    <!-- Menu for Fee Models -->
+    <menuitem id="menu_fees_main"
+              name="Fees"
+              parent="menu_school"
+              sequence="70"
+    />
+
+    <menuitem name="Fee Structure"
+              sequence="60"
+              id="fee_structure_menu"
+              parent="menu_fees_main"
+              action="action_fee_structure"
+    />
+
+    <menuitem id="menu_student_fees"
+              name="Pay Student Fees"
+              parent="menu_fees_main"
+              action="action_student_fees"
+              sequence="70"
+    />
+
+    <menuitem id="menu_student_fees_payment"
+              name="Fee Invoices"
+              parent="menu_fees_main"
+              action="action_student_fees_payment"
+              sequence="80"
+    />
+
+    <!-- Menu for all Users -->
+
+    <menuitem name="All Users"
+              sequence="85"
+              id="all_users_menu"
+              parent="menu_school"
+              action="base.action_res_users"
+              groups="school_management_system.group_school_mgt_admin"
+    />
+
+    <menuitem id="menu_announcement"
+              name="Announcements"
+              action="action_announcement"
+              parent="menu_school"
+              sequence="50"
+    />
+
+    <menuitem id="menu_timetable"
+              name="Timetables"
+              action="action_timetable"
+              parent="menu_school"
+              sequence="55"
+    />
+
+</odoo>

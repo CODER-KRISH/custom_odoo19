@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--    Teacher Form View-->
+    <record id="teacher_form_view" model="ir.ui.view">
+        <field name="name">teacher.form.view</field>
+        <field name="model">teacher</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="confirm_teacher"
+                            string="Confirm"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                    />
+                    <button name="return_draft"
+                            string="To Draft"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state in ['draft', 'terminate']"
+                    />
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="user_id" placeholder="e.g. Lumber Inc" class="w-150" readonly="state != 'draft'"/>
+                    </h1>
+                    <group>
+                        <group string="Personal Information">
+                            <field name="email" class="w-100" placeholder="Email"
+                                   readonly="state != 'draft'"/>
+                            <field name="phone" class="w-100" placeholder="Phone"
+                                   readonly="state != 'draft'"/>
+                            <field name="gender" string="Gender" readonly="state != 'draft'"/>
+                            <field name="dob" placeholder="Date of Birth" readonly="state != 'draft'"/>
+                            <field name="age" placeholder="Age" readonly="1"/>
+                            <span class="fw-bold">Address</span>
+                            <div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"
+                                       readonly="state != 'draft'"/>
+                                <field name="street2" placeholder="Street2..." class="o_address_street"
+                                       readonly="state != 'draft'"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip" readonly="state != 'draft'"/>
+                                <field name="city" placeholder="City" class="o_address_city"
+                                       readonly="state != 'draft'"/>
+                                <field name="state_id" placeholder="State" class="o_address_state"
+                                       readonly="state != 'draft'"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country_id"
+                                       readonly="state != 'draft'"/>
+                            </div>
+                        </group>
+                        <group string="Work Information">
+                            <field name="current_date" string="Admission Date" readonly="1"/>
+                            <field name="standard_id" placeholder="Standard" readonly="state != 'draft'"/>
+                            <field name="subject_ids" placeholder="Subjects" widget="many2many_tags"
+                                   readonly="state != 'draft'"
+                                   domain="[('standard_id', '=', standard_id)]"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--    Teacher List View-->
+    <record id="teacher_list_view" model="ir.ui.view">
+        <field name="name">teacher.list.view</field>
+        <field name="model">teacher</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="user_id" class="fw-bold"/>
+                <field name="email"/>
+                <field name="standard_id"/>
+                <field name="subject_ids" widget="many2many_tags" string="Subjects" width="500"/>
+                <field name="city" class="o_address_city"/>
+                <field name="state_id" class="o_address_state"/>
+                <field name="state" widget="badge" string="Status" decoration-info="state == 'confirm'"
+                       decoration-success="state == 'active'" decoration-danger="state == 'terminate'"/>
+            </list>
+        </field>
+    </record>
+
+    <!--    Teacher Search View-->
+    <record id="teacher_search_view" model="ir.ui.view">
+        <field name="name">teacher.search</field>
+        <field name="model">teacher</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="age"/>
+                <field name="dob"/>
+                <field name="standard_id"/>
+                <field name="subject_ids"/>
+                <filter string="Age" name="running_contract" domain="[('age', '!=', False)]"/>
+                <filter name="age_group_by" string="Age" context="{'group_by': 'age'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!--    Teacher Kanban View-->
+    <record id="teacher_kanban_view" model="ir.ui.view">
+        <field name="name">teacher.kanban.view</field>
+        <field name="model">teacher</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside class="o_kanban_aside_full">
+                        </aside>
+                        <main class="ps-2">
+                            <div class="mb-1">
+                                <strong>Name:&amp;nbsp;</strong>
+                                <field name="user_id"/>
+                            </div>
+                            <div>
+                                <strong>Email:&amp;nbsp;</strong>
+                                <field name="email"/>
+                            </div>
+                            <div>
+                                <strong>Phone:&amp;nbsp;</strong>
+                                <field name="phone"/>
+                            </div>
+                            <div>
+                                <strong>DOB:&amp;nbsp;</strong>
+                                <field class="fw-bold fs-7" name="dob"/>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--    Teacher Action-->
+    <record id="teacher_action" model="ir.actions.act_window">
+        <field name="name">Teacher</field>
+        <field name="res_model">teacher</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create new Teacher!
+            </p>
+        </field>
+    </record>
+
+    <record id="teacher_inactive_action" model="ir.actions.act_window">
+        <field name="name">Inactive Teachers</field>
+        <field name="res_model">teacher</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('state', '=', 'inactive')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Inactive Teacher isn't found!
+            </p>
+        </field>
+    </record>
+
+</odoo>

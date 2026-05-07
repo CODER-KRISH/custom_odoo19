@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_price_checklist_form" model="ir.ui.view">
+        <field name="name">view.price.checklist.form</field>
+        <field name="model">price.checklist</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="checklist_name" string="Name"/>
+                            <field name="checklist_description" string="Description"/>
+                            <field name="priority" string="Priority" widget="priority"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_price_checklist_list" model="ir.ui.view">
+        <field name="name">view.price.checklist.list</field>
+        <field name="model">price.checklist</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="checklist_name" string="Name"/>
+                <field name="checklist_description" string="Description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_price_checklist" model="ir.actions.act_window">
+        <field name="name">Price Check List</field>
+        <field name="res_model">price.checklist</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create Your First Checklist!
+            </p>
+        </field>
+    </record>
+
+</odoo>

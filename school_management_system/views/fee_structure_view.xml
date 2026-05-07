@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_fee_structure_form" model="ir.ui.view">
+        <field name="name">fee.structure.form</field>
+        <field name="model">fee.structure</field>
+        <field name="arch" type="xml">
+            <form string="Fee Structure">
+                <header>
+                    <button string="Confirm" class="btn-primary" type="object" name="confirm_fee_structure"
+                            invisible="state != 'draft'"/>
+                    <button string="To Draft" class="btn-secondary" type="object" name="return_to_draft"
+                            invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h1>
+
+                        <field name="name" readonly="state != 'draft'" placeholder="Add Fee Structure Here"/>
+                    </h1>
+                    <group>
+                        <group string="Academic Info">
+                            <field name="standard_id" readonly="state != 'draft'"/>
+                            <field name="academic_year" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Fees Info">
+                            <field name="create_date" readonly="state != 'draft'" string="Create Date"/>
+                            <field name="last_date" readonly="state != 'draft'" string="Last Date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Fee Lines">
+                            <field name="fee_line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="fee_type"/>
+                                    <field name="description"/>
+                                    <field name="currency_id" nolabel="1" invisible="1"/>
+                                    <field name="amount" widget="monetary" class="fw-bold"/>
+                                </list>
+                            </field>
+                            <div class="oe_subtotal_footer oe_right" style="margin-top: 10px;">
+                                <div style="display: flex; justify-content: flex-end; font-size: 20px;">
+                                    <span style="font-weight: bold; margin-right: 10px;">Total Amount :</span>
+                                    <field name="currency_id" nolabel="1" invisible="1"/>
+                                    <field name="total_amount" readonly="1" style="font-weight: bold;"
+                                           widget="monetary"/>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_fee_structure_list" model="ir.ui.view">
+        <field name="name">fee.structure.list</field>
+        <field name="model">fee.structure</field>
+        <field name="arch" type="xml">
+            <list string="Fee Structures">
+                <field name="name" class="fw-bold"/>
+                <field name="standard_id" optional="hide"/>
+                <field name="fee_line_ids" widget="many2many_tags" string="Fee Types"/>
+                <field name="academic_year"/>
+                <field name="last_date" string="Last Date" widget="remaining_days"/>
+                <field name="currency_id" nolabel="1" invisible="1"/>
+                <field name="total_amount" widget="monetary" class="fw-bold"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_fee_structure" model="ir.actions.act_window">
+        <field name="name">Fee Structures</field>
+        <field name="res_model">fee.structure</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create Your First Fee Structure!
+            </p>
+        </field>
+    </record>
+
+</odoo>

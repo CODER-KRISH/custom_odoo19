@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_res_config_settings_inherit_new_form" model="ir.ui.view">
+        <field name="name">view.res.config.settings.inherit.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="10"/>
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app/block[@id='pricing_setting_container']" position="inside">
+                <setting id="boss_and_manager_limit"
+                         help="This is the limit field whose value is above the sale order line total price then boss approval required otherwise manager can approve it">
+                    <field name="my_currency_id"/>
+                    <br/>
+                    <label name="Min" for="min_limit"/>
+                    <field name="min_limit" string="Min Limit"/>
+                    <br/>
+                    <label name="Max" for="max_limit"/>
+                    <field name="max_limit" string="Max Limit"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_sale_boss_manager_res_config_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="view_res_config_settings_inherit_new_form"/>
+        <field name="view_mode">form</field>
+        <field name="context">{'module' : 'sale_management', 'bin_size': False}</field>
+    </record>
+</odoo>

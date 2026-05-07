@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <record id="sale_order_inherit_form_view" model="ir.ui.view">
+        <field name="name">sale.order.form.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- ========================================================== -->
+            <!-- xpath for Task Notebook page Price checklist and Templates -->
+            <!-- ========================================================== -->
+            <xpath expr="//notebook/page[@name='customer_signature']" position="after">
+                <page string="Templates">
+                    <group>
+                        <field name="progress_point" widget="progressbar"/>
+                        <field name="template_ids" string="Templates" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <notebook>
+                            <page string="Checklists">
+                                <field name="all_checklists_ids" string="checklists" nolabel="1" readonly="1"
+                                       force_save="1">
+                                    <list>
+                                        <field name="checklist_name"/>
+                                        <field name="checklist_description"/>
+                                        <field name="today"/>
+                                        <button name="add_progress" type="object" class="btn-primary" string="Plus"/>
+                                        <button name="remove_progress" type="object" class="btn-secondary"
+                                                string="Minus"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </group>
+                </page>
+            </xpath>
+
+            <!-- ========================================================= -->
+            <!-- xpath for statusbar visible for manager and boss approval -->
+            <!-- ========================================================= -->
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">draft,sent,manager,boss,sale</attribute>
+            </xpath>
+
+            <!-- =============================================================== -->
+            <!-- xpath for Buttons Manager, Boos Approval And Split Order wizard -->
+            <!-- =============================================================== -->
+            <xpath expr="//header/button[@name='action_preview_sale_order']" position="replace">
+                <button name="state_to_manager"
+                        string="Manager Approval"
+                        class="btn-primary"
+                        type="object"
+                        invisible="state != 'draft'"
+                        groups="inherit_mdl.group_sale_manager"
+                />
+                <button name="state_to_boss"
+                        string="Boss Approval"
+                        class="btn-primary"
+                        type="object"
+                        invisible="state != 'draft'"
+                        groups="inherit_mdl.group_sale_boss"
+                />
+                <button name="action_open_split_wizard"
+                        string="Split"
+                        class="btn-secondary"
+                        type="object"
+                />
+            </xpath>
+
+            <!-- ================================================================= -->
+            <!-- xpath for change attributes of 9th button in sale order form view -->
+            <!-- ================================================================= -->
+            <xpath expr="//header/button[9]" position="attributes">
+                <attribute name="invisible">state not in ['draft', 'manager', 'boss']</attribute>
+            </xpath>
+
+            <!-- ====================================================== -->
+            <!-- xpath for Button to view master bom in sale order line -->
+            <!-- ====================================================== -->
+            <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='product_template_id']"
+                   position="after">
+                <button string="BOM"
+                        name="view_copied_master_bom"
+                        type="object"
+                        class="btn-primary"
+                />
+                <field name="is_approved" string="Approved" readonly="1" optional="hide"/>
+            </xpath>
+
+            <!-- ===================================================================== -->
+            <!-- xpath for add boolean field for tik not tik button in sale order line -->
+            <!-- ===================================================================== -->
+            <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='product_template_id']"
+                   position="before">
+                <field name="tik_untick" nolabel="1" width="15"/>
+            </xpath>
+
+            <!-- ================================================ -->
+            <!-- xpath for Tik not Tik button for sale order line -->
+            <!-- ================================================ -->
+<!--            <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']" position="before">-->
+<!--                <button name="action_tick_untick"-->
+<!--                        type="object"-->
+<!--                        class="btn-primary"-->
+<!--                        icon="fa-check"-->
+<!--                        string="Tick/Untick"-->
+<!--                />-->
+<!--            </xpath>-->
+
+            <!-- ============================================================================= -->
+            <!-- xpath to add fields is_special, dic%, button that confirm the special product -->
+            <!-- ============================================================================= -->
+            <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='tax_ids']"
+                   position="after">
+                <field name="is_special" string="Special" optional="hide"/>
+                <field name="product_discount" optional="hide"/>
+                <button name="confirm_special_product"
+                        string="Approve"
+                        class="btn-primary"
+                        type="object"
+                        invisible="(not is_special and product_discount &lt;= 50) or is_approved"
+                />
+            </xpath>
+
+            <!-- ================================================ -->
+            <!-- xpath for smart button to view split sale orders -->
+            <!-- ================================================ -->
+            <xpath expr="//form/sheet/div[1]" position="inside">
+                <button name="action_view_split_orders"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-code-fork"
+                        invisible="split_order_count == 0">
+                    <field name="split_order_count" widget="statinfo" string="Splited"/>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

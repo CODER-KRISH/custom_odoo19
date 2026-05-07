@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="reject_reason_wizard" model="ir.ui.view">
+        <field name="name">reject.reason.wizard.form.view</field>
+        <field name="model">reject.reason.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="property_id" string="Property" readonly="1"/>
+                        <field name="offer_id" string="Choose Customer To Accept" domain="[('property_id', '=', property_id), ('state', 'not in', ('rejected', 'cancelled'))]"/>
+                        <field name="reason_id" string="Select Reason to Reject Other Offers"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="confirm_reject" string="Done" type="object" class="btn-primary"/>
+                    <button class="btn-secondary" string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

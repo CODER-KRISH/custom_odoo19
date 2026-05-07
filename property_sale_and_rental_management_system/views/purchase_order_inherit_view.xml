@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="form_purchase_order_view" model="ir.ui.view">
+
+        <field name="name">form.purchase.order.view</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="f_description" />
+            </xpath>
+            <xpath expr="//notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_qty']" position="after">
+                <field name="s_description"/>
+            </xpath>
+        </field>
+
+    </record>
+
+</odoo>

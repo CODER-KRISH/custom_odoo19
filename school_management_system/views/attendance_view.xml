@@ -1,0 +1,74 @@
+<odoo>
+    <record id="attendance_form_view" model="ir.ui.view">
+        <field name="name">attendance.form.view</field>
+        <field name="model">attendance</field>
+        <field name="arch" type="xml">
+            <form string="Attendance">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button type="object" string="Done" name="done_attendance" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="current_date" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="standard_id" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Students Attendance">
+                            <field name="attendance_line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="student_id" domain="[('standard_id', '=', parent.standard_id)]"/>
+                                    <field name="p_or_a" string="Present"/>
+<!--                                    <field name="absent"/>-->
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!--    List View-->
+    <record id="attendance_list_view" model="ir.ui.view">
+        <field name="name">attendance.list.view</field>
+        <field name="model">attendance</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="current_date" string="Date" width="100"/>
+                <field name="standard_id" width="100"/>
+                <field name="attendance_line_ids" widget="many2many_tags" string="Students"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="server_action_attendance_set_draft" model="ir.actions.server">
+        <field name="name">Set Attendance Draft</field>
+        <field name="model_id" ref="model_attendance"/>
+        <field name="binding_model_id" ref="model_attendance"/>
+        <field name="state">code</field>
+        <field name="code">action = records.set_to_draft()</field>
+    </record>
+
+    <!-- Action -->
+    <record id="attendance_action" model="ir.actions.act_window">
+        <field name="name">Attendance</field>
+        <field name="res_model">attendance</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Attendance!
+            </p>
+        </field>
+    </record>
+</odoo>
+
+
+

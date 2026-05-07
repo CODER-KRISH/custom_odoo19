@@ -1,0 +1,30 @@
+{
+    'name': "Inherit Module",
+    'summary': "Inherit Module",
+    'author': 'Krish Prajapati',
+    'category': 'Inherit',
+    'version': '19.0.1.0.0',
+    'depends': ['base', 'contacts', 'mail', 'sale', 'stock', 'mrp', 'helpdesk', 'project', 'helpdesk_fsm', 'crm'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'wizard/res_config_settings_view.xml',
+        'wizard/split_order_wizard_view.xml',
+        'views/price_checklist_view.xml',
+        'views/price_checklist_template_view.xml',
+        'views/res_partner_inherit_view.xml',
+        'views/sale_order_inherit_view.xml',
+        'views/product_template_inherit_view.xml',
+        'views/stock_picking_inherit_view.xml',
+        'views/helpdesk_ticket_view.xml',
+        'views/res_user_inherit_view.xml',
+        'views/project_task_view.xml',
+        'views/mrp_bom_view.xml',
+        'views/crm_lead_view.xml',
+        'views/menu.xml',
+        'data/ir_cron.xml'
+    ],
+    "application": True,
+    "installable": True,
+    "sequence": -100
+}

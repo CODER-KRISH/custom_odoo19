@@ -1,0 +1,157 @@
+<odoo>
+    <template id="report_student_fee_receipt">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page" style="font-family: arial;">
+
+                        <p style="font-size: 35px; text-align: center;">
+                            <b>Student Fee Receipt</b>
+                        </p>
+
+                        <br/>
+                        <br/>
+
+                        <p style="font-size:24px">
+                            <strong>Receipt No.:</strong>
+                            <span t-field="o.name"/>
+                        </p>
+
+                        <br/>
+
+                        <h4 class="text-left" style="border-bottom: 1px solid lightgrey">Student Info</h4>
+
+                        <div class="row">
+
+                            <!-- Left Side -->
+                            <div class="col-6">
+
+                                <p>
+                                    <strong>Fee Structure:</strong>
+                                    <span t-field="o.fees_id.fee_structure_id"/>
+                                </p>
+
+                                <p>
+                                    <strong>Student Name:</strong>
+                                    <span t-field="o.student_id.student_name"/>
+                                </p>
+
+                                <p>
+                                    <strong>Class:</strong>
+                                    <span t-field="o.standard_id.class_name"/>
+                                </p>
+
+                            </div>
+
+                            <!-- Right Side -->
+                            <div class="col-6">
+
+                                <p>
+                                    <strong>Enrollment No:</strong>
+                                    <span t-field="o.enrollment_no"/>
+                                </p>
+
+                                <p>
+                                    <strong>Academic Year:</strong>
+                                    <span t-field="o.fees_id.academic_year"/>
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <br/>
+
+                        <h4 class="text-left" style="border-bottom: 1px solid lightgrey">Fees Info</h4>
+
+                        <table class="table table-borderless">
+
+                            <thead style="display: table-row-group; border-bottom: 1px solid black;">
+
+                                <tr>
+                                    <th>
+                                        <strong>Fee Types</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Description</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Amount</strong>
+                                    </th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <t t-foreach="o.fee_line_ids" t-as="line">
+
+                                    <tr>
+                                        <td>
+                                            <span t-field="line.fee_type"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.description"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.amount"/>
+                                        </td>
+                                    </tr>
+
+                                </t>
+                                <tr>
+                                    <td style="text-align: center; border-top: 1px solid black;" colspan="2">
+                                        <strong>Total Amount Payable From You is</strong>
+                                    </td>
+                                    <td style="text-align: left; border-top: 1px solid black;">
+                                        <strong>
+                                            <span t-field="o.fees_id.total_amount"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+
+                        <h4 class="text-left" style="border-bottom: 1px solid lightgrey">Payment Info</h4>
+                        <!-- Payment Info -->
+
+                        <div class="row">
+
+                            <div class="col-6">
+                                <p>
+                                    <strong>Payment Date:</strong>
+                                    <span t-field="o.payment_date"/>
+                                </p>
+
+                                <p colspan="2">
+                                    <strong>Remarks:</strong>
+                                    <span t-field="o.notes"/>
+                                </p>
+
+                            </div>
+
+                            <div class="col-6">
+                                <p>
+                                    <strong>Payment Mode:</strong>
+                                    <span t-field="o.payment_mode"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_student_fee_receipt" model="ir.actions.report">
+        <field name="name">Student Fee Receipt</field>
+        <field name="model">student.fees.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">school_management_system.report_student_fee_receipt</field>
+        <field name="report_file">school_management_system.report_student_fee_receipt</field>
+        <field name="binding_model_id" ref="model_student_fees_payment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

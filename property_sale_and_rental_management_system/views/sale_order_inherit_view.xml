@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="sale_order_list_view" model="ir.ui.view">
+        <field name="name">sale.order.list.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="action_change_state" string="Change" type="object" class="btn-primary"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_order_form_view" model="ir.ui.view">
+        <field name="name">sale.order.form.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_template_id']" position="after">
+                <field name="name_id" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list/field[@name='name_id']" position="after">
+                <field name="s_description" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="f_description"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

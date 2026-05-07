@@ -1,0 +1,18 @@
+<odoo>
+
+    <template id="picking_custom_report" inherit_id="stock.report_delivery_document">
+        <xpath expr="//table[@name='stock_move_table']/thead/tr/th[@name='th_sm_product']" position="after">
+
+            <th class="text-end">
+                <strong>Custom</strong>
+            </th>
+        </xpath>
+
+        <xpath expr="//table[@name='stock_move_table']/tbody/tr/td[1]" position="after">
+            <td class="text-end">
+                <span t-field="move.s_description"/>
+            </td>
+        </xpath>
+    </template>
+
+</odoo>

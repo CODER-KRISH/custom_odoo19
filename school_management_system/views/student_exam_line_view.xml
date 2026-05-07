@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="list_student_exam_line_view" model="ir.ui.view">
+        <field name="name">list.student.exam.line.view</field>
+        <field name="model">student.exam.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="subject_id" readonly="1" force_save="1"/>
+                <field name="max_marks" readonly="1" force_save="1"/>
+                <field name="passing_marks" readonly="1"/>
+                <field name="obtained_marks"/>
+                <field name="subject_percentage" readonly="1" string="%"
+                       widget="progressbar"
+                       options="{'max_value': 100, 'editable': false}"/>
+                <field name="subject_grade" readonly="1" string="Grade"/>
+                <field name="is_pass" readonly="1" string="Pass?"
+                       widget="boolean"
+                       decoration-success="is_pass == True"
+                       decoration-danger="is_pass == False"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

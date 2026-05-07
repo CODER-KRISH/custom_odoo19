@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── MONDAY list view (standalone, used inside form via One2many) ── -->
+    <record id="view_timetable_monday_list" model="ir.ui.view">
+        <field name="name">timetable.monday.list</field>
+        <field name="model">timetable.monday</field>
+        <field name="arch" type="xml">
+            <list editable="bottom"
+                  decoration-info="period_type == 'break'"
+                  decoration-warning="period_type == 'practical'">
+
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="duration" widget="float_time" optional="show"/>
+                <field name="period_type"/>
+                <field name="room" optional="hide"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── TUESDAY ── -->
+    <record id="view_timetable_tuesday_list" model="ir.ui.view">
+        <field name="name">timetable.tuesday.list</field>
+        <field name="model">timetable.tuesday</field>
+        <field name="arch" type="xml">
+            <list editable="bottom"
+                  decoration-info="period_type == 'break'"
+                  decoration-warning="period_type == 'practical'">
+
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="duration" widget="float_time" optional="show"/>
+                <field name="period_type"/>
+                <field name="room" optional="hide"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── WEDNESDAY ── -->
+    <record id="view_timetable_wednesday_list" model="ir.ui.view">
+        <field name="name">timetable.wednesday.list</field>
+        <field name="model">timetable.wednesday</field>
+        <field name="arch" type="xml">
+            <list editable="bottom"
+                  decoration-info="period_type == 'break'"
+                  decoration-warning="period_type == 'practical'">
+
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="duration" widget="float_time" optional="show"/>
+                <field name="period_type"/>
+                <field name="room" optional="hide"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── THURSDAY ── -->
+    <record id="view_timetable_thursday_list" model="ir.ui.view">
+        <field name="name">timetable.thursday.list</field>
+        <field name="model">timetable.thursday</field>
+        <field name="arch" type="xml">
+            <list editable="bottom"
+                  decoration-info="period_type == 'break'"
+                  decoration-warning="period_type == 'practical'">
+
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="duration" widget="float_time" optional="show"/>
+                <field name="period_type"/>
+                <field name="room" optional="hide"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── FRIDAY ── -->
+    <record id="view_timetable_friday_list" model="ir.ui.view">
+        <field name="name">timetable.friday.list</field>
+        <field name="model">timetable.friday</field>
+        <field name="arch" type="xml">
+            <list editable="bottom"
+                  decoration-info="period_type == 'break'"
+                  decoration-warning="period_type == 'practical'">
+
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="duration" widget="float_time" optional="show"/>
+                <field name="period_type"/>
+                <field name="room" optional="hide"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── SATURDAY ── -->
+    <record id="view_timetable_saturday_list" model="ir.ui.view">
+        <field name="name">timetable.saturday.list</field>
+        <field name="model">timetable.saturday</field>
+        <field name="arch" type="xml">
+            <list editable="bottom"
+                  decoration-info="period_type == 'break'"
+                  decoration-warning="period_type == 'practical'">
+
+                <field name="subject_id"/>
+                <field name="teacher_id"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="duration" widget="float_time" optional="show"/>
+                <field name="period_type"/>
+                <field name="room" optional="hide"/>
+                <field name="notes" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         TIMETABLE FORM VIEW  –  notebook with one page per day
+    ════════════════════════════════════════════════════════════════════ -->
+    <record id="view_timetable_form" model="ir.ui.view">
+        <field name="name">timetable.form</field>
+        <field name="model">timetable</field>
+        <field name="arch" type="xml">
+            <form string="Timetable">
+                <header>
+                    <button name="action_confirm"
+                            string="Confirm"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            invisible="state in ('cancelled', 'draft')"/>
+                    <button name="action_reset_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="state == 'draft'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,confirmed"/>
+                </header>
+
+                <sheet>
+
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+
+                    <group>
+                        <group string="Information">
+                            <field name="standard_id" readonly="state != 'draft'"/>
+                            <field name="academic_year" readonly="state != 'draft'"/>
+                            <field name="created_date" readonly="1"/>
+                        </group>
+                        <group string="Validity">
+                            <field name="effective_from" readonly="state != 'draft'"/>
+                            <field name="effective_to" readonly="state != 'draft'"/>
+                            <field name="updated_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- ── Day-by-day notebook ──────────────────────────── -->
+                    <notebook>
+
+                        <page string="Monday" name="monday">
+                            <field name="monday_ids"
+                                   context="{'default_timetable_id': id}"
+                                   widget="one2many" readonly="state != 'draft'">
+                                <list editable="bottom"
+                                      decoration-info="period_type == 'break'"
+                                      decoration-warning="period_type == 'practical'">
+
+                                    <field name="subject_id" domain="[('standard_id', '=', parent.standard_id)]"/>
+                                    <field name="teacher_id" domain="[('subject_ids', 'in', subject_id)]"/>
+                                    <field name="period_type"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                    <field name="duration" widget="float_time" optional="show"/>
+                                    <field name="room" optional="hide"/>
+                                    <field name="notes" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Tuesday" name="tuesday">
+                            <field name="tuesday_ids"
+                                   context="{'default_timetable_id': id}"
+                                   widget="one2many" readonly="state != 'draft'">
+                                <list editable="bottom"
+                                      decoration-info="period_type == 'break'"
+                                      decoration-warning="period_type == 'practical'">
+
+                                    <field name="subject_id" domain="[('standard_id', '=', parent.standard_id)]"/>
+                                    <field name="teacher_id" domain="[('subject_ids', 'in', subject_id)]"/>
+                                    <field name="period_type"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                    <field name="duration" widget="float_time" optional="show"/>
+                                    <field name="room" optional="hide"/>
+                                    <field name="notes" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Wednesday" name="wednesday">
+                            <field name="wednesday_ids"
+                                   context="{'default_timetable_id': id}"
+                                   widget="one2many" readonly="state != 'draft'">
+                                <list editable="bottom"
+                                      decoration-info="period_type == 'break'"
+                                      decoration-warning="period_type == 'practical'">
+
+                                    <field name="subject_id" domain="[('standard_id', '=', parent.standard_id)]"/>
+                                    <field name="teacher_id" domain="[('subject_ids', 'in', subject_id)]"/>
+                                    <field name="period_type"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                    <field name="duration" widget="float_time" optional="show"/>
+                                    <field name="room" optional="hide"/>
+                                    <field name="notes" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Thursday" name="thursday">
+                            <field name="thursday_ids"
+                                   context="{'default_timetable_id': id}"
+                                   widget="one2many" readonly="state != 'draft'">
+                                <list editable="bottom"
+                                      decoration-info="period_type == 'break'"
+                                      decoration-warning="period_type == 'practical'">
+
+                                    <field name="subject_id" domain="[('standard_id', '=', parent.standard_id)]"/>
+                                    <field name="teacher_id" domain="[('subject_ids', 'in', subject_id)]"/>
+                                    <field name="period_type"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                    <field name="duration" widget="float_time" optional="show"/>
+                                    <field name="room" optional="hide"/>
+                                    <field name="notes" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Friday" name="friday">
+                            <field name="friday_ids"
+                                   context="{'default_timetable_id': id}"
+                                   widget="one2many" readonly="state != 'draft'">
+                                <list editable="bottom"
+                                      decoration-info="period_type == 'break'"
+                                      decoration-warning="period_type == 'practical'">
+
+                                    <field name="subject_id" domain="[('standard_id', '=', parent.standard_id)]"/>
+                                    <field name="teacher_id" domain="[('subject_ids', 'in', subject_id)]"/>
+                                    <field name="period_type"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                    <field name="duration" widget="float_time" optional="show"/>
+                                    <field name="room" optional="hide"/>
+                                    <field name="notes" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Saturday" name="saturday">
+                            <field name="saturday_ids"
+                                   context="{'default_timetable_id': id}"
+                                   widget="one2many" readonly="state != 'draft'">
+                                <list editable="bottom"
+                                      decoration-info="period_type == 'break'"
+                                      decoration-warning="period_type == 'practical'">
+
+                                    <field name="subject_id" domain="[('standard_id', '=', parent.standard_id)]"/>
+                                    <field name="teacher_id" domain="[('subject_ids', 'in', subject_id)]"/>
+                                    <field name="period_type"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                    <field name="duration" widget="float_time" optional="show"/>
+                                    <field name="room" optional="hide"/>
+                                    <field name="notes" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Notes" name="notes_page">
+                            <h1>
+                                <field name="notes" placeholder="Any additional notes about this timetable…"
+                                       readonly="state != 'draft'"/>
+                            </h1>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         TIMETABLE LIST VIEW
+    ════════════════════════════════════════════════════════════════════ -->
+    <record id="view_timetable_list" model="ir.ui.view">
+        <field name="name">timetable.list</field>
+        <field name="model">timetable</field>
+        <field name="arch" type="xml">
+            <list string="Timetables">
+                <field name="name" class="fw-bold"/>
+                <field name="standard_id"/>
+                <field name="academic_year"/>
+                <field name="effective_from" width="150" class="fw-bold"/>
+                <field name="effective_to" width="150" class="fw-bold"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         TIMETABLE SEARCH VIEW
+    ════════════════════════════════════════════════════════════════════ -->
+    <record id="view_timetable_search" model="ir.ui.view">
+        <field name="name">timetable.search</field>
+        <field name="model">timetable</field>
+        <field name="arch" type="xml">
+            <search string="Search Timetables">
+                <field name="name"/>
+                <field name="standard_id"/>
+                <field name="academic_year"/>
+
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <filter string="Cancelled" name="cancelled" domain="[('state','=','cancelled')]"/>
+
+                <filter string="Standard" name="grp_standard" context="{'group_by': 'standard_id'}"/>
+                <filter string="Academic Year" name="grp_year" context="{'group_by': 'academic_year'}"/>
+                <filter string="Status" name="grp_state" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         ACTION
+    ════════════════════════════════════════════════════════════════════ -->
+    <record id="action_timetable" model="ir.actions.act_window">
+        <field name="name">Timetables</field>
+        <field name="res_model">timetable</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_timetable_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first timetable!
+            </p>
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,171 @@
+<odoo>
+
+    <template id="report_student_exam_result">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page" style="font-family: Arial;">
+
+                        <!-- Title -->
+                        <p style="font-size: 35px; text-align: center;">
+                            <b>Student Exam Result</b>
+                        </p>
+
+                        <br/>
+                        <br/>
+
+                        <p style="font-size: 24px;">
+                            <strong>Exam Name:</strong>
+                            <span t-field="o.exam_id.exam_name"/>
+                        </p>
+                        <p style="font-size: 24px;">
+                            <strong>Serial No.:</strong>
+                            <span t-field="o.sequence_no"/>
+                        </p>
+
+                        <br/>
+                        <br/>
+
+                        <h4 class="text-left" style="border-bottom: 1px solid lightgrey">Student Info</h4>
+
+                        <div class="row">
+
+                            <div class="col-6" style="font-size: 18px;">
+                                <p>
+                                    <strong>Student Name:</strong>
+                                    <span t-field="o.student_id.student_name"/>
+                                </p>
+                                <p>
+                                    <strong>Enrollment No:</strong>
+                                    <span t-field="o.enrollment_no"/>
+                                </p>
+
+                            </div>
+
+                            <div class="col-6" style="font-size: 18px;">
+
+                                <p>
+                                    <strong>Class Name:</strong>
+                                    <span t-field="o.standard_id.class_name"/>
+                                </p>
+                                <p>
+                                    <strong>Academic Year:</strong>
+                                    <span t-field="o.academic_year"/>
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <br/>
+                        <br/>
+
+                        <h4 class="text-left" style="border-bottom: 1px solid lightgrey">Result Info</h4>
+
+                        <table class="table table-borderless" style="font-size: 18px;">
+
+                            <thead style="display: table-row-group; border-bottom: 1px solid black;">
+
+                                <tr>
+                                    <th>
+                                        <strong>Subject</strong>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <strong>Total Marks</strong>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <strong>Obtained Marks</strong>
+                                    </th>
+                                    <th style="text-align: center;">
+                                        <strong>Grade</strong>
+                                    </th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td>
+                                        <strong>
+                                            <span t-field="line.subject_id.name"/>
+                                        </strong>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span t-field="line.max_marks"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span t-field="line.obtained_marks"/>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span t-field="line.subject_grade"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="border-top: 1px solid black;">
+
+                                    </td>
+                                    <td style="text-align: center; border-top: 1px solid black;">
+                                        <strong>
+                                            <span t-esc="o.total_marks"/>
+                                        </strong>
+                                    </td>
+                                    <td style="text-align: center; border-top: 1px solid black;">
+                                        <strong>
+                                            <span t-esc="o.total_obtained_marks"/>
+                                        </strong>
+                                    </td>
+                                    <td style="border-top: 1px solid black;">
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="text-align: right; font-size: 19px; border-top: 1px solid black;"
+                                        colspan="4">
+                                        <strong>Grade:</strong>
+                                        <span t-esc="o.grade"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="text-align: right; font-size: 19px;" colspan="4">
+                                        <strong>Result:</strong>
+                                        <t t-if="o.result == 'pass'">
+                                            <span style="color: green;">
+                                                <b>Pass</b>
+                                            </span>
+                                        </t>
+                                        <t t-elif="o.result == 'fail'">
+                                            <span style="color: red;">
+                                                <b>Fail</b>
+                                            </span>
+                                        </t>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="text-align: right; font-size: 19px;" colspan="4">
+                                        <strong>Percentage:</strong>
+                                        <span t-esc="('%.2f' % (o.percentage * 100))"/>
+                                        %
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_student_exam_result" model="ir.actions.report">
+        <field name="name">Student Exam Result</field>
+        <field name="model">student.exam</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">school_management_system.report_student_exam_result</field>
+        <field name="report_file">school_management_system.report_student_exam_result</field>
+        <field name="binding_model_id" ref="model_student_exam"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

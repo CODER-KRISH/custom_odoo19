@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="view_helpdesk_tecket_form" model="ir.ui.view">
+        <field name="name">view.helpdesk.ticket.form</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group[1]/field[@name='team_id']" position="after">
+                <field name="product_id" string="Appliance"/>
+                <field name="brand" string="Brand"/>
+                <field name="serial_number" string="Serial No."/>
+                <field name="ticket_type" string="Ticket Type"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

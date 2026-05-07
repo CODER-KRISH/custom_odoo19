@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="pay_rent_auto_cron" model="ir.cron">
+            <field name="name">Auto Pay Rent</field>
+            <field name="interval_number">2</field>
+            <field name="interval_type">minutes</field>
+            <field name="model_id" ref="model_property_rent_lines"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_auto_pay_rent()</field>
+        </record>
+    </data>
+</odoo>

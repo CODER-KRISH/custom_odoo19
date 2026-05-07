@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!--    Module Category -->
+    <record id="module_category_school" model="ir.module.category">
+        <field name="name">School</field>
+    </record>
+
+    <!--    Privilege Ids -->
+    <record id="res_groups_school_mgt" model="res.groups.privilege">
+        <field name="name">School</field>
+        <field name="category_id" ref="module_category_school"/>
+    </record>
+
+
+    <!-- =============================== -->
+    <!-- Groups -->
+    <!-- =============================== -->
+
+    <!-- Admin Group -->
+    <record id="group_school_mgt_admin" model="res.groups">
+        <field name="name">School Admin</field>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[(4, ref('group_school_mgt_teacher'))]"/>
+        <field name="privilege_id" ref="res_groups_school_mgt"/>
+    </record>
+
+    <!-- Teacher Group -->
+    <!--        <field name="implied_ids" eval="[(4, ref('group_school_mgt_user'))]"/>-->
+    <record id="group_school_mgt_teacher" model="res.groups">
+        <field name="name">School Teacher</field>
+        <field name="sequence">21</field>
+        <field name="privilege_id" ref="res_groups_school_mgt"/>
+    </record>
+
+    <!-- Student Group -->
+    <record id="group_school_student" model="res.groups">
+        <field name="name">School Student</field>
+        <field name="sequence">30</field>
+        <field name="privilege_id" ref="res_groups_school_mgt"/>
+    </record>
+
+
+    <!-- ============================= -->
+    <!-- Record Rules for admin access -->
+    <!-- ============================= -->
+
+    <!-- Rule for admin has full access of admission model -->
+    <record id="ir_rule_admin_admission_access" model="ir.rule">
+        <field name="name">Admin Full Access to Admission</field>
+        <field name="model_id" ref="school_management_system.model_admission"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has full access for student model -->
+    <record id="ir_rule_admin_student_access" model="ir.rule">
+        <field name="name">Admin Full Access to Students</field>
+        <field name="model_id" ref="school_management_system.model_student"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has full access for teacher model -->
+    <record id="ir_rule_admin_teacher_access" model="ir.rule">
+        <field name="name">Admin Full Access to Teachers</field>
+        <field name="model_id" ref="school_management_system.model_teacher"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has full access for Attendance model -->
+    <record id="ir_rule_admin_attendance_access" model="ir.rule">
+        <field name="name">Admin Full Access to Attendance</field>
+        <field name="model_id" ref="school_management_system.model_attendance"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has full access for Standard model -->
+    <record id="ir_rule_admin_standard_access" model="ir.rule">
+        <field name="name">Admin Full Access to Standard</field>
+        <field name="model_id" ref="school_management_system.model_standard"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has full access for Subject model -->
+    <record id="ir_rule_admin_subject_access" model="ir.rule">
+        <field name="name">Admin Full Access to Subject</field>
+        <field name="model_id" ref="school_management_system.model_subject"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has full access for exam model -->
+    <record id="ir_rule_admin_exam_access" model="ir.rule">
+        <field name="name">Admin Full Access to Exam</field>
+        <field name="model_id" ref="school_management_system.model_exam"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has full access for exam lines model -->
+    <record id="ir_rule_admin_exam_line_access" model="ir.rule">
+        <field name="name">Admin Full Access to Exam Lines</field>
+        <field name="model_id" ref="school_management_system.model_exam_lines"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has full access for student exam model -->
+    <record id="ir_rule_admin_student_exam_access" model="ir.rule">
+        <field name="name">Admin Full Access to Student Exam</field>
+        <field name="model_id" ref="school_management_system.model_student_exam"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for admin has access for student exam line model -->
+    <record id="ir_rule_admin_student_exam_lines_access" model="ir.rule">
+        <field name="name">Admin has Access to Student Exam Lines</field>
+        <field name="model_id" ref="school_management_system.model_student_exam_line"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+
+    <!-- =============================== -->
+    <!-- Record Rules for teacher access -->
+    <!-- =============================== -->
+
+    <!-- Rule for teacher can see only his/her own record only -->
+    <record id="ir_rule_teacher_own" model="ir.rule">
+        <field name="name">Teacher Own Record</field>
+        <field name="model_id" ref="school_management_system.model_teacher"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+    </record>
+
+    <!--  Rule for teacher can only read all students -->
+    <record id="ir_rule_teacher_read_students" model="ir.rule">
+        <field name="name">Teacher Read All Students</field>
+        <field name="model_id" ref="school_management_system.model_student"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+    </record>
+
+    <!--  Rule for teacher can only read all Admissions -->
+    <record id="ir_rule_teacher_read_admissions" model="ir.rule">
+        <field name="name">Teacher Read All Admissions</field>
+        <field name="model_id" ref="school_management_system.model_admission"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+    </record>
+
+    <!-- Rule for Teacher has access for Attendance model -->
+    <record id="ir_rule_teacher_attendance_access" model="ir.rule">
+        <field name="name">Teacher Access to Attendance</field>
+        <field name="model_id" ref="school_management_system.model_attendance"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+    </record>
+
+    <!-- Rule for Teacher has full access for Subject model -->
+    <record id="ir_rule_teacher_subject_access" model="ir.rule">
+        <field name="name">Teacher Full Access to Subject</field>
+        <field name="model_id" ref="school_management_system.model_subject"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+    </record>
+
+    <!-- Rule for Teacher has full access for exam model -->
+    <record id="ir_rule_teacher_exam_access" model="ir.rule">
+        <field name="name">Teacher Full Access to Exam</field>
+        <field name="model_id" ref="school_management_system.model_exam"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for Teacher has full access for exam lines model -->
+    <record id="ir_rule_teacher_exam_line_access" model="ir.rule">
+        <field name="name">Teacher Full Access to Exam Lines</field>
+        <field name="model_id" ref="school_management_system.model_exam_lines"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for Teacher has full access for student exam model -->
+    <record id="ir_rule_teacher_student_exam_access" model="ir.rule">
+        <field name="name">Teacher Full Access to Student Exam</field>
+        <field name="model_id" ref="school_management_system.model_student_exam"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Rule for Teacher has access for student exam line model -->
+    <record id="ir_rule_teacher_student_exam_lines_access" model="ir.rule">
+        <field name="name">Teacher has Access to Student Exam Lines</field>
+        <field name="model_id" ref="school_management_system.model_student_exam_line"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- =============================== -->
+    <!-- Record Rules for student access -->
+    <!-- =============================== -->
+
+    <!-- Rule for student can see only his/her own record -->
+    <record id="ir_rule_student_own" model="ir.rule">
+        <field name="name">Student Own Record</field>
+        <field name="model_id" ref="school_management_system.model_student"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for student can see only his/her Standard Students -->
+    <record id="ir_rule_student_access_teacher_own_standard" model="ir.rule">
+        <field name="name">Student can see own Standard's Teachers</field>
+        <field name="model_id" ref="school_management_system.model_teacher"/>
+        <field name="domain_force">[('standard_id', '=', user.student_id.standard_id.id)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for student has access for Subject model -->
+    <record id="ir_rule_student_subject_access" model="ir.rule">
+        <field name="name">Student has Access to Subject</field>
+        <field name="model_id" ref="school_management_system.model_subject"/>
+        <field name="domain_force">[('standard_id', '=', user.student_id.standard_id.id)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for Student has access for exam model -->
+    <record id="ir_rule_student_exam_access" model="ir.rule">
+        <field name="name">Student has Access to Exam</field>
+        <field name="model_id" ref="school_management_system.model_exam"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for Student has access for Student exam model -->
+    <record id="ir_rule_student_student_exam_access" model="ir.rule">
+        <field name="name">Student has Access to his/her Own Exam</field>
+        <field name="model_id" ref="school_management_system.model_student_exam"/>
+        <field name="domain_force">[('student_id', '=', user.student_id.id)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for Student has access for exam lines model -->
+    <record id="ir_rule_student_exam_line_access" model="ir.rule">
+        <field name="name">Student has Access to Exam Lines</field>
+        <field name="model_id" ref="school_management_system.model_exam_lines"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for student has only access for own standard timetable -->
+    <record id="ir_rule_student_timetable_access" model="ir.rule">
+        <field name="name">Student has Access to timetable</field>
+        <field name="model_id" ref="school_management_system.model_timetable"/>
+        <field name="domain_force">[('standard_id', '=', user.student_id.standard_id.id)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for student has only access for own fees -->
+    <record id="ir_rule_student_fees_access" model="ir.rule">
+        <field name="name">Student has Access of Fees</field>
+        <field name="model_id" ref="school_management_system.model_student_fees"/>
+        <field name="domain_force">[('student_id', '=', user.student_id.id)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for student has only access for own fees Payment record-->
+    <record id="ir_rule_student_fees_payment_record_access" model="ir.rule">
+        <field name="name">Student has Access of Own Fee's Record</field>
+        <field name="model_id" ref="school_management_system.model_student_fees_payment"/>
+        <field name="domain_force">[('student_id', '=', user.student_id.id)]</field>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+</odoo>

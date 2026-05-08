@@ -161,6 +161,10 @@
         </field>
     </record>
 
+
+    <!-- =========================================== -->
+    <!-- Server Action to update the timesheet -->
+    <!-- =========================================== -->
     <record id="server_action_update_timesheet_update" model="ir.actions.server">
         <field name="name">Update Timesheet of SO Project</field>
         <field name="model_id" ref="model_sale_order"/>

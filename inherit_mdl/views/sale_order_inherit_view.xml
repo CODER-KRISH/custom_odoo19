@@ -93,7 +93,7 @@
             <!-- ===================================================================== -->
             <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='product_template_id']"
                    position="before">
-                <field name="tik_untick" nolabel="1" width="15"/>
+                <field name="tik_untick" nolabel="1" width="15" invisible="1"/>
             </xpath>
 
             <!-- ================================================ -->

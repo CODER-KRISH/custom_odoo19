@@ -99,14 +99,14 @@
             <!-- ================================================ -->
             <!-- xpath for Tik not Tik button for sale order line -->
             <!-- ================================================ -->
-<!--            <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']" position="before">-->
-<!--                <button name="action_tick_untick"-->
-<!--                        type="object"-->
-<!--                        class="btn-primary"-->
-<!--                        icon="fa-check"-->
-<!--                        string="Tick/Untick"-->
-<!--                />-->
-<!--            </xpath>-->
+            <!--            <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']" position="before">-->
+            <!--                <button name="action_tick_untick"-->
+            <!--                        type="object"-->
+            <!--                        class="btn-primary"-->
+            <!--                        icon="fa-check"-->
+            <!--                        string="Tick/Untick"-->
+            <!--                />-->
+            <!--            </xpath>-->
 
             <!-- ============================================================================= -->
             <!-- xpath to add fields is_special, dic%, button that confirm the special product -->
@@ -136,6 +136,28 @@
                 </button>
             </xpath>
 
+
+            <!-- =========================================================== -->
+            <!-- xpath for Duration for Time Sheet Update in other Info Page -->
+            <!-- =========================================================== -->
+            <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="inside">
+                <group>
+                    <group string="Duration" name="duration">
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                </group>
+            </xpath>
+
+
+            <!-- =========================================== -->
+            <!-- xpath to add notebook page after other Info -->
+            <!-- =========================================== -->
+            <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="after">
+               <page string="Time Sheets" name="timesheet_updates">
+                   <field name="html_timesheet" placeholder="Update your timesheet here"/>
+               </page>
+            </xpath>
         </field>
     </record>
 

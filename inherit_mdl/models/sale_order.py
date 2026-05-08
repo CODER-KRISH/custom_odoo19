@@ -15,10 +15,12 @@ class saleOrder(models.Model):
         ]
     )
 
-    origin_order_id = fields.Many2one(
-        'sale.order',
-        string="Original Order"
-    )
+    origin_order_id = fields.Many2one('sale.order', string="Original Order")
+
+    start_date = fields.Date(string='Start Date')
+    end_date = fields.Date(string='End Date')
+
+    html_timesheet = fields.Html(string='Timesheet')
 
     @api.onchange('template_ids')
     def _onchange_template_ids(self):
@@ -111,52 +113,6 @@ class saleOrder(models.Model):
             # Condition for Boss Login
             self.state_to_boss()
 
-    # def action_confirm(self):
-    #
-    #     special_product = rec.order_line.filtered(lambda l: l.is_special)
-    #     if special_product:
-    #         if rec.order_line.filtered(lambda l: not l.is_approved):
-    #             raise ValidationError('Please Validate Special Product!')
-    #
-    #     currency = rec.find_config_currency()
-    #     converted = rec.amount_total * currency.rate
-    #
-    #     min_limit = rec.check_min_limit()
-    #     max_limit = rec.check_max_limit()
-    #
-    #
-    #     for rec in self:
-    #
-    #         if (rec.amount_total * rec.find_config_currency().rate < rec.check_min_limit()) or (
-    #                 rec.check_min_limit() == 0 and rec.check_max_limit() == 0):
-    #             rec.write({'state': 'draft'})
-    #             return super().action_confirm()
-    #
-    #         if rec.amount_total * rec.find_config_currency().rate < rec.check_max_limit() and rec.amount_total > rec.check_min_limit():
-    #             if rec.state not in ('manager', 'boss'):
-    #                 raise ValidationError(
-    #                     f"""
-    #                             Sale Amount : {rec.amount_total * rec.find_config_currency().rate} is between Min Amount {rec.check_min_limit()} and Max Amount: {rec.check_max_limit()}
-    #                             Manager or Boss Approval Required!
-    #                             """
-    #                 )
-    #             elif rec.state in ('manager', 'boss'):
-    #                 rec.write({'state': 'draft'})
-    #                 return super().action_confirm()
-    #
-    #         if rec.amount_total * rec.find_config_currency().rate > rec.check_max_limit():
-    #             if rec.state != 'boss':
-    #                 raise ValidationError(
-    #                     f"""
-    #                             Sale Amount: {rec.amount_total * rec.find_config_currency().rate} is greater than Max Amount: {rec.check_max_limit()}
-    #                             Boss Approval Required!
-    #                             """
-    #                 )
-    #             elif rec.state == 'boss':
-    #                 rec.write({'state': 'draft'})
-    #                 return super().action_confirm()
-
-
     def action_confirm(self):
 
         for rec in self:
@@ -194,7 +150,6 @@ class saleOrder(models.Model):
         self.state = 'draft'
         return super().action_confirm()
 
-
     def action_open_split_wizard(self):
         """Action that split the sale order"""
 
@@ -224,21 +179,16 @@ class saleOrder(models.Model):
             }
         }
 
-
     def action_tick_untick(self):
         for line in self.order_line:
             line.tik_untick = not line.tik_untick
 
-
-    # Smart Button
     split_order_count = fields.Integer(string="Splits", compute="_compute_split_so_count")
-
 
     def _compute_split_so_count(self):
         self.split_order_count = self.search_count([
             ('origin_order_id', '=', self.id)
         ])
-
 
     def action_view_split_orders(self):
         domain = [('origin_order_id', '=', self.id)]

@@ -155,10 +155,18 @@
             <!-- =========================================== -->
             <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="after">
                <page string="Time Sheets" name="timesheet_updates">
-                   <field name="html_timesheet" placeholder="Update your timesheet here"/>
+                   <field name="html_timesheet" placeholder="Update your timesheet here..."/>
                </page>
             </xpath>
         </field>
     </record>
+
+    <record id="server_action_update_timesheet_update" model="ir.actions.server">
+            <field name="name">Update Timesheet of SO Project</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="binding_model_id" ref="model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">action = records.update_timesheet_server_action()</field>
+        </record>
 
 </odoo>

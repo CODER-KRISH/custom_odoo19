@@ -209,3 +209,6 @@ class saleOrder(models.Model):
             })
 
         return action
+
+    def update_timesheet_server_action(self):
+        print("Time Sheet Updated!")

@@ -140,12 +140,14 @@ class saleOrder(models.Model):
             # Case 3: Between min & max
             if min_limit < converted < max_limit:
                 if rec.state not in ('manager', 'boss'):
-                    raise ValidationError(f"Sale Amount : {converted} is between Min Amount {min_limit} and Max Amount: {max_limit}\n Manager or Boss Approval Required!")
+                    raise ValidationError(
+                        f"Sale Amount : {converted} is between Min Amount {min_limit} and Max Amount: {max_limit}\n Manager or Boss Approval Required!")
 
             # Case 4: Above max
             elif converted > max_limit:
                 if rec.state != 'boss':
-                    raise ValidationError(f"Sale Amount: {converted} is greater than Max Amount: {max_limit}\nBoss Approval Required!")
+                    raise ValidationError(
+                        f"Sale Amount: {converted} is greater than Max Amount: {max_limit}\nBoss Approval Required!")
 
         self.state = 'draft'
         return super().action_confirm()
@@ -212,3 +214,26 @@ class saleOrder(models.Model):
 
     def update_timesheet_server_action(self):
         print("Time Sheet Updated!")
+
+        self.html_timesheet = """
+        <table border="1" style="border-collapse: collapse; width:100%; text-align:center;">
+            <tr>
+                <th>Day</th>
+                <th>9-10</th>
+                <th>10-11</th>
+                <th>11-12</th>
+            </tr>
+            <tr>
+                <td>Monday</td>
+                <td>Math</td>
+                <td>Science</td>
+                <td>English</td>
+            </tr>
+            <tr>
+                <td>Tuesday</td>
+                <td>Physics</td>
+                <td>Chemistry</td>
+                <td>Computer</td>
+            </tr>
+        </table>
+        """

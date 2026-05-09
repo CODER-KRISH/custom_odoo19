@@ -17,10 +17,122 @@ class saleOrder(models.Model):
 
     origin_order_id = fields.Many2one('sale.order', string="Original Order")
 
-    start_date = fields.Date(string='Start Date')
-    end_date = fields.Date(string='End Date')
+    start_date = fields.Date(string='Start Date', copy=False)
+    end_date = fields.Date(string='End Date', copy=False)
 
-    html_timesheet = fields.Html(string='Timesheet')
+    html_timesheet = fields.Html(
+        string='Timesheet',
+        default=lambda self: self._get_empty_timesheet_table(),
+        copy=False
+    )
+
+    @api.onchange('start_date', 'end_date')
+    def _onchange_timesheet_dates(self):
+        self.html_timesheet = self._get_empty_timesheet_table()
+
+    def _get_empty_timesheet_table(self):
+        start_date = self.start_date or ''
+        end_date = self.end_date or ''
+
+        return f"""
+        <h3>Timesheet Records of Task</h3>
+        <p>
+            <b>Start Date:</b> <span>{start_date}</span>
+            &nbsp;&nbsp;
+            <b>End Date:</b> <span>{end_date}</span>
+        </p>
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+            <thead>
+                <tr>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Task</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Parent Task</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocation Source</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Source Allocated Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocated Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Last Month</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Used Hours Period</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Remaining Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="9" style="text-align:center; padding:10px;">
+                        No timesheet data available
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        """
+
+    def update_timesheet_server_action(self):
+        for rec in self:
+            task_rows = ""
+
+            # example: get tasks from project linked with sale order
+            tasks = self.env['project.task'].search([
+                ('sale_order_id', '=', rec.id)
+            ])
+
+            total_allocated = 0
+            total_used = 0
+
+            for task in tasks:
+                allocated_hours = task.allocated_hours or 0
+                used_hours = task.effective_hours or 0
+                remaining_hours = allocated_hours - used_hours
+
+                total_allocated += allocated_hours
+                total_used += used_hours
+
+                task_rows += f"""
+                    <tr>
+                        <td>{task.name or ''}</td>
+                        <td>{task.parent_id.name or '-'}</td>
+                        <td>Task itself</td>
+                        <td style="text-align:center;">{allocated_hours:.2f}</td>
+                        <td style="text-align:center;">{allocated_hours:.2f}</td>
+                        <td style="text-align:center;">{used_hours:.2f}</td>
+                        <td style="text-align:center;">0.00</td>
+                        <td style="text-align:center;">{used_hours:.2f}</td>
+                        <td style="text-align:center;">{remaining_hours:.2f}</td>
+                    </tr>
+                """
+
+            rec.html_timesheet = f"""
+            <h3>Timesheet Usage by Task</h3>
+
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Parent Task</th>
+                        <th>Allocation Source</th>
+                        <th>Source Allocated Hours</th>
+                        <th>Allocated Hours</th>
+                        <th>Total Used Hours</th>
+                        <th>Total Used Last Month</th>
+                        <th>Used Hours Period</th>
+                        <th>Remaining Hours</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {task_rows}
+                    <tr style="font-weight:bold; border-top:1px solid #ddd;">
+                        <td>Total</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align:right;">{total_allocated:.2f}</td>
+                        <td style="text-align:right;">{total_used:.2f}</td>
+                        <td style="text-align:right;">0.00</td>
+                        <td style="text-align:right;">{total_used:.2f}</td>
+                        <td style="text-align:right;">{total_allocated - total_used:.2f}</td>
+                    </tr>
+                </tbody>
+            </table>
+            """
 
     @api.onchange('template_ids')
     def _onchange_template_ids(self):
@@ -211,29 +323,3 @@ class saleOrder(models.Model):
             })
 
         return action
-
-    def update_timesheet_server_action(self):
-        print("Time Sheet Updated!")
-
-        self.html_timesheet = """
-        <table border="1" style="border-collapse: collapse; width:100%; text-align:center;">
-            <tr>
-                <th>Day</th>
-                <th>9-10</th>
-                <th>10-11</th>
-                <th>11-12</th>
-            </tr>
-            <tr>
-                <td>Monday</td>
-                <td>Math</td>
-                <td>Science</td>
-                <td>English</td>
-            </tr>
-            <tr>
-                <td>Tuesday</td>
-                <td>Physics</td>
-                <td>Chemistry</td>
-                <td>Computer</td>
-            </tr>
-        </table>
-        """

@@ -142,7 +142,7 @@
             <!-- =========================================================== -->
             <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="inside">
                 <group>
-                    <group string="Duration" name="duration">
+                    <group string="Timesheet Duration" name="duration">
                         <field name="start_date"/>
                         <field name="end_date"/>
                     </group>
@@ -155,7 +155,7 @@
             <!-- =========================================== -->
             <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="after">
                 <page string="Time Sheets" name="timesheet_updates">
-                    <field name="html_timesheet" placeholder="Update your timesheet here..."/>
+                    <field name="html_timesheet" placeholder="Update your timesheet here..." widget="html"/>
                 </page>
             </xpath>
         </field>

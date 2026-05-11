@@ -1,5 +1,7 @@
 from odoo import fields, models, api
 from odoo.exceptions import AccessError, ValidationError, UserError
+from dateutil.relativedelta import relativedelta
+from datetime import date
 
 
 class saleOrder(models.Model):
@@ -35,12 +37,7 @@ class saleOrder(models.Model):
         end_date = self.end_date or ''
 
         return f"""
-        <h3>Timesheet Records of Task</h3>
-        <p>
-            <b>Start Date:</b> <span>{start_date}</span>
-            &nbsp;&nbsp;
-            <b>End Date:</b> <span>{end_date}</span>
-        </p>
+        <h3>Timesheet Usage by Task from {start_date} to {end_date}</h3>
         <table style="width:100%; border-collapse:collapse; font-size:13px;">
             <thead>
                 <tr>
@@ -67,80 +64,107 @@ class saleOrder(models.Model):
 
     def update_timesheet_server_action(self):
 
-        for rec in self:
-            task_rows = ""
+        if not self.start_date or self.end_date:
+            self.html_timesheet = self._get_empty_timesheet_table()
 
-            # example: get tasks from project linked with sale order
-            tasks = self.env['project.task'].search([
-                ('sale_order_id', '=', rec.id)
-            ])
+        task_rows = ""
 
-            if not tasks: raise ValidationError("Project/Tasks are not available for this Sale Order!")
+        tasks = self.env['project.task'].search([
+            ('sale_order_id', '=', self.id)
+        ])
 
-            print("All Tasks with same sale Order...........",tasks)
+        if not tasks:
+            raise ValidationError("Tasks are not available!")
 
-            total_allocated = 0
-            total_used = 0
+        total_allocated = total_used = total_last_month_used_hours = total_current_month_used_hours = 0
 
-            print("All time sheets...................",tasks.mapped('timesheet_ids'))
+        for task in tasks:
+            today = date.today()
 
-            for timesheet in tasks.mapped('timesheet_ids'):
-                print("First Timesheet Name", timesheet.name)
-                print("First Timesheet Name", timesheet.name)
+            task_allocated_hours = task.allocated_hours or 0
 
+            # Current Month Timesheets
+            current_month_timesheets = task.timesheet_ids.filtered(
+                lambda t: (
+                        (not self.start_date or t.date >= self.start_date) and
+                        (not self.end_date or t.date <= self.end_date)
+                )
+            )
 
-            for task in tasks:
+            if not current_month_timesheets:
+                self.html_timesheet = self._get_empty_timesheet_table()
+                continue
 
-                print(task.child_ids)
+            # Last Month Timesheets
+            last_month_start = today.replace(day=1) - relativedelta(months=1)
+            last_month_end = today.replace(day=1) - relativedelta(days=1)
 
-                allocated_hours = task.allocated_hours or 0 # Particular Task Allocated Hours
-                used_hours = task.effective_hours or 0 # Particular Task Used Hours
-                remaining_hours = allocated_hours - used_hours # Particular Task Remaining Hours
+            def float_to_time(hours):
+                hours = float(hours or 0)
 
-                total_allocated += allocated_hours
-                total_used += used_hours
-                total_hours = allocated_hours + sum(task.child_ids.mapped('allocated_hours')) if task.child_ids else allocated_hours
+                total_minutes = round(hours * 60)
+                h = total_minutes // 60
+                m = total_minutes % 60
 
-                allocation_source = f"Inherited from {task.parent_id.name}" if task.parent_id else "Task itself"
+                return f"{int(h):02d}:{int(m):02d}"
 
-                task_rows += f"""
-                    <tr>
-                        <td>{task.name or ''}</td>
-                        <td style="text-align:center;">{task.parent_id.name or '-'}</td>
-                        <td style="text-align:center;">{allocation_source}</td>
-                        <td style="text-align:center;">{total_hours:.2f}</td>
-                        <td style="text-align:center;">{allocated_hours:.2f}</td>
-                        <td style="text-align:center;">{used_hours:.2f}</td>
-                        <td style="text-align:center;">0.00</td>
-                        <td style="text-align:center;">{used_hours:.2f}</td>
-                        <td style="text-align:center;">{remaining_hours:.2f}</td>
-                    </tr>
-                """
+            print("Last Month Start Date,,,,,,,,,,", last_month_start)
+            print("Last Month end Date.................", last_month_end)
 
-                start_date = self.start_date or ''
-                end_date = self.end_date or ''
+            last_month_timesheets = task.timesheet_ids.filtered(
+                lambda t: last_month_start <= t.date <= last_month_end
+            )
 
-                rec.html_timesheet = f"""
-                <h3>Timesheet Usage by Task</h3>
-                <p>
-                <b>Start Date:</b> <span>{start_date}</span>
-                &nbsp;&nbsp;
-                <b>End Date:</b> <span>{end_date}</span>
-                </p>
-            
+            last_month_used_hours = sum(last_month_timesheets.mapped('unit_amount'))
+            current_month_used_hours = sum(current_month_timesheets.mapped('unit_amount'))
+            used_hours = sum(task.timesheet_ids.mapped('unit_amount'))
+
+            remaining_hours = task_allocated_hours - used_hours
+
+            total_hours = (
+                    task_allocated_hours +
+                    sum(task.child_ids.mapped('allocated_hours'))
+            )
+
+            total_allocated += task_allocated_hours
+            total_used += used_hours
+            total_last_month_used_hours += last_month_used_hours
+            total_current_month_used_hours += current_month_used_hours
+
+            allocation_source = (
+                f"Inherited from {task.parent_id.name}"
+                if task.parent_id else "Task itself"
+            )
+
+            task_rows += f"""
+                <tr>
+                    <td>{task.name or ''}</td>
+                    <td style="text-align:center; padding: 8px 0px;">{task.parent_id.name or '-'}</td>
+                    <td style="text-align:center; padding: 8px 0px;">{allocation_source}</td>
+                    <td style="text-align:center; padding: 8px 0px;">{float_to_time(total_hours)}</td>
+                    <td style="text-align:center; padding: 8px 0px;">{float_to_time(task_allocated_hours)}</td>
+                    <td style="text-align:center; padding: 8px 0px;">{float_to_time(used_hours)}</td>
+                    <td style="text-align:center; padding: 8px 0px;">{float_to_time(last_month_used_hours)}</td>
+                    <td style="text-align:center; padding: 8px 0px;">{float_to_time(current_month_used_hours)}</td>
+                    <td style="text-align:center; padding: 8px 0px;">{float_to_time(remaining_hours)}</td>
+                </tr>
+            """
+
+            self.html_timesheet = f"""
+            <h3>Timesheet Usage by Task from {self.start_date} to {self.end_date}</h3>
 
             <table style="width:100%; border-collapse:collapse; font-size:13px;">
                 <thead>
                     <tr>
                     <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Task</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Parent Task</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocation Source</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocated Hours</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Source Allocated Hours</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Hours</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Last Month</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Used Hours Period</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Remaining Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:center;">Parent Task</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:center;">Allocation Source</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:center;">Allocated Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:center;">Source Allocated Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:center;">Total Used Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:center;">Total Used Last Month</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:center;">Used Hours (Period)</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:center;">Remaining Hours</th>
                     </tr>
                 </thead>
 
@@ -151,15 +175,15 @@ class saleOrder(models.Model):
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style="text-align:center;">{total_allocated:.2f}</td>
-                        <td style="text-align:center;">{total_used:.2f}</td>
-                        <td style="text-align:center;">0.00</td>
-                        <td style="text-align:center;">{total_used:.2f}</td>
-                        <td style="text-align:center;">{total_allocated - total_used:.2f}</td>
+                        <td style="text-align:center;">{float_to_time(total_allocated)}</td>
+                        <td style="text-align:center;">{float_to_time(total_used)}</td>
+                        <td style="text-align:center;">{float_to_time(total_last_month_used_hours)}</td>
+                        <td style="text-align:center;">{float_to_time(total_current_month_used_hours)}</td>
+                        <td style="text-align:center;">{float_to_time(total_allocated - total_used)}</td>
                     </tr>
                 </tbody>
             </table>
-            """
+        """
 
     @api.onchange('template_ids')
     def _onchange_template_ids(self):

@@ -155,7 +155,7 @@
             <!-- =========================================== -->
             <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="after">
                 <page string="Time Sheets" name="timesheet_updates">
-                    <field name="html_timesheet" placeholder="Update your timesheet here..." widget="html"/>
+                    <field name="html_timesheet" placeholder="Update your timesheet here..." widget="html" readonly="1"/>
                 </page>
             </xpath>
         </field>

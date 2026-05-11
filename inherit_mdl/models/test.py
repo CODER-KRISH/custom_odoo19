@@ -1,34 +1,15 @@
-import datetime
+def float_to_time(hours):
+    hours = float(hours or 0)
 
-current_time = datetime.datetime.now()
-print(current_time)
+    total_minutes = round(hours * 60)
+    h = total_minutes // 60
+    m = total_minutes % 60
 
-exact_time = current_time.strftime("%H:%M")
-print(exact_time)
+    return f"{int(h):02d}:{int(m):02d}"
 
-def check_name():
-    return print("New Method")
 
-def prepare_vals():
-
-    vals = {
-        'name': "Hello",
-        'age': "Age",
-        'email': 0,
-    }
-
-    return vals
-
-def check_vals():
-
-    vals = prepare_vals()
-
-    if vals.get('email'):
-
-        vals.update({
-            'email': "Krish"
-        })
-
-    return vals
-
-print(check_vals())
+print(float_to_time(0.50))  # 00:50
+print(float_to_time(1))  # 00:50
+print(float_to_time("0.83"))  # 00:50
+print(float_to_time(False))  # 00:00
+print(float_to_time(None))  # 00:00

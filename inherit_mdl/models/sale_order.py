@@ -47,8 +47,8 @@ class saleOrder(models.Model):
                     <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Task</th>
                     <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Parent Task</th>
                     <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocation Source</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Source Allocated Hours</th>
                     <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocated Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Source Allocated Hours</th>
                     <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Hours</th>
                     <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Last Month</th>
                     <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Used Hours Period</th>
@@ -66,6 +66,7 @@ class saleOrder(models.Model):
         """
 
     def update_timesheet_server_action(self):
+
         for rec in self:
             task_rows = ""
 
@@ -74,23 +75,40 @@ class saleOrder(models.Model):
                 ('sale_order_id', '=', rec.id)
             ])
 
+            if not tasks: raise ValidationError("Project/Tasks are not available for this Sale Order!")
+
+            print("All Tasks with same sale Order...........",tasks)
+
             total_allocated = 0
             total_used = 0
 
+            print("All time sheets...................",tasks.mapped('timesheet_ids'))
+
+            for timesheet in tasks.mapped('timesheet_ids'):
+                print("First Timesheet Name", timesheet.name)
+                print("First Timesheet Name", timesheet.name)
+
+
             for task in tasks:
-                allocated_hours = task.allocated_hours or 0
-                used_hours = task.effective_hours or 0
-                remaining_hours = allocated_hours - used_hours
+
+                print(task.child_ids)
+
+                allocated_hours = task.allocated_hours or 0 # Particular Task Allocated Hours
+                used_hours = task.effective_hours or 0 # Particular Task Used Hours
+                remaining_hours = allocated_hours - used_hours # Particular Task Remaining Hours
 
                 total_allocated += allocated_hours
                 total_used += used_hours
+                total_hours = allocated_hours + sum(task.child_ids.mapped('allocated_hours')) if task.child_ids else allocated_hours
+
+                allocation_source = f"Inherited from {task.parent_id.name}" if task.parent_id else "Task itself"
 
                 task_rows += f"""
                     <tr>
                         <td>{task.name or ''}</td>
-                        <td>{task.parent_id.name or '-'}</td>
-                        <td>Task itself</td>
-                        <td style="text-align:center;">{allocated_hours:.2f}</td>
+                        <td style="text-align:center;">{task.parent_id.name or '-'}</td>
+                        <td style="text-align:center;">{allocation_source}</td>
+                        <td style="text-align:center;">{total_hours:.2f}</td>
                         <td style="text-align:center;">{allocated_hours:.2f}</td>
                         <td style="text-align:center;">{used_hours:.2f}</td>
                         <td style="text-align:center;">0.00</td>
@@ -99,21 +117,30 @@ class saleOrder(models.Model):
                     </tr>
                 """
 
-            rec.html_timesheet = f"""
-            <h3>Timesheet Usage by Task</h3>
+                start_date = self.start_date or ''
+                end_date = self.end_date or ''
+
+                rec.html_timesheet = f"""
+                <h3>Timesheet Usage by Task</h3>
+                <p>
+                <b>Start Date:</b> <span>{start_date}</span>
+                &nbsp;&nbsp;
+                <b>End Date:</b> <span>{end_date}</span>
+                </p>
+            
 
             <table style="width:100%; border-collapse:collapse; font-size:13px;">
                 <thead>
                     <tr>
-                        <th>Task</th>
-                        <th>Parent Task</th>
-                        <th>Allocation Source</th>
-                        <th>Source Allocated Hours</th>
-                        <th>Allocated Hours</th>
-                        <th>Total Used Hours</th>
-                        <th>Total Used Last Month</th>
-                        <th>Used Hours Period</th>
-                        <th>Remaining Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Task</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Parent Task</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocation Source</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocated Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Source Allocated Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Hours</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Last Month</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Used Hours Period</th>
+                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Remaining Hours</th>
                     </tr>
                 </thead>
 
@@ -124,11 +151,11 @@ class saleOrder(models.Model):
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style="text-align:right;">{total_allocated:.2f}</td>
-                        <td style="text-align:right;">{total_used:.2f}</td>
-                        <td style="text-align:right;">0.00</td>
-                        <td style="text-align:right;">{total_used:.2f}</td>
-                        <td style="text-align:right;">{total_allocated - total_used:.2f}</td>
+                        <td style="text-align:center;">{total_allocated:.2f}</td>
+                        <td style="text-align:center;">{total_used:.2f}</td>
+                        <td style="text-align:center;">0.00</td>
+                        <td style="text-align:center;">{total_used:.2f}</td>
+                        <td style="text-align:center;">{total_allocated - total_used:.2f}</td>
                     </tr>
                 </tbody>
             </table>

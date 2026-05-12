@@ -122,9 +122,7 @@ class saleOrder(models.Model):
             last_month_used_hours = sum(last_month_timesheets.mapped('unit_amount'))
             current_month_used_hours = sum(current_month_timesheets.mapped('unit_amount'))
             used_hours = sum(task.timesheet_ids.mapped('unit_amount'))
-
             remaining_hours = task_allocated_hours - used_hours
-
             total_hours = task_allocated_hours + sum(task.child_ids.mapped('allocated_hours')) if task.child_ids else 0
 
             total_allocated += task_allocated_hours

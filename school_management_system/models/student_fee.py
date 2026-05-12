@@ -92,24 +92,32 @@ class StudentFees(models.Model):
         for rec in self:
             rec.balance = rec.net_amount - rec.paid_amount
 
-
     @api.onchange('fee_structure_id')
     def _onchange_fee_structure(self):
         """Auto-fill academic year from structure"""
         if self.fee_structure_id:
             self.academic_year = self.fee_structure_id.academic_year
 
+    @api.constrains('student_id', 'fee_structure_id')
+    def check_fees_already_paid(self):
+        already_paid = self.search([
+            ('fee_structure_id', '=', self.fee_structure_id.id),
+            ('student_id', '=', self.student_id.id),
+            ('id', '!=', self.id)
+        ])
+
+        if already_paid: raise ValidationError("Fees already paid!")
 
     def action_confirm(self):
         for rec in self:
 
-            paid_fees = self.search([
-                ('fee_structure_id', '=', rec.fee_structure_id.id),
-                ('student_id', '=', rec.student_id.id),
-                ('id', '!=', rec.id)
-            ])
-
-            if paid_fees: raise ValidationError("Fees already paid!")
+            # paid_fees = self.search([
+            #     ('fee_structure_id', '=', rec.fee_structure_id.id),
+            #     ('student_id', '=', rec.student_id.id),
+            #     ('id', '!=', rec.id)
+            # ])
+            #
+            # if paid_fees: raise ValidationError("Fees already paid!")
 
             rec.status = 'confirmed'
 
@@ -127,11 +135,9 @@ class StudentFees(models.Model):
                     rec.state = 'partial'
         return res
 
-
     def confirm_and_next(self):
 
         for rec in self:
-
             invoice = self.env['student.fees.payment'].create({
                 'fees_id': rec.id,
                 'student_id': rec.student_id.id,

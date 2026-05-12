@@ -64,8 +64,6 @@ class saleOrder(models.Model):
 
     def update_timesheet_server_action(self):
 
-        self.html_timesheet = None
-
         if not self.start_date or self.end_date:
             self.html_timesheet = self._get_empty_timesheet_table()
 

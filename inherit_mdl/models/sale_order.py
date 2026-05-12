@@ -79,8 +79,6 @@ class saleOrder(models.Model):
         total_allocated = total_used = total_last_month_used_hours = total_current_month_used_hours = 0
 
         for task in tasks:
-            today = date.today()
-
             task_allocated_hours = task.allocated_hours or 0
 
             # Current Month Timesheets
@@ -108,14 +106,9 @@ class saleOrder(models.Model):
 
                 return f"{int(h):02d}:{int(m):02d}"
 
-            print("Last Month Start Date...............", last_month_start)
-            print("Last Month end Date.................", last_month_end)
-
             last_month_timesheets = task.timesheet_ids.filtered(
                 lambda t: last_month_start <= t.date <= last_month_end
             )
-
-            print(last_month_timesheets)
 
             last_month_used_hours = sum(last_month_timesheets.mapped('unit_amount'))
             current_month_used_hours = sum(current_month_timesheets.mapped('unit_amount'))
@@ -179,6 +172,15 @@ class saleOrder(models.Model):
             </table>
             """
 
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Sales Order"),
+            "res_model": "sale.order",
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
     def action_print_timesheet(self):
         self.ensure_one()
         return self.env.ref('inherit_mdl.action_report_timesheet_update').report_action(self)
@@ -220,16 +222,12 @@ class saleOrder(models.Model):
         param = self.env['ir.config_parameter'].sudo()
         min_limit = float(param.get_param('inherit_mdl.min_limit'))
 
-        print(self.find_config_currency().rate)
-        print(min_limit * self.find_config_currency().rate)
         return min_limit * self.find_config_currency().rate
 
     def check_max_limit(self):
         param = self.env['ir.config_parameter'].sudo()
         max_limit = float(param.get_param('inherit_mdl.max_limit'))
 
-        print(self.find_config_currency().rate)
-        print(max_limit * self.find_config_currency().rate)
         return max_limit * self.find_config_currency().rate
 
     def state_to_boss(self):

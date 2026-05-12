@@ -130,10 +130,7 @@ class saleOrder(models.Model):
             total_last_month_used_hours += last_month_used_hours
             total_current_month_used_hours += current_month_used_hours
 
-            allocation_source = (
-                f"Inherited from {task.parent_id.name}"
-                if task.parent_id else "Task itself"
-            )
+            allocation_source = f"Inherited from {task.parent_id.name}" if task.parent_id else "Task itself"
 
             task_rows += f"""
                 <tr>

@@ -13,3 +13,5 @@ print(float_to_time(1))  # 00:50
 print(float_to_time("0.83"))  # 00:50
 print(float_to_time(False))  # 00:00
 print(float_to_time(None))  # 00:00
+
+print(round(2*60))

@@ -64,6 +64,8 @@ class saleOrder(models.Model):
 
     def update_timesheet_server_action(self):
 
+        self.html_timesheet = None
+
         if not self.start_date or self.end_date:
             self.html_timesheet = self._get_empty_timesheet_table()
 
@@ -96,8 +98,8 @@ class saleOrder(models.Model):
                 continue
 
             # Last Month Timesheets
-            last_month_start = today.replace(day=1) - relativedelta(months=1)
-            last_month_end = today.replace(day=1) - relativedelta(days=1)
+            last_month_start = self.start_date - relativedelta(months=1)
+            last_month_end = last_month_start + relativedelta(months=1)
 
             def float_to_time(hours):
                 hours = float(hours or 0)
@@ -108,12 +110,14 @@ class saleOrder(models.Model):
 
                 return f"{int(h):02d}:{int(m):02d}"
 
-            print("Last Month Start Date,,,,,,,,,,", last_month_start)
+            print("Last Month Start Date...............", last_month_start)
             print("Last Month end Date.................", last_month_end)
 
             last_month_timesheets = task.timesheet_ids.filtered(
                 lambda t: last_month_start <= t.date <= last_month_end
             )
+
+            print(last_month_timesheets)
 
             last_month_used_hours = sum(last_month_timesheets.mapped('unit_amount'))
             current_month_used_hours = sum(current_month_timesheets.mapped('unit_amount'))
@@ -180,11 +184,10 @@ class saleOrder(models.Model):
                     </tr>
                 </tbody>
             </table>
-        """
+            """
 
     def action_print_timesheet(self):
         self.ensure_one()
-
         return self.env.ref('inherit_mdl.action_report_timesheet_update').report_action(self)
 
     @api.onchange('template_ids')

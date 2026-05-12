@@ -97,7 +97,7 @@ class StudentExam(models.Model):
             ], limit=1)
             if duplicate:
                 raise ValidationError(
-                    f'Student "{rec.student_id.name}" already has a result entry for this exam.'
+                    f'Student "{rec.student_id.student_name}" already has a result entry for this exam.'
                 )
 
     def action_complete_and_declare_result(self):

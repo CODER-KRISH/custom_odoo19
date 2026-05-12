@@ -121,10 +121,7 @@ class saleOrder(models.Model):
 
             remaining_hours = task_allocated_hours - used_hours
 
-            total_hours = (
-                    task_allocated_hours +
-                    sum(task.child_ids.mapped('allocated_hours'))
-            )
+            total_hours = task_allocated_hours + sum(task.child_ids.mapped('allocated_hours')) if task.child_ids else 0
 
             total_allocated += task_allocated_hours
             total_used += used_hours
@@ -184,6 +181,11 @@ class saleOrder(models.Model):
                 </tbody>
             </table>
         """
+
+    def action_print_timesheet(self):
+        self.ensure_one()
+
+        return self.env.ref('inherit_mdl.action_report_timesheet_update').report_action(self)
 
     @api.onchange('template_ids')
     def _onchange_template_ids(self):

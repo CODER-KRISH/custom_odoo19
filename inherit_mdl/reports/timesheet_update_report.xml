@@ -1,0 +1,25 @@
+<odoo>
+
+    <template id="report_timesheet_update">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page" style="font-family: arial;">
+                        <span t-field="o.html_timesheet"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_timesheet_update" model="ir.actions.report">
+        <field name="name">Timesheet Update Report</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inherit_mdl.report_timesheet_update</field>
+        <field name="report_file">inherit_mdl.report_timesheet_update</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

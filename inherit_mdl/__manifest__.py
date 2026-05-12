@@ -21,6 +21,7 @@
         'views/project_task_view.xml',
         'views/mrp_bom_view.xml',
         'views/crm_lead_view.xml',
+        'reports/timesheet_update_report.xml',
         'views/menu.xml',
         'data/ir_cron.xml'
     ],

@@ -25,7 +25,8 @@ class saleOrder(models.Model):
     html_timesheet = fields.Html(
         string='Timesheet',
         default=lambda self: self._get_empty_timesheet_table(),
-        copy=False
+        copy=False,
+        store=True
     )
 
     @api.onchange('start_date', 'end_date')
@@ -64,8 +65,8 @@ class saleOrder(models.Model):
 
     def update_timesheet_server_action(self):
 
-        if not self.start_date or self.end_date:
-            self.html_timesheet = self._get_empty_timesheet_table()
+        if not self.start_date or not self.end_date:
+            raise UserError('Time Period is not selected to update the timesheet!')
 
         task_rows = ""
 
@@ -74,7 +75,7 @@ class saleOrder(models.Model):
         ])
 
         if not tasks:
-            raise ValidationError("Tasks are not available!")
+            raise UserError("Tasks are not available to update the timesheet!")
 
         total_allocated = total_used = total_last_month_used_hours = total_current_month_used_hours = 0
 

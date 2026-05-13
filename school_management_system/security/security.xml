@@ -18,14 +18,6 @@
     <!-- Groups -->
     <!-- =============================== -->
 
-    <!-- Admin Group -->
-    <record id="group_school_mgt_admin" model="res.groups">
-        <field name="name">School Admin</field>
-        <field name="sequence">20</field>
-        <field name="implied_ids" eval="[(4, ref('group_school_mgt_teacher'))]"/>
-        <field name="privilege_id" ref="res_groups_school_mgt"/>
-    </record>
-
     <!-- Teacher Group -->
     <!--        <field name="implied_ids" eval="[(4, ref('group_school_mgt_user'))]"/>-->
     <record id="group_school_mgt_teacher" model="res.groups">
@@ -33,6 +25,15 @@
         <field name="sequence">21</field>
         <field name="privilege_id" ref="res_groups_school_mgt"/>
     </record>
+
+    <!-- Admin Group -->
+    <record id="group_school_mgt_admin" model="res.groups">
+        <field name="name">School Admin</field>
+        <field name="sequence">20</field>
+        <field name="implied_ids" eval="[(4, ref('school_management_system.group_school_mgt_teacher'))]"/>
+        <field name="privilege_id" ref="res_groups_school_mgt"/>
+    </record>
+
 
     <!-- Student Group -->
     <record id="group_school_student" model="res.groups">

@@ -8,7 +8,7 @@ class PriceCheckList(models.Model):
 
     checklist_name = fields.Char(string="Checklist Name")
 
-    checklist_description = fields.Char(string="Description")
+    checklist_description = fields.Char(string="Description", help="This is the description of the checklist")
 
     priority = fields.Selection([
         ('low', 'Low'),

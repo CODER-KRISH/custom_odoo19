@@ -29,11 +29,9 @@ class saleOrder(models.Model):
         store=True
     )
 
-    @api.onchange('start_date', 'end_date')
-    def _onchange_timesheet_dates(self):
-        self.html_timesheet = self._get_empty_timesheet_table()
-
     def _get_empty_timesheet_table(self):
+        """The Method runs when the new record is created and html_timesheet is fully filled"""
+
         start_date = self.start_date or ''
         end_date = self.end_date or ''
 
@@ -64,6 +62,8 @@ class saleOrder(models.Model):
         """
 
     def update_timesheet_server_action(self):
+        """The method runs when the server action runs and fetch the data from the selected time period (start_date and end_date)
+         of the created tasks of this sale order object"""
 
         if not self.start_date or not self.end_date:
             raise UserError('Time Period is not selected to update the timesheet!')
@@ -183,6 +183,8 @@ class saleOrder(models.Model):
         }
 
     def action_print_timesheet(self):
+        """Method that prints the updated time sheet table"""
+
         self.ensure_one()
         return self.env.ref('inherit_mdl.action_report_timesheet_update').report_action(self)
 
@@ -232,6 +234,7 @@ class saleOrder(models.Model):
         return max_limit * self.find_config_currency().rate
 
     def state_to_boss(self):
+        """Method runs when the login as a boss approve the sale order"""
 
         special_product = self.order_line.filtered(lambda line: line.is_special)
 

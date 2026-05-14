@@ -13,12 +13,12 @@ class Standard(models.Model):
     subject_ids = fields.One2many('subject', 'standard_id', string='Subjects')
 
     """ All Counts for Smart Buttons"""
-    standard_teacher_count = fields.Integer(compute='_compute_standard_teacher_count')
+    standard_teacher_count = fields.Integer(compute='_compute_teacher_count')
     standard_student_count = fields.Integer(compute='_compute_students_count')
     standard_subjects_count = fields.Integer(compute='_compute_subjects_count')
 
     """ All Count Methods for Smart Buttons """
-    def _compute_standard_teacher_count(self):
+    def _compute_teacher_count(self):
         for rec in self:
             rec.standard_teacher_count = self.env['teacher'].search_count([('standard_id', '=', rec.id)])
 

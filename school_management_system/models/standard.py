@@ -49,10 +49,8 @@ class Standard(models.Model):
         for rec in self:
 
             domain = [('standard_id', '=', rec.id)]
-
             if len(rec.student_ids) == 1:
-               return rec.return_action(f'Class {rec.class_name} Students', 'student', 'form', domain)
-
+                return rec.return_action(f'Class {rec.class_name} Students', 'student', 'form', domain)
             else:
                 return rec.return_action(f'Class {rec.class_name} Students', 'student', 'list', domain)
 
@@ -68,9 +66,7 @@ class Standard(models.Model):
         for rec in self:
 
             domain = [('standard_id', '=', rec.id)]
-
             if len(rec.subject_ids) == 1:
                 return rec.return_action(f'Class {rec.class_name} Subjects', 'subject', 'form', domain)
-
             else:
                 return rec.return_action(f'Class {rec.class_name} Subjects', 'subject', 'list', domain)

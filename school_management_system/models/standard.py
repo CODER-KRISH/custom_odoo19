@@ -8,16 +8,14 @@ class Standard(models.Model):
     _order = 'id desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    # Standard Name
     class_name = fields.Char('Class Name', required=True)
-
-    # Connects to Students
-    # relation needed to add multiple students in one standard
     student_ids = fields.One2many('student', 'standard_id', string='Students')
-
-    # Connects to Subjects
-    # relation needed to add multiple subjects in one standard
     subject_ids = fields.One2many('subject', 'standard_id', string='Subjects')
+
+    """ All Counts for Smart Buttons"""
+    standard_teacher_count = fields.Integer(compute='_compute_standard_teacher_count')
+    standard_student_count = fields.Integer(compute='_compute_students_count')
+    standard_subjects_count = fields.Integer(compute='_compute_subjects_count')
 
     def return_action(self, name, model, view_mode, domain):
         """ General Return method that works based on conditions """
@@ -30,14 +28,9 @@ class Standard(models.Model):
             'domain': domain,
         }
 
-    standard_teacher_count = fields.Integer(compute='_compute_standard_teacher_count')
-
     def _compute_standard_teacher_count(self):
         for rec in self:
             rec.standard_teacher_count = self.env['teacher'].search_count([('standard_id', '=', rec.id)])
-
-    """Smart Buttons for Students"""
-    standard_student_count = fields.Integer(compute='_compute_students_count')
 
     def _compute_students_count(self):
 
@@ -53,9 +46,6 @@ class Standard(models.Model):
                 return rec.return_action(f'Class {rec.class_name} Students', 'student', 'form', domain)
             else:
                 return rec.return_action(f'Class {rec.class_name} Students', 'student', 'list', domain)
-
-    """Smart Buttons for Subjects"""
-    standard_subjects_count = fields.Integer(compute='_compute_subjects_count')
 
     def _compute_subjects_count(self):
         for rec in self:

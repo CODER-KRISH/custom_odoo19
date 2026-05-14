@@ -19,59 +19,58 @@ class Standard(models.Model):
     # relation needed to add multiple subjects in one standard
     subject_ids = fields.One2many('subject', 'standard_id', string='Subjects')
 
+    def return_action(self, name, model, view_mode, domain):
+        """ General Return method that works based on conditions """
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': name,
+            'res_model': model,
+            'view_mode': view_mode,
+            'domain': domain,
+        }
+
+    standard_teacher_count = fields.Integer(compute='_compute_standard_teacher_count')
+
+    def _compute_standard_teacher_count(self):
+        for rec in self:
+            rec.standard_teacher_count = self.env['teacher'].search_count([('standard_id', '=', rec.id)])
 
     """Smart Buttons for Students"""
     standard_student_count = fields.Integer(compute='_compute_students_count')
 
     def _compute_students_count(self):
-        self.standard_student_count = self.env['student'].search_count([
-            ('standard_id.class_name', '=', self.class_name)
-        ])
+
+        for rec in self:
+            rec.standard_student_count = self.env['student'].search_count([('standard_id', '=', rec.id)])
 
     def action_view_student(self):
-        domain = [('standard_id.class_name', '=', self.class_name)]
 
-        action = {
-            'type': 'ir.actions.act_window',
-            'name': f'Class {self.class_name} Students',
-            'res_model': 'student',
-            'view_mode': "list",
-            'views': [(False, "list"), (False, "form")],
-            'domain': domain,
-        }
+        for rec in self:
 
-        if len(self.student_ids) == 1:
-            action.update({
-                "views": [(False, "form")],
-                "res_id": self.student_ids.id
-            })
+            domain = [('standard_id', '=', rec.id)]
 
-        return action
+            if len(rec.student_ids) == 1:
+               return rec.return_action(f'Class {rec.class_name} Students', 'student', 'form', domain)
+
+            else:
+                return rec.return_action(f'Class {rec.class_name} Students', 'student', 'list', domain)
 
     """Smart Buttons for Subjects"""
     standard_subjects_count = fields.Integer(compute='_compute_subjects_count')
 
     def _compute_subjects_count(self):
-        self.standard_subjects_count = self.env['subject'].search_count([
-            ('standard_id.class_name', '=', self.class_name)
-        ])
+        for rec in self:
+            rec.standard_subjects_count = self.env['subject'].search_count([('standard_id', '=', rec.id)])
 
     def action_view_subject(self):
-        domain = [('standard_id.class_name', '=', self.class_name)]
 
-        action = {
-            'type': 'ir.actions.act_window',
-            'name': f'Class {self.class_name} Subjects',
-            'res_model': 'subject',
-            'view_mode': "list",
-            'views': [(False, "list"), (False, "form")],
-            'domain': domain,
-        }
+        for rec in self:
 
-        if len(self.subject_ids) == 1:
-            action.update({
-                "views": [(False, "form")],
-                "res_id": self.subject_ids.id
-            })
+            domain = [('standard_id', '=', rec.id)]
 
-        return action
+            if len(rec.subject_ids) == 1:
+                return rec.return_action(f'Class {rec.class_name} Subjects', 'subject', 'form', domain)
+
+            else:
+                return rec.return_action(f'Class {rec.class_name} Subjects', 'subject', 'list', domain)

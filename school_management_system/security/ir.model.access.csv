@@ -59,7 +59,7 @@ access_teacher_fees_payment,teacher.student_fees_payment,model_student_fees_paym
 access_student_user,student.student,model_student,school_management_system.group_school_student,1,1,0,0
 access_student_teacher,student.teacher,model_teacher,school_management_system.group_school_student,1,0,0,0
 access_student_subject,student.subject,model_subject,school_management_system.group_school_student,1,0,0,0
-access_student_standard,student.standard,model_standard,school_management_system.group_school_student,1,0,0,0
+access_student_standard,student.standard,model_standard,school_management_system.group_school_student,0,0,0,0
 access_student_exam,student.exam,model_exam,school_management_system.group_school_student,1,0,0,0
 access_student_exam_lines,student.exam.lines,model_exam_lines,school_management_system.group_school_student,1,0,0,0
 access_student_student_exam,student.student.exam,model_student_exam,school_management_system.group_school_student,1,0,0,0

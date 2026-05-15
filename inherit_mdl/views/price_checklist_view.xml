@@ -13,6 +13,9 @@
                             <field name="checklist_name" string="Name"/>
                             <field name="checklist_description" string="Description"/>
                             <field name="priority" string="Priority" widget="priority"/>
+                            <field name="planned_date_begin" string="Planned Date"
+                                   widget="daterange" help="Custom: For just Exploring"
+                                   options="{'end_date_field': 'planned_date_end', 'always_range': '1'}"/>
                         </group>
                     </group>
                 </sheet>

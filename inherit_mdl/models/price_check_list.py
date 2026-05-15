@@ -15,3 +15,7 @@ class PriceCheckList(models.Model):
         ('medium', 'Medium'),
         ('high', 'High')
     ], string="Priority")
+
+    planned_date_begin = fields.Date("Planned Date Begin")
+
+    planned_date_end = fields.Date("Planned Date End")

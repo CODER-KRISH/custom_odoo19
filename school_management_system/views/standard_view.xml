@@ -22,36 +22,6 @@
                     <group>
                         <field name="class_name"/>
                     </group>
-                    <!--                    <notebook>-->
-                    <!--                        <page string="Students">-->
-                    <!--                            <field name="student_ids" nolabel="1" readonly="1">-->
-                    <!--                                <list open_form_view="False">-->
-                    <!--                                    <field name="enrollment_no" string="Enrollment No" class="fw-bold fs-10"/>-->
-                    <!--                                    <field name="student_name"/>-->
-                    <!--                                    <field name="email"/>-->
-                    <!--                                    <field name="phone"/>-->
-                    <!--                                    <field name="current_date" string="Admission Date" width="150"/>-->
-                    <!--                                    <field name="standard_id"/>-->
-                    <!--                                    <field name="dob"/>-->
-                    <!--                                    <field name="state" string="Status" widget="badge"-->
-                    <!--                                           decoration-info="state == 'approved'"-->
-                    <!--                                           decoration-success="state == 'in_admission'"-->
-                    <!--                                           decoration-danger="state == 'terminate'"/>-->
-                    <!--                                    <field name="country_id" string="Country"/>-->
-                    <!--                                </list>-->
-                    <!--                            </field>-->
-                    <!--                        </page>-->
-                    <!--                        <page string="Subjects">-->
-                    <!--                            <field name="subject_ids" nolabel="1" readonly="1">-->
-                    <!--                                <list open_form_view="False">-->
-                    <!--                                    <field name="name" string="Subjects"/>-->
-                    <!--                                    <field name="standard_id" string="Standard"/>-->
-                    <!--                                    <field name="teacher_ids" string="Teachers" widget="many2many_tags"/>-->
-                    <!--                                    <field name="state" string="Status" widget="badge"/>-->
-                    <!--                                </list>-->
-                    <!--                            </field>-->
-                    <!--                        </page>-->
-                    <!--                    </notebook>-->
                 </sheet>
                 <chatter/>
             </form>
@@ -71,25 +41,6 @@
         </field>
     </record>
 
-    <!--    Kanban View-->
-    <!--    <record id="standard_kanban_view" model="ir.ui.view">-->
-    <!--        <field name="name">standard.kanban.view</field>-->
-    <!--        <field name="model">standard</field>-->
-    <!--        <field name="arch" type="xml">-->
-    <!--            <kanban class="o_kanban_mobile">-->
-    <!--                <templates>-->
-    <!--                    <t t-name="card">-->
-    <!--                        <div class="row mb4">-->
-    <!--                            <div>-->
-    <!--                                <span>Standard:&amp;nbsp;</span>-->
-    <!--                                <field name="class_name"/>-->
-    <!--                            </div>-->
-    <!--                        </div>-->
-    <!--                    </t>-->
-    <!--                </templates>-->
-    <!--            </kanban>-->
-    <!--        </field>-->
-    <!--    </record>-->
     <record id="standard_kanban_view" model="ir.ui.view">
         <field name="name">standard.kanban.view</field>
         <field name="model">standard</field>

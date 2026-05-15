@@ -23,7 +23,7 @@
         <field name="name">view.price.checklist.template.list</field>
         <field name="model">price.checklist.template</field>
         <field name="arch" type="xml">
-            <list>
+            <list editable="bottom">
                 <field name="name"/>
                 <field name="checklist_ids" widget="many2many_tags"/>
             </list>

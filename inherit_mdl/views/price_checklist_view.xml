@@ -27,7 +27,7 @@
         <field name="name">view.price.checklist.list</field>
         <field name="model">price.checklist</field>
         <field name="arch" type="xml">
-            <list>
+            <list editable="bottom">
                 <field name="checklist_name" string="Name"/>
                 <field name="checklist_description" string="Description"/>
             </list>

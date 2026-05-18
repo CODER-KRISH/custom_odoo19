@@ -6,7 +6,7 @@
     <menuitem name="School"
               id="menu_school"
               sequence="6"
-              web_icon="school_management_system,static/description/graduate.png"
+              web_icon="school_management_system,static/description/icon.png"
     />
 
     <menuitem name="Admission"

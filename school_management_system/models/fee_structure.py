@@ -23,12 +23,6 @@ class FeeStructure(models.Model):
         ('confirmed', 'Confirmed')
     ], default='draft')
 
-    # Total computed from lines
-    # company_currency_id = fields.Many2one("res.currency",
-    #                                       default=lambda self: self.env.ref("base.INR").id)
-    # custom_amount = fields.Monetary(
-    #     string="Customer Amount", currency_field="company_currency_id"
-    # )
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.ref("base.INR").id)
     total_amount = fields.Monetary(string='Total Amount', compute='_compute_total', currency_field='currency_id',
                                    store=True)

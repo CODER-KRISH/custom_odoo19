@@ -96,6 +96,7 @@
               id="standard_menu"
               parent="menu_school"
               action="standard_action"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem name="Subject"

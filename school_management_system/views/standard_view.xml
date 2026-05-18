@@ -13,15 +13,22 @@
                                 class="oe_stat_button" icon="fa-dollar" invisible="standard_student_count == 0">
                             <field string="Students" name="standard_student_count" widget="statinfo"/>
                         </button>
-                        <button name="action_view_subject" type="object"
-                                class="oe_stat_button" icon="fa-pencil-square-o"
-                                invisible="standard_subjects_count == 0">
-                            <field string="Subjects" name="standard_subjects_count" widget="statinfo"/>
-                        </button>
                     </div>
                     <group>
                         <field name="class_name"/>
                     </group>
+                    <notebook>
+                        <page string="Subjects">
+                            <field name="subject_ids" readonly="1">
+                                <list no_open="1">
+                                    <field name="name" string="Subjects"/>
+                                    <field name="standard_id" string="Standard" optional="hide"/>
+                                    <field name="teacher_ids" string="Teachers" widget="many2many_tags"/>
+                                    <field name="state" string="Status" widget="badge" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 <chatter/>
             </form>

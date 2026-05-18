@@ -43,7 +43,7 @@ class StudentFees(models.Model):
     issue_date = fields.Date(string='Payment Date', default=fields.Date.today)
 
     # Amounts
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id.id)
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.ref("base.INR").id)
     total_amount = fields.Monetary(string='Total Amount', related='fee_structure_id.total_amount', store=True,
                                    currency_field='currency_id')
     discount = fields.Monetary(string='Discount')

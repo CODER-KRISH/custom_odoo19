@@ -8,9 +8,9 @@
             <form>
                 <header>
                     <button name="confirm_subject" string="Confirm" type="object" class="btn-primary"
-                            invisible="state != 'draft'"/>
+                            invisible="state != 'draft'" groups="school_management_system.group_school_mgt_admin"/>
                     <button name="back_to_draft" string="To Draft" type="object" class="btn-secondary"
-                            invisible="state != 'active'"/>
+                            invisible="state != 'active'" groups="school_management_system.group_school_mgt_admin"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

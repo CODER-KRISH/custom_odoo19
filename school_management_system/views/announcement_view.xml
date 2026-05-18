@@ -14,19 +14,27 @@
                             string="Publish"
                             type="object"
                             class="btn-primary"
-                            invisible="state != 'draft'"/>
+                            invisible="state != 'draft'"
+                            groups="school_management_system.group_school_mgt_teacher"
+                    />
                     <button name="action_expire"
                             string="Mark Expired"
                             type="object"
-                            invisible="state != 'published'"/>
+                            invisible="state != 'published'"
+                            groups="school_management_system.group_school_mgt_teacher"
+                    />
                     <button name="action_cancel"
                             string="Cancel"
                             type="object"
-                            invisible="state in ('cancelled', 'expired')"/>
+                            invisible="state in ('cancelled', 'expired')"
+                            groups="school_management_system.group_school_mgt_teacher"
+                    />
                     <button name="action_reset_draft"
                             string="Reset to Draft"
                             type="object"
-                            invisible="state == 'draft'"/>
+                            invisible="state != 'published'"
+                            groups="school_management_system.group_school_mgt_teacher"
+                    />
                     <field name="state"
                            widget="statusbar"
                            statusbar_visible="draft,published,expired"/>
@@ -86,16 +94,13 @@
                        widget="badge"
                        decoration-info="state == 'draft'"
                        decoration-success="state == 'published'"
-                       decoration-warning="state == 'expired'"
-                       decoration-danger="state == 'cancelled'"/>
+                       decoration-danger="state == 'cancelled' or state == 'expired'"/>
             </list>
         </field>
     </record>
 
 
-    <!-- ═════════════════════════════════  ═══════════════════════════════════
-         ACTION
-    ════════════════════════════════════════════════════════════════════ -->
+    <!-- Action -->
     <record id="action_announcement" model="ir.actions.act_window">
         <field name="name">Announcements</field>
         <field name="res_model">announcement</field>

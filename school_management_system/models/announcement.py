@@ -1,6 +1,7 @@
 from odoo import fields, models, api
 from odoo.exceptions import ValidationError
 from datetime import datetime
+from odoo.fields import Date
 
 
 class Announcement(models.Model):
@@ -102,3 +103,15 @@ class Announcement(models.Model):
     def action_reset_draft(self):
         for rec in self:
             rec.state = 'draft'
+
+    def cron_action_state_to_expired(self):
+        today = datetime.today()
+
+        recs = self.env['announcement'].search([
+            ('state', '!=', 'expired'),
+        ])
+
+        for rec in recs:
+            if (rec.expiry_date and rec.expiry_date == today.date()) or (rec.expiry_date and rec.expiry_date < today.date()):
+                rec.state = 'expired'
+            else: return False

@@ -24,7 +24,7 @@ class StudentFeesPayment(models.Model):
 
     payment_date = fields.Datetime(string='Payment Date', required=False, tracking=True)
 
-    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id.id)
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.ref("base.INR").id)
     amount = fields.Monetary(string='Amount Paid', required=True, currency_field='currency_id', tracking=True)
 
     payment_mode = fields.Selection([

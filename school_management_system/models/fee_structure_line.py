@@ -19,5 +19,5 @@ class FeeStructureLine(models.Model):
     ], string='Fee Type', required=True)
 
     description = fields.Char(string='Description')
-    currency_id = fields.Many2one('res.currency',  default=lambda self: self.env.company.currency_id.id)
+    currency_id = fields.Many2one('res.currency',  default=lambda self: self.env.ref("base.INR").id)
     amount = fields.Monetary(string='Amount', required=True, currency_field='currency_id')

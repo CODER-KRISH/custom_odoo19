@@ -140,15 +140,18 @@
                             string="Confirm"
                             type="object"
                             class="btn-primary"
-                            invisible="state != 'draft'"/>
+                            invisible="state != 'draft'"
+                            groups="school_management_system.group_school_mgt_teacher"/>
                     <button name="action_cancel"
                             string="Cancel"
                             type="object"
-                            invisible="state in ('cancelled', 'draft')"/>
+                            invisible="state in ('cancelled', 'draft')"
+                            groups="school_management_system.group_school_mgt_teacher"/>
                     <button name="action_reset_draft"
                             string="Reset to Draft"
                             type="object"
-                            invisible="state == 'draft'"/>
+                            invisible="state == 'draft'"
+                            groups="school_management_system.group_school_mgt_teacher"/>
                     <field name="state"
                            widget="statusbar"
                            statusbar_visible="draft,confirmed"/>

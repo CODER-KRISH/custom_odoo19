@@ -18,6 +18,7 @@
                             type="object"
                             class="btn-secondary"
                             invisible="state in ['draft', 'terminate']"
+                            groups="school_management_system.group_school_mgt_admin"
                     />
                     <field name="state" widget="statusbar"/>
                 </header>

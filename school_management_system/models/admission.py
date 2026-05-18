@@ -30,6 +30,17 @@ class Admission(models.Model):
     dob = fields.Date(string='Date of Birth')
     age = fields.Integer(string='Age', compute='_compute_age', store=True)
 
+    academic_year = fields.Char(
+        string='Academic Year',
+        required=True,
+        default=lambda self: self._get_academic_year(), tracking=True
+    )
+
+    def _get_academic_year(self):
+        from datetime import datetime
+        year = datetime.now().year
+        return f"{year}-{str(year + 1)[-2:]}"
+
     @api.depends('dob')
     def _compute_age(self):
         """Compute Method to Calculate Age"""

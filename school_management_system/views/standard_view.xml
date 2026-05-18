@@ -10,7 +10,7 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_student" type="object"
-                                class="oe_stat_button" icon="fa-dollar" invisible="standard_student_count == 0">
+                                class="oe_stat_button" icon="fa-user" invisible="standard_student_count == 0">
                             <field string="Students" name="standard_student_count" widget="statinfo"/>
                         </button>
                     </div>

@@ -71,6 +71,7 @@
                             <group string="Academic Information">
                                 <field name="enrollment_no" placeholder="Number" readonly="1" class="fw-bold fs-10"/>
                                 <field name="current_date" string="Admission Date" readonly="1"/>
+                                <field name="academic_year" string="Academic Year" readonly="1"/>
                                 <field name="hobby_ids" placeholder="Your Hobby" widget="many2many_tags"
                                        readonly="state not in ['draft', 'approved']"/>
                                 <field name="standard_id" placeholder="Standard"
@@ -91,15 +92,16 @@
                 <list>
                     <field name="admission_sequence" placeholder="Your Name" string="Number" class="fw-bold fs-10"/>
                     <field name="current_date" string="Admission Date" width="120"/>
+                    <field name="academic_year" string="Academic Year" width="100"/>
                     <field name="user_id" string="Name" class="fw-bold fs-10"/>
                     <field name="enrollment_no" string="Enroll No" class="fw-bold fs-10"/>
                     <field name="phone" string="Mobile"/>
-                    <field name="email" string="Mail"/>
+                    <field name="email" string="Mail" optional="hide"/>
                     <field name="standard_id" string="Standard"/>
                     <field name="state" string="Status" widget="badge" decoration-info="state == 'confirmed'"
-                       decoration-success="state == 'in_admission'" decoration-danger="state == 'terminate'"/>
+                           decoration-success="state == 'in_admission'" decoration-danger="state == 'terminate'"/>
                     <field name="city"/>
-                    <field name="state_id" string="State"/>
+                    <field name="state_id" string="State" optional="hide"/>
                 </list>
             </field>
         </record>
@@ -124,6 +126,10 @@
                     <filter string="Class 8" name="running_contract" domain="[('standard_id', '=', '8th')]"/>
                     <filter string="Class 9" name="running_contract" domain="[('standard_id', '=', '9th')]"/>
                     <filter string="Class 10" name="running_contract" domain="[('standard_id', '=', '10th')]"/>
+
+                    <filter string="Standard" name="grp_standard" context="{'group_by': 'standard_id'}"/>
+                    <filter string="Academic Year" name="grp_year" context="{'group_by': 'academic_year'}"/>
+                    <filter string="Status" name="grp_state" context="{'group_by': 'state'}"/>
                 </search>
             </field>
         </record>

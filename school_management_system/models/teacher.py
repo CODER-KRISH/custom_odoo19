@@ -60,7 +60,10 @@ class Teacher(models.Model):
 
     def confirm_teacher(self):
         for rec in self:
-            rec.state = 'confirm'
+            if rec.subject_ids:
+                rec.state = 'active'
+            else:
+                rec.state = 'confirm'
 
     def return_draft(self):
         for rec in self:

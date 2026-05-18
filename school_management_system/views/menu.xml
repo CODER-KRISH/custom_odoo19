@@ -74,7 +74,7 @@
               sequence="30"
               id="root_attendance"
               parent="menu_school"
-              groups="group_school_mgt_teacher"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem name="Fill Attendance"

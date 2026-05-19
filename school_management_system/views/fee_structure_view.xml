@@ -18,7 +18,6 @@
                 </header>
                 <sheet>
                     <h1>
-
                         <field name="name" readonly="state != 'draft'" placeholder="Add Fee Structure Here"/>
                     </h1>
                     <group>
@@ -70,6 +69,28 @@
                 <field name="currency_id" nolabel="1" invisible="1"/>
                 <field name="total_amount" widget="monetary" class="fw-bold"/>
             </list>
+        </field>
+    </record>
+
+
+    <record id="view_fee_structure_search" model="ir.ui.view">
+        <field name="name">fee.structure.search</field>
+        <field name="model">fee.structure</field>
+        <field name="arch" type="xml">
+
+            <search>
+                <field name="name"/>
+                <field name="academic_year"/>
+
+                <filter string="Academic Year"
+                        name="group_academic_year"
+                        context="{'group_by': 'academic_year'}"/>
+
+                <filter string="Last Date"
+                        name="group_last_date"
+                        context="{'group_by': 'last_date'}"/>
+
+            </search>
         </field>
     </record>
 

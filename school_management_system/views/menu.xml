@@ -141,7 +141,7 @@
     />
 
     <menuitem id="menu_student_fees"
-              name="Pay Student Fees"
+              name="Pay Fees"
               parent="menu_fees_main"
               action="action_student_fees"
               sequence="70"

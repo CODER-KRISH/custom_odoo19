@@ -1,6 +1,6 @@
 from odoo import fields, models, api
 from datetime import datetime
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 
 
 class StudentFees(models.Model):
@@ -106,24 +106,13 @@ class StudentFees(models.Model):
             ('id', '!=', self.id)
         ])
 
-        if already_paid: raise ValidationError("Fees already paid!")
+        if already_paid: raise UserError("Fees already paid!")
 
     def action_confirm(self):
-        for rec in self:
-
-            # paid_fees = self.search([
-            #     ('fee_structure_id', '=', rec.fee_structure_id.id),
-            #     ('student_id', '=', rec.student_id.id),
-            #     ('id', '!=', rec.id)
-            # ])
-            #
-            # if paid_fees: raise ValidationError("Fees already paid!")
-
-            rec.status = 'confirmed'
+        self.write({'state': 'confirmed'})
 
     def action_cancel(self):
-        for rec in self:
-            rec.state = 'cancelled'
+        self.write({'state': 'cancelled'})
 
     def write(self, vals):
         res = super().write(vals)
@@ -157,7 +146,4 @@ class StudentFees(models.Model):
             }
 
     def back_to_draft(self):
-        for rec in self:
-            rec.write({
-                'status': 'draft'
-            })
+        self.write({'state': 'draft'})

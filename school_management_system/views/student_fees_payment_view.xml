@@ -81,7 +81,7 @@
                 <field name="student_id" width="150"/>
                 <field name="standard_id" width="70"/>
                 <field name="enrollment_no" class="fw-bold" width="100"/>
-                <field name="payment_date" string="Paid Date" width="100 "/>
+                <field name="payment_date" string="Paid Date" width="120"/>
                 <field name="currency_id" nolabel="1" invisible="1"/>
                 <field name="payment_mode" width="100"/>
                 <field name="state" widget="badge" decoration-warning="state == 'fees_due'"

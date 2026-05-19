@@ -11,7 +11,9 @@
                     <button string="Confirm" class="btn-primary" type="object" name="confirm_fee_structure"
                             invisible="state != 'draft'"/>
                     <button string="To Draft" class="btn-secondary" type="object" name="return_to_draft"
-                            invisible="state != 'confirmed'"/>
+                            invisible="state != 'confirmed'"
+                            groups="school_management_system.group_school_mgt_admin"
+                    />
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

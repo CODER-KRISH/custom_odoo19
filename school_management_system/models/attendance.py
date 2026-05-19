@@ -17,6 +17,8 @@ class Attendance(models.Model):
     # relation needed to select anyone standard for attendance
     standard_id = fields.Many2one('standard', string='Standard')
 
+    teacher_id = fields.Many2one('res.users', string='Teacher', default=lambda self: self.env.user)
+
     # attendance model connects to attendance.line to show the entire object in this model
     attendance_line_ids = fields.One2many('attendance.line', 'attendance_id', string='Attendance Lines')
 

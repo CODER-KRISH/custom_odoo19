@@ -12,10 +12,11 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="current_date" readonly="state != 'draft'"/>
+                            <field name="standard_id" readonly="state != 'draft'"/>
+                            <field name="teacher_id" readonly="state != 'draft'"/>
                         </group>
                         <group>
-                            <field name="standard_id" readonly="state != 'draft'"/>
+                            <field name="current_date" readonly="state != 'draft'"/>
                         </group>
                     </group>
 
@@ -25,7 +26,6 @@
                                 <list editable="bottom">
                                     <field name="student_id" domain="[('standard_id', '=', parent.standard_id)]"/>
                                     <field name="p_or_a" string="Present"/>
-<!--                                    <field name="absent"/>-->
                                 </list>
                             </field>
                         </page>
@@ -43,6 +43,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="current_date" string="Date" width="100"/>
+                <field name="teacher_id" string="Filled By" readonly="state != 'draft'" width="100"/>
                 <field name="standard_id" width="100"/>
                 <field name="attendance_line_ids" widget="many2many_tags" string="Students"/>
             </list>

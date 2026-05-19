@@ -105,11 +105,11 @@ class Announcement(models.Model):
     def cron_action_state_to_expired(self):
         today = datetime.today()
 
-        recs = self.env['announcement'].search([
+        announcements = self.env['announcement'].search([
             ('state', '!=', 'expired'),
         ])
 
-        for rec in recs:
+        for rec in announcements:
             if (rec.expiry_date and rec.expiry_date == today.date()) or (
                     rec.expiry_date and rec.expiry_date < today.date()):
                 rec.state = 'expired'

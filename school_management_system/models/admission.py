@@ -160,7 +160,7 @@ class Admission(models.Model):
             rec.search_student().write({'state': 'terminate'})
 
     def write(self, vals):
-        """ Write Method to Update Datas in Student model """
+        """ Write Method to Update Data in Student model """
         res = super().write(vals)
 
         for record in self:

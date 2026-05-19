@@ -62,6 +62,7 @@ class Teacher(models.Model):
         for rec in self:
             if rec.subject_ids:
                 rec.state = 'active'
+                rec.user_id.teacher_id = rec.id
             else:
                 rec.state = 'confirm'
 

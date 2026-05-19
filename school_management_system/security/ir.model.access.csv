@@ -32,7 +32,7 @@ access_admin_fees_payment,admin.student_fees_payment,model_student_fees_payment,
 
 access_teacher_student,teacher.student,model_student,school_management_system.group_school_mgt_teacher,1,1,0,0
 access_teacher_teacher,teacher.teacher,model_teacher,school_management_system.group_school_mgt_teacher,1,0,0,0
-access_teacher_admission,teacher.admission,model_admission,school_management_system.group_school_mgt_teacher,1,0,0,0
+access_teacher_admission,teacher.admission,model_admission,school_management_system.group_school_mgt_teacher,0,0,0,0
 access_teacher_attendance,teacher.attendance,model_attendance,school_management_system.group_school_mgt_teacher,1,1,1,0
 access_teacher_standard,teacher.standard,model_standard,school_management_system.group_school_mgt_teacher,1,0,0,0
 access_teacher_subject,teacher.subject,model_subject,school_management_system.group_school_mgt_teacher,1,0,0,0

@@ -9,6 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet/group/field[@name='partner_id']" position="after">
                 <field name="student_id" string="Student" readonly="1"/>
+                <field name="teacher_id" string="Teacher" readonly="1"/>
             </xpath>
         </field>
     </record>

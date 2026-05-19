@@ -129,7 +129,7 @@
     <!-- Menu for Fee Models -->
     <menuitem id="menu_fees_main"
               name="Fees"
-              parent="menu_school"
+              parent="menu_profile"
               sequence="70"
     />
 
@@ -164,10 +164,16 @@
               groups="school_management_system.group_school_mgt_admin"
     />
 
+    <menuitem id="root_menu_announcement"
+              name="Announcements"
+              parent="menu_profile"
+              sequence="50"
+    />
+
     <menuitem id="menu_announcement"
               name="Announcements"
               action="action_announcement"
-              parent="menu_school"
+              parent="root_menu_announcement"
               sequence="50"
     />
 

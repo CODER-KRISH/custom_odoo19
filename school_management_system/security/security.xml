@@ -127,6 +127,14 @@
         <field name="domain_force">[(1, '=', 1)]</field>
     </record>
 
+    <!-- Rule for admin can see all announcement records -->
+    <record id="rule_record_visible_to_admin" model="ir.rule">
+        <field name="name">Admin: See all records</field>
+        <field name="model_id" ref="model_announcement"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
 
     <!-- =============================== -->
     <!-- Record Rules for teacher access -->
@@ -204,6 +212,14 @@
         <field name="domain_force">[(1, '=', 1)]</field>
     </record>
 
+    <!-- Rule for Teacher can see all and teacher visible records only -->
+    <record id="rule_record_visible_to_teacher" model="ir.rule">
+        <field name="name">Teacher: See teacher and all records</field>
+        <field name="model_id" ref="model_announcement"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_mgt_teacher'))]"/>
+        <field name="domain_force">[('audience', 'in', ['teachers', 'all'])]</field>
+    </record>
+
     <!-- =============================== -->
     <!-- Record Rules for student access -->
     <!-- =============================== -->
@@ -278,6 +294,14 @@
         <field name="model_id" ref="school_management_system.model_student_fees_payment"/>
         <field name="domain_force">[('student_id', '=', user.student_id.id)]</field>
         <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+    </record>
+
+    <!-- Rule for Students can see all and Student visible records only -->
+    <record id="rule_record_visible_to_student" model="ir.rule">
+        <field name="name">Student: See student and all records</field>
+        <field name="model_id" ref="model_announcement"/>
+        <field name="groups" eval="[(4,ref('school_management_system.group_school_student'))]"/>
+        <field name="domain_force">[('audience', 'in', ['students', 'all'])]</field>
     </record>
 
 </odoo>

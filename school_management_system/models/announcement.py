@@ -34,9 +34,7 @@ class Announcement(models.Model):
         ('all', 'All'),
         ('students', 'Students Only'),
         ('teachers', 'Teachers Only'),
-        ('parents', 'Parents Only'),
     ], string='Audience', default='all', tracking=True)
-
 
     academic_year = fields.Char(
         string='Academic Year',
@@ -93,8 +91,11 @@ class Announcement(models.Model):
             rec.state = 'published'
 
     def action_expire(self):
-        for rec in self:
-            rec.state = 'expired'
+        # for rec in self:
+        #     rec.state = 'expired'
+
+        all_rec = self.search([('audience', '=', 'all')])
+        print(all_rec)
 
     def action_cancel(self):
         for rec in self:

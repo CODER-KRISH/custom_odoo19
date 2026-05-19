@@ -95,7 +95,7 @@ class Admission(models.Model):
             if current_filter:
                 current_filter[0].set(
                     'string',
-                    f"A.Y.: {self._get_current_academic_year()}"
+                    f"A.Y. {self._get_current_academic_year()}"
                 )
 
             res['arch'] = etree.tostring(doc, encoding='unicode')

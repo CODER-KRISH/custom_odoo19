@@ -94,6 +94,7 @@
         <field name="arch" type="xml">
             <search>
                 <filter string="My Exams" name="my_filter" domain="[('standard_id.student_ids.user_id', '=', uid)]"/>
+                <filter name="standard_group_by" string="Standard" context="{'group_by': 'standard_id'}"/>
             </search>
         </field>
     </record>

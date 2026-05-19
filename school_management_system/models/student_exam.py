@@ -24,6 +24,20 @@ class StudentExam(models.Model):
 
     academic_year = fields.Char(related='exam_id.academic_year',store=True, string='Academic Year')
 
+    is_current_academic_year = fields.Boolean(
+        string="Is Current Academic Year",
+        compute="_compute_is_current_academic_year",
+        store=True
+    )
+
+    @api.depends('academic_year')
+    def _compute_is_current_academic_year(self):
+        current_year = datetime.today().year
+        current_academic_year = f"{current_year}-{str(current_year + 1)[-2:]}"
+
+        for rec in self:
+            rec.is_current_academic_year = str(rec.academic_year) == current_academic_year
+
     line_ids = fields.One2many('student.exam.line', 'student_exam_id',string='Subject Marks')
 
     total_marks = fields.Integer(string='Total Marks',compute='_compute_totals', store=True)

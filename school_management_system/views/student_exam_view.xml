@@ -125,6 +125,46 @@
         </field>
     </record>
 
+    <record id="student_exam_search_view" model="ir.ui.view">
+        <field name="name">student.exam.search.view</field>
+        <field name="model">student.exam</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="exam_id"/>
+                <field name="standard_id"/>
+                <field name="academic_year"/>
+                <field name="result"/>
+
+                <filter string="Current Academic Year"
+                        name="current_academic_year"
+                        domain="[('is_current_academic_year', '=', True)]"/>
+
+                <separator/>
+
+                <filter string="Passed"
+                        name="passed"
+                        domain="[('result', '=', 'pass')]"/>
+
+                <filter string="Failed"
+                        name="failed"
+                        domain="[('result', '=', 'fail')]"/>
+
+                <filter string="Academic Year"
+                        name="group_academic_year"
+                        context="{'group_by': 'academic_year'}"/>
+
+                <filter string="Result"
+                        name="group_result"
+                        context="{'group_by': 'result'}"/>
+
+                <filter string="Standard"
+                        name="group_standard"
+                        context="{'group_by': 'standard_id'}"/>
+            </search>
+        </field>
+    </record>
+
     <record id="action_student_exam" model="ir.actions.act_window">
         <field name="name">Student Exam Results</field>
         <field name="res_model">student.exam</field>

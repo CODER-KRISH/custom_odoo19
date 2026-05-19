@@ -43,7 +43,7 @@
         <field name="arch" type="xml">
             <list>
                 <field name="current_date" string="Date" width="100"/>
-                <field name="teacher_id" string="Filled By" readonly="state != 'draft'" width="100"/>
+                <field name="teacher_id" string="Filled By" readonly="state != 'draft'" width="230"/>
                 <field name="standard_id" width="100"/>
                 <field name="attendance_line_ids" widget="many2many_tags" string="Students"/>
             </list>

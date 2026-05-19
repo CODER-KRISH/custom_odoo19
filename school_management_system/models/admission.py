@@ -1,6 +1,8 @@
 from odoo import fields, models, api
 from datetime import datetime
 from odoo.exceptions import ValidationError
+from lxml import etree
+from datetime import date
 
 
 class Admission(models.Model):
@@ -61,6 +63,44 @@ class Admission(models.Model):
     city = fields.Char(string='City')
     state_id = fields.Many2one('res.country.state', string="State", readonly=False)
     country_id = fields.Many2one('res.country', string="Country", readonly=False)
+
+    is_current_academic_year = fields.Boolean(
+        string="Is Current Academic Year",
+        compute="_compute_is_current_academic_year",
+        store=True
+    )
+
+    @api.depends('academic_year')
+    def _compute_is_current_academic_year(self):
+        current_year = datetime.today().year
+        current_academic_year = f"{current_year}-{str(current_year + 1)[-2:]}"
+
+        for rec in self:
+            rec.is_current_academic_year = str(rec.academic_year) == current_academic_year
+
+    @api.model
+    def _get_current_academic_year(self):
+        year = date.today().year
+        return f"{year}-{str(year + 1)[-2:]}"
+
+    @api.model
+    def get_view(self, view_id=None, view_type='form', **options):
+        res = super().get_view(view_id=view_id, view_type=view_type, **options)
+
+        if view_type == 'search':
+            doc = etree.XML(res['arch'])
+
+            current_filter = doc.xpath("//filter[@name='current_academic_year']")
+
+            if current_filter:
+                current_filter[0].set(
+                    'string',
+                    f"A.Y.: {self._get_current_academic_year()}"
+                )
+
+            res['arch'] = etree.tostring(doc, encoding='unicode')
+
+        return res
 
     def search_student(self):
         return self.env['student'].search([('user_id', '=', self.user_id.id)], limit=1)

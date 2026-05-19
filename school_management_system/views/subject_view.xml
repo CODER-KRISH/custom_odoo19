@@ -36,7 +36,7 @@
                 <field name="name" string="Subjects"/>
                 <field name="standard_id" string="Standard"/>
                 <field name="teacher_ids" string="Teachers" widget="many2many_tags"/>
-                <field name="state" string="Status" widget="badge"/>
+                <field name="state" string="Status" widget="badge" optional="hide"/>
             </list>
         </field>
     </record>

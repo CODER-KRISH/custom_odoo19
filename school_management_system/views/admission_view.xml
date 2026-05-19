@@ -71,7 +71,7 @@
                             <group string="Academic Information">
                                 <field name="enrollment_no" placeholder="Number" readonly="1" class="fw-bold fs-10"/>
                                 <field name="current_date" string="Admission Date" readonly="1"/>
-                                <field name="academic_year" string="Academic Year" readonly="0"/>
+                                <field name="academic_year" string="Academic Year" readonly="1"/>
                                 <field name="hobby_ids" placeholder="Your Hobby" widget="many2many_tags"
                                        readonly="state not in ['draft', 'approved']"/>
                                 <field name="standard_id" placeholder="Standard"

@@ -114,6 +114,9 @@ class StudentFees(models.Model):
     def action_cancel(self):
         self.write({'state': 'cancelled'})
 
+    def back_to_draft(self):
+        self.write({'state': 'draft'})
+
     def write(self, vals):
         res = super().write(vals)
         for rec in self:
@@ -125,7 +128,6 @@ class StudentFees(models.Model):
         return res
 
     def confirm_and_next(self):
-
         for rec in self:
             invoice = self.env['student.fees.payment'].create({
                 'fees_id': rec.id,
@@ -144,6 +146,3 @@ class StudentFees(models.Model):
                 'view_mode': 'form',
                 'target': 'current',
             }
-
-    def back_to_draft(self):
-        self.write({'state': 'draft'})

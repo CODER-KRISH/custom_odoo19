@@ -1,7 +1,4 @@
-from odoo import fields, models, api
-from datetime import datetime
-from odoo.exceptions import ValidationError
-
+from odoo import fields, models
 
 class User(models.Model):
 

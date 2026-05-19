@@ -91,11 +91,8 @@ class Announcement(models.Model):
             rec.state = 'published'
 
     def action_expire(self):
-        # for rec in self:
-        #     rec.state = 'expired'
-
-        all_rec = self.search([('audience', '=', 'all')])
-        print(all_rec)
+        for rec in self:
+            rec.state = 'expired'
 
     def action_cancel(self):
         for rec in self:
@@ -113,6 +110,8 @@ class Announcement(models.Model):
         ])
 
         for rec in recs:
-            if (rec.expiry_date and rec.expiry_date == today.date()) or (rec.expiry_date and rec.expiry_date < today.date()):
+            if (rec.expiry_date and rec.expiry_date == today.date()) or (
+                    rec.expiry_date and rec.expiry_date < today.date()):
                 rec.state = 'expired'
-            else: return False
+            else:
+                return False

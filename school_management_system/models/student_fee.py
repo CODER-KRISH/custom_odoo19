@@ -13,25 +13,15 @@ class StudentFees(models.Model):
 
     name = fields.Char(string='Fee Reference', default='New', copy=False)
     student_id = fields.Many2one('student', string='Student', required=True, ondelete='cascade')
-    standard_id = fields.Many2one(
-        'standard', string='Standard',
-        related='student_id.standard_id', store=True, readonly=True
-    )
+    standard_id = fields.Many2one('standard', string='Standard', related='student_id.standard_id', store=True, readonly=True)
     enrollment_no = fields.Char(related='student_id.enrollment_no', string='Enrollment No')
     fee_structure_id = fields.Many2one('fee.structure', string='Fee Structure', ondelete='cascade')
-    academic_year = fields.Char(
-        string='Academic Year',
-        related='fee_structure_id.academic_year'
-    )
+    academic_year = fields.Char(string='Academic Year', related='fee_structure_id.academic_year')
     due_date = fields.Date(string='Due Date', required=True, related='fee_structure_id.last_date')
     issue_date = fields.Date(string='Payment Date', default=fields.Date.today)
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.ref("base.INR").id)
     total_amount = fields.Monetary(string='Total Amount', related='fee_structure_id.total_amount', store=True, currency_field='currency_id')
-
-    # Payment lines
     payment_ids = fields.One2many('student.fees.payment', 'fees_id', string='Payments')
-
-    # Fee types
     fee_line_ids = fields.One2many(
         'fee.structure.line',
         related='fee_structure_id.fee_line_ids',

@@ -27,7 +27,6 @@ class Exam(models.Model):
             if rec.exam_name == 'final': rec.exam_rec_name = "Final Exam"
 
     standard_id = fields.Many2one('standard', string='Standard', required=True)
-
     academic_year = fields.Char(string='Academic Year', required=True, default=lambda self: self._get_academic_year())
 
     def _get_academic_year(self):
@@ -37,9 +36,7 @@ class Exam(models.Model):
 
     exam_start_date = fields.Date(string='Start Date')
     exam_end_date = fields.Date(string='End Date')
-
     line_ids = fields.One2many('exam.lines', 'exam_id', string='Subjects')
-
     total_marks = fields.Integer(string='Total Marks', compute='_compute_total_marks', store=True)
 
     state = fields.Selection([

@@ -53,7 +53,6 @@ class Announcement(models.Model):
 
     publish_date = fields.Date(string='Publish Date', default=fields.Date.today)
     expiry_date = fields.Date(string='Expiry Date')
-
     description = fields.Html(string='Description', required=True)
 
     attachment_ids = fields.Many2many(

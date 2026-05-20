@@ -13,17 +13,11 @@ class StudentExam(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     student_id = fields.Many2one('student', string='Student',required=True, ondelete='cascade')
-
     enrollment_no = fields.Char(string='Enrollment Number',related='student_id.enrollment_no',store=True)
-
     exam_id = fields.Many2one('exam', string='Exam',required=True, ondelete='cascade')
-
     exam_name = fields.Selection(related='exam_id.exam_name',store=True, string='Exam Type')
-
     standard_id = fields.Many2one('standard', string='Standard',related='student_id.standard_id',store=True, readonly=False)
-
     academic_year = fields.Char(related='exam_id.academic_year',store=True, string='Academic Year')
-
     is_current_academic_year = fields.Boolean(
         string="Is Current Academic Year",
         compute="_compute_is_current_academic_year",
@@ -39,29 +33,22 @@ class StudentExam(models.Model):
             rec.is_current_academic_year = str(rec.academic_year) == current_academic_year
 
     line_ids = fields.One2many('student.exam.line', 'student_exam_id',string='Subject Marks')
-
     total_marks = fields.Integer(string='Total Marks',compute='_compute_totals', store=True)
-
     total_obtained_marks = fields.Integer(string='Marks Obtained',compute='_compute_totals', store=True)
-
     percentage = fields.Float(string='Percentage', compute='_compute_totals', store=True)
-
     sequence_no = fields.Char(string='Sequence Number', default='New')
-
+    grade = fields.Char(string='Grade',compute='_compute_result', store=True)
+    remarks = fields.Text(string='Remarks')
     result = fields.Selection([
         ('pass', 'Pass'),
         ('fail', 'Fail'),
         ('not_declared', 'Not Declared'),
     ], string='Result', compute='_compute_result', store=True)
 
-    grade = fields.Char(string='Grade',compute='_compute_result', store=True)
-
     state = fields.Selection([
         ('draft', 'Draft'),
         ('done', 'Done')
     ], default='draft', string='Status')
-
-    remarks = fields.Text(string='Remarks')
 
     @api.depends('line_ids.obtained_marks', 'line_ids.max_marks')
     def _compute_totals(self):

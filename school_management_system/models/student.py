@@ -18,7 +18,6 @@ class Student(models.Model):
     email = fields.Char(readonly=False, string="Email")
     current_date = fields.Date('Admission Date', default=fields.Datetime.today(), readonly=True)
     enrollment_no = fields.Char('Enrollment No:')
-
     dob = fields.Date('Date of Birth')
     age = fields.Integer('Age', compute='_compute_age', store=True)
 
@@ -47,7 +46,6 @@ class Student(models.Model):
     city = fields.Char(readonly=False)
     state_id = fields.Many2one('res.country.state', string="State", readonly=True)
     country_id = fields.Many2one('res.country', string="Country", readonly=True)
-
     standard_id = fields.Many2one('standard', string='Standard')
     hobby_ids = fields.Many2many('hobby', 'student_hobby_rel', 'student_id', 'hobby_id', string='Hobby')
     exam_ids = fields.Many2many('exam', 'exam_student_rel', 'student_id', 'exam_id', string="Exams")

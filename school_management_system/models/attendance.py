@@ -10,16 +10,9 @@ class Attendance(models.Model):
     _order = 'id desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    # Show current date
     current_date = fields.Date('Current Date', required=True, default=fields.Date.today)
-
-    # attendance connects to standard for attendance
-    # relation needed to select anyone standard for attendance
     standard_id = fields.Many2one('standard', string='Standard')
-
     teacher_id = fields.Many2one('res.users', string='Teacher', default=lambda self: self.env.user)
-
-    # attendance model connects to attendance.line to show the entire object in this model
     attendance_line_ids = fields.One2many('attendance.line', 'attendance_id', string='Attendance Lines')
 
     state = fields.Selection([
@@ -30,7 +23,6 @@ class Attendance(models.Model):
     @api.onchange('standard_id')
     def _onchange_standard(self):
 
-        # Clear Old attendance lines
         self.attendance_line_ids = [(5, 0, 0)]
 
         if self.standard_id:

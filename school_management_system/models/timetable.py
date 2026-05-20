@@ -20,18 +20,15 @@ class TimetableLineMixin(models.AbstractModel):
     teacher_id = fields.Many2one('teacher', string='Teacher', tracking=True)
     start_time = fields.Float(string='Start Time', required=True, tracking=True)
     end_time = fields.Float(string='End Time', required=True, tracking=True)
-
     duration = fields.Float(
         string='Duration (hrs)', compute='_compute_duration', store=True, tracking=True
     )
-
     period_type = fields.Selection([
         ('lecture', 'Lecture'),
         ('practical', 'Practical'),
         ('break', 'Break'),
         ('activity', 'Activity'),
     ], string='Period Type', default='lecture', required=True, tracking=True)
-
     room = fields.Char(string='Room / Classroom')
     notes = fields.Char(string='Notes')
 
@@ -128,17 +125,13 @@ class Timetable(models.Model):
     )
 
     standard_id = fields.Many2one('standard', string='Standard', required=True, tracking=True)
-
     academic_year = fields.Char(
         string='Academic Year',
         required=True,
         default=lambda self: self._get_academic_year(), tracking=True
     )
-
     created_date = fields.Date(default=fields.Date.today, string="Created", tracking=True)
-
     updated_date = fields.Datetime(default=fields.Datetime.now(), string="Updated", tracking=True)
-
     def _get_academic_year(self):
         from datetime import datetime
         year = datetime.now().year

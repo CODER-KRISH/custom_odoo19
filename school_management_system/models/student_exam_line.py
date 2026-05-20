@@ -8,25 +8,17 @@ class StudentExamLine(models.Model):
     _order = 'id asc'
 
     student_exam_id = fields.Many2one('student.exam', string='Student Exam', ondelete='cascade')
-
     subject_id = fields.Many2one('subject', string='Subject', required=True)
-
     max_marks = fields.Integer(string='Max Marks', default=100)
-
     passing_marks = fields.Integer(string='Passing Marks', default=35)
-
     obtained_marks = fields.Integer(string='Marks Obtained', default=0)
-
     pass_or_fail = fields.Selection([
         ('p_f', 'P/F'),
         ('pass', 'Pass'),
         ('fail', 'Fail'),
     ], string='Pass/Fail', default='p_f', compute='_compute_subject_result', store=True)
-
     is_pass = fields.Boolean(string='Pass', compute='_compute_subject_result', store=True)
-
     subject_grade = fields.Char(string='Grade', compute='_compute_subject_result', store=True)
-
     subject_percentage = fields.Float(string='Percentage (%)', compute='_compute_subject_result', store=True)
 
     @api.depends('obtained_marks', 'max_marks', 'passing_marks')

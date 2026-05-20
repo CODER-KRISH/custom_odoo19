@@ -19,15 +19,9 @@ class StudentFees(models.Model):
     )
     enrollment_no = fields.Char(related='student_id.enrollment_no', string='Enrollment No')
     fee_structure_id = fields.Many2one('fee.structure', string='Fee Structure', ondelete='cascade')
-    term = fields.Selection([
-        ('term1', 'Term 1'),
-        ('term2', 'Term 2'),
-        ('term3', 'Term 3'),
-        ('annual', 'Annual'),
-    ], string='Term', required=False)
     academic_year = fields.Char(
         string='Academic Year',
-        default=lambda self: self.env['fee.structure']._get_academic_year()
+        related='fee_structure_id.academic_year'
     )
     due_date = fields.Date(string='Due Date', required=True, related='fee_structure_id.last_date')
     issue_date = fields.Date(string='Payment Date', default=fields.Date.today)
@@ -51,12 +45,6 @@ class StudentFees(models.Model):
         ('done', 'Done'),
         ('fail', 'Failed')
     ], default='draft')
-
-    @api.onchange('fee_structure_id')
-    def _onchange_fee_structure(self):
-        """Auto-fill academic year from structure"""
-        if self.fee_structure_id:
-            self.academic_year = self.fee_structure_id.academic_year
 
     def action_confirm(self):
 

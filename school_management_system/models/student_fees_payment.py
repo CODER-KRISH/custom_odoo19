@@ -1,6 +1,5 @@
 from odoo import fields, models, api
-from datetime import datetime
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 class StudentFeesPayment(models.Model):
@@ -49,14 +48,6 @@ class StudentFeesPayment(models.Model):
     # reference = fields.Char(string='Transaction Reference')
     notes = fields.Char(string='Remarks')
 
-    @api.constrains('amount')
-    def _check_amount(self):
-        for rec in self:
-            if rec.amount <= 0:
-                raise ValidationError("Payment amount must be greater than zero.")
-            if rec.amount > rec.fees_id.balance + rec.amount:
-                raise ValidationError("Payment exceeds balance due.")
-
     @api.model_create_multi
     def create(self, vals_list):
         """
@@ -81,13 +72,3 @@ class StudentFeesPayment(models.Model):
             })
 
             rec.fees_id.write({'status': 'done'})
-
-    def action_print_receipt(self):
-
-        self.ensure_one()
-
-        self.message_post(
-            body=f"Receipt printed: {self.student_id.student_name}"
-        )
-
-        return self.env.ref('school_management_system.action_report_student_fee_receipt').report_action(self)

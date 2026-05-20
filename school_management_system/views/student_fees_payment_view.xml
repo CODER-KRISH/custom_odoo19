@@ -10,11 +10,6 @@
                 <header>
                     <button name="pay_fees" string="Pay Fees" type="object" class="btn-primary"
                             invisible="state != 'fees_due'"/>
-                    <button name="action_print_receipt"
-                            string="Print"
-                            type="object"
-                            class="btn-secondary"
-                            invisible="state != 'paid'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

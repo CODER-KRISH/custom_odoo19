@@ -152,6 +152,7 @@
               parent="menu_fees_main"
               action="action_student_fees_payment"
               sequence="80"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <!-- Menu for all Users -->

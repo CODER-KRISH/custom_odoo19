@@ -17,10 +17,11 @@
     />
 
     <!--Sub Menu of School Management for Profiles Student & Teachers-->
-    <menuitem name="Profiles"
+    <menuitem name="Profile"
               sequence="20"
               id="menu_profile"
               parent="menu_school"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <!--Root Menu of Student Profiles (Active/Terminate)-->
@@ -28,6 +29,7 @@
               sequence="1"
               id="student_root_menu"
               parent="menu_profile"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <!--Menu for students (Active/Terminate)-->
@@ -36,6 +38,7 @@
               id="student_menu"
               parent="student_root_menu"
               action="student_action"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem name="Terminate Students"
@@ -59,6 +62,7 @@
               id="teacher_menu"
               parent="teacher_root_menu"
               action="teacher_action"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem name="Inactive Teachers"
@@ -66,6 +70,7 @@
               id="inactive_teacher_menu"
               parent="teacher_root_menu"
               action="teacher_inactive_action"
+              groups="school_management_system.group_school_mgt_admin"
     />
 
     <!-- Root Menu for Attendance -->
@@ -110,6 +115,7 @@
               sequence="60"
               id="exam_menu"
               parent="menu_school"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem name="Exam Timetables"
@@ -117,6 +123,7 @@
               id="exam_structure_menu"
               parent="exam_menu"
               action="exam_action"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem name="Student Results"
@@ -124,6 +131,7 @@
               id="student_exam_menu"
               parent="exam_menu"
               action="action_student_exam"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <!-- Menu for Fee Models -->
@@ -131,6 +139,7 @@
               name="Fees"
               parent="menu_profile"
               sequence="70"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem name="Fee Structure"
@@ -138,6 +147,7 @@
               id="fee_structure_menu"
               parent="menu_fees_main"
               action="action_fee_structure"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem id="menu_student_fees"
@@ -145,6 +155,7 @@
               parent="menu_fees_main"
               action="action_student_fees"
               sequence="70"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem id="menu_student_fees_payment"
@@ -169,6 +180,7 @@
               name="Announcements"
               parent="menu_profile"
               sequence="50"
+              groups="school_management_system.group_school_mgt_teacher"
     />
 
     <menuitem id="menu_announcement"
@@ -183,6 +195,82 @@
               action="action_timetable"
               parent="menu_school"
               sequence="55"
+              groups="school_management_system.group_school_mgt_teacher"
+    />
+
+
+    <!-- =========================== -->
+    <!-- Menu For Group Student User -->
+    <!-- =========================== -->
+
+    <menuitem name="Profile"
+              id="menu_student_profile"
+              action="student_action"
+              parent="menu_school"
+              sequence="1"
+              groups="school_management_system.group_school_student"
+    />
+
+    <menuitem name="Announcements"
+              id="menu_student_announcement"
+              action="action_announcement"
+              parent="menu_school"
+              sequence="2"
+              groups="school_management_system.group_school_student"
+    />
+
+    <menuitem name="Fees"
+              id="menu_fees_main_student_user"
+              parent="menu_school"
+              sequence="57"
+              groups="school_management_system.group_school_student"
+    />
+
+    <menuitem name="View Fee Structure"
+              sequence="1"
+              id="fee_structure_menu_student_user"
+              parent="menu_fees_main_student_user"
+              action="action_fee_structure"
+              groups="school_management_system.group_school_student"
+    />
+
+    <menuitem id="menu_student_fees_student_user"
+              name="Pay Your Fees"
+              parent="menu_fees_main_student_user"
+              action="action_student_fees"
+              sequence="2"
+              groups="school_management_system.group_school_student"
+    />
+
+    <menuitem name="Timetables"
+              id="menu_root_timetable_student_user"
+              parent="menu_school"
+              sequence="56"
+              groups="school_management_system.group_school_student"
+    />
+
+    <menuitem name="Subject Timetable"
+              id="menu_sub_timetable_student_user"
+              parent="menu_root_timetable_student_user"
+              action="action_timetable"
+              sequence="1"
+              groups="school_management_system.group_school_student"
+    />
+
+    <menuitem name="Exam Timetables"
+              id="menu_exam_timetable_student_user"
+              parent="menu_root_timetable_student_user"
+              action="exam_action"
+              sequence="2"
+              groups="school_management_system.group_school_student"
+    />
+
+    <menuitem name="Results"
+              id="menu_result_student_user"
+              parent="menu_school"
+              action="action_student_exam"
+              sequence="60"
+              groups="school_management_system.group_school_student"
     />
 
 </odoo>

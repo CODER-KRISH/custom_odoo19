@@ -100,15 +100,15 @@
         <field name="model">student.fees</field>
         <field name="arch" type="xml">
             <list string="Student Fees">
-                <field name="fee_structure_id"/>
-                <field name="student_id" class="fw-bold"/>
+                <field name="fee_structure_id" width="200"/>
+                <field name="student_id" class="fw-bold" width="200"/>
                 <field name="standard_id"/>
-                <field name="enrollment_no" class="fw-bold"/>
-                <field name="academic_year"/>
+                <field name="enrollment_no" class="fw-bold" width="100"/>
+                <field name="academic_year" width="100"/>
                 <field name="issue_date" width="150"/>
-                <field name="due_date"/>
+                <field name="due_date" width="90"/>
                 <field name="currency_id" nolabel="1" invisible="1"/>
-                <field name="total_amount" widget="monetary" class="fw-bold"/>
+                <field name="total_amount" widget="monetary" class="fw-bold" width="100"/>
                 <field name="status" widget="badge"
                        decoration-success="status == 'done'"
                        decoration-info="status == 'confirmed'"

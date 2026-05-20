@@ -18,8 +18,7 @@ class FeeStructure(models.Model):
         ('confirmed', 'Confirmed')
     ], default='draft')
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.ref("base.INR").id)
-    total_amount = fields.Monetary(string='Total Amount', compute='_compute_total', currency_field='currency_id',
-                                   store=True)
+    total_amount = fields.Monetary(string='Total Amount', compute='_compute_total', currency_field='currency_id', store=True)
     academic_year = fields.Char(string="Academic Year", default=lambda self: self._get_academic_year())
     create_date = fields.Date('Create Date', default=fields.Date.today)
     last_date = fields.Date('Last Date')

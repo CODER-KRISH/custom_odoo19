@@ -25,4 +25,3 @@ class AttendanceLine(models.Model):
     ],default='present', string='Status')
 
     p_or_a = fields.Boolean(string='Present') # checkbox of present
-

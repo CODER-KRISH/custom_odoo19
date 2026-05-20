@@ -14,14 +14,23 @@
                         <br/>
                         <br/>
 
-                        <p style="font-size: 24px;">
-                            <strong>Exam Name:</strong>
-                            <span t-field="o.exam_id.exam_name"/>
-                        </p>
-                        <p style="font-size: 24px;">
-                            <strong>Serial No.:</strong>
-                            <span t-field="o.sequence_no"/>
-                        </p>
+                        <div class="row">
+
+                            <div class="col-6" style="font-size: 18px;">
+                                <p style="font-size: 24px;">
+                                    <strong>Exam Name:</strong>
+                                    <span t-field="o.exam_id.exam_name"/>
+                                </p>
+                            </div>
+
+                            <div class="col-6" style="font-size: 18px;">
+                                <p style="font-size: 24px;">
+                                    <strong>Serial No.:</strong>
+                                    <span t-field="o.sequence_no"/>
+                                </p>
+                            </div>
+
+                        </div>
 
                         <br/>
                         <br/>
@@ -57,7 +66,6 @@
 
                         </div>
 
-                        <br/>
                         <br/>
 
                         <h4 class="text-left" style="border-bottom: 1px solid lightgrey">Result Info</h4>

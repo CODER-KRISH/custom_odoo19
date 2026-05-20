@@ -13,14 +13,15 @@
                             class="btn-primary"
                             invisible="state != 'draft'"/>
                     <button name="action_print_result_report"
-                            string="Print"
+                            string="Download Result"
                             type="object"
-                            class="btn-secondary"
-                            invisible="state == 'draft'"/>
-                    <button string="Reset to Draft"
+                            class="btn-primary"
+                            invisible="state == 'draft'"
+                    />
+                    <button string="To Draft"
                             name="action_reset_draft"
                             type="object"
-                            groups="!school_management_system.group_school_student"
+                            groups="school_management_system.group_school_mgt_teacher"
                             invisible="state == 'draft'"/>
 
                     <field name="state" widget="statusbar"/>

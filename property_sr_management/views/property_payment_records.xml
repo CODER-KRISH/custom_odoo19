@@ -48,7 +48,7 @@
     <record id="view_order_tree_inherit_total" model="ir.ui.view">
         <field name="name">sale.order.tree.total</field>
         <field name="model">property.payment.records</field>
-        <field name="inherit_id" ref="property_sale_and_rental_management_system.property_payment_records_list_view"/>
+        <field name="inherit_id" ref="property_sr_management.property_payment_records_list_view"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='offer_price']" position="attributes">
                 <attribute name="sum">Total</attribute>

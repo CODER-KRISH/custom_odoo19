@@ -51,7 +51,7 @@ class saleOrder(models.Model):
         print("Method Called")
 
         # param = self.env['ir.config_parameter'].sudo().get_param(
-        #     'property_sale_and_rental_management_system.category_ids'
+        #     'property_sr_management.category_ids'
         # )
         #
         # allowed_category_ids = ast.literal_eval(param)

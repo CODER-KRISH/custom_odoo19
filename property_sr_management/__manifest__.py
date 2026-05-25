@@ -32,7 +32,7 @@
     ],
     'assets': {
         'web.assets_backend': [
-            'property_sale_and_rental_management_system/static/src/xml/other_button.xml',
+            'property_sr_management/static/src/xml/other_button.xml',
         ]
     },
     "application": True,

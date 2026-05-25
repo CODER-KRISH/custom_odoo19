@@ -173,13 +173,9 @@ class saleOrder(models.Model):
             </table>
             """
 
-        return {
-            "type": "ir.actions.act_window",
-            "name": self.env._("Sales Order"),
-            "res_model": "sale.order",
-            "res_id": self.id,
-            "view_mode": "form",
-            "target": "current",
+        return{
+            'type': 'ir.actions.client',
+            'tag': 'reload',
         }
 
     def action_print_timesheet(self):

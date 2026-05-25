@@ -4,9 +4,9 @@
     'author': 'Krish Prajapati',
     'category': 'Product',
     'version': '19.0.1.0.0',
-    'depends': ['base'],
+    'depends': ['base', 'product'],
     'data': [
-
+        'views/product_template_view.xml'
     ],
     "application": True,
     "installable": True,

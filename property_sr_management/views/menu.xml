@@ -3,7 +3,7 @@
 <odoo>
     <menuitem name="Property"
               id="parent_menu"
-              web_icon="property_sr_management,static/description/new.jpeg"
+              web_icon="property_sr_management,static/description/icon.png"
               sequence="7"
     />
 

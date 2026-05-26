@@ -1,6 +1,6 @@
 {
     'name': "Property Sale and Rental Management System",
-    'summary': "Sale and Rent",
+    'summary': "Sale and Rental Management",
     'author': 'Krish Prajapati',
     'category': 'Sale and Rental Management',
     'version': '19.0.1.0.0',

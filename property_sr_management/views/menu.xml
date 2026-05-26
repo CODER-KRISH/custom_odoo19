@@ -12,7 +12,6 @@
               parent="parent_menu"
               action="property_sr_management.action_property"
               sequence="10"
-              groups="property_sr_management.group_property_mgt_admin"
     />
 
     <menuitem name="Offers"

@@ -17,55 +17,55 @@ class saleOrder(models.Model):
         ]
     )
 
-    origin_order_id = fields.Many2one('sale.order', string="Original Order")
+    origin_so_id = fields.Many2one('sale.order', string="Original Order")
 
-    start_date = fields.Date(string='Start Date', copy=False)
-    end_date = fields.Date(string='End Date', copy=False)
+    start = fields.Date(string='Start Date', copy=False)
+    end = fields.Date(string='End Date', copy=False)
 
     html_timesheet = fields.Html(
         string='Timesheet',
-        default=lambda self: self._get_empty_timesheet_table(),
+        default="No Timesheet Data Available!",
         copy=False,
         store=True
     )
 
-    def _get_empty_timesheet_table(self):
-        """The Method runs when the new record is created and html_timesheet is fully filled"""
-
-        start_date = self.start_date or ''
-        end_date = self.end_date or ''
-
-        return f"""
-        <h3>Timesheet Usage by Task from {start_date} to {end_date}</h3>
-        <table style="width:100%; border-collapse:collapse; font-size:13px;">
-            <thead>
-                <tr>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Task</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Parent Task</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocation Source</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocated Hours</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Source Allocated Hours</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Hours</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Last Month</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Used Hours Period</th>
-                    <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Remaining Hours</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="9" style="text-align:center; padding:10px;">
-                        No timesheet data available
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        """
+    # def _get_empty_timesheet_table(self):
+    #     """The Method runs when the new record is created and html_timesheet is fully filled"""
+    #
+    #     start = self.start or ''
+    #     end = self.end or ''
+    #
+    #     return f"""
+    #     <h3>Timesheet Usage by Task from {start} to {end}</h3>
+    #     <table style="width:100%; border-collapse:collapse; font-size:13px;">
+    #         <thead>
+    #             <tr>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Task</th>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Parent Task</th>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocation Source</th>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocated Hours</th>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Source Allocated Hours</th>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Hours</th>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Last Month</th>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Used Hours Period</th>
+    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Remaining Hours</th>
+    #             </tr>
+    #         </thead>
+    #         <tbody>
+    #             <tr>
+    #                 <td colspan="9" style="text-align:center; padding:10px;">
+    #                     No timesheet data available
+    #                 </td>
+    #             </tr>
+    #         </tbody>
+    #     </table>
+    #     """
 
     def update_timesheet_server_action(self):
-        """The method runs when the server action runs and fetch the data from the selected time period (start_date and end_date)
+        """The method runs when the server action runs and fetch the data from the selected time period (start and end)
          of the created tasks of this sale order object"""
 
-        if not self.start_date or not self.end_date:
+        if not self.start or not self.end:
             raise UserError('Time Period is not selected to update the timesheet!')
 
         task_rows = ""
@@ -85,17 +85,17 @@ class saleOrder(models.Model):
             # Current Month Timesheets
             current_month_timesheets = task.timesheet_ids.filtered(
                 lambda t: (
-                        (not self.start_date or t.date >= self.start_date) and
-                        (not self.end_date or t.date <= self.end_date)
+                        (not self.start or t.date >= self.start) and
+                        (not self.end or t.date <= self.end)
                 )
             )
 
             if not current_month_timesheets:
-                self.html_timesheet = self._get_empty_timesheet_table()
+                self.html_timesheet = "No Timesheet Data Available!"
                 continue
 
             # Last Month Timesheets
-            last_month_start = self.start_date - relativedelta(months=1)
+            last_month_start = self.start - relativedelta(months=1)
             last_month_end = last_month_start + relativedelta(months=1)
 
             def float_to_time(hours):
@@ -139,7 +139,7 @@ class saleOrder(models.Model):
             """
 
             self.html_timesheet = f"""
-            <h3>Timesheet Usage by Task from {self.start_date} to {self.end_date}</h3>
+            <h3>Timesheet Usage by Task from {self.start} to {self.end}</h3>
 
             <table style="width:100%; border-collapse:collapse; font-size:13px;">
                 <thead>
@@ -348,11 +348,11 @@ class saleOrder(models.Model):
 
     def _compute_split_so_count(self):
         self.split_order_count = self.search_count([
-            ('origin_order_id', '=', self.id)
+            ('origin_so_id', '=', self.id)
         ])
 
     def action_view_split_orders(self):
-        domain = [('origin_order_id', '=', self.id)]
+        domain = [('origin_so_id', '=', self.id)]
         action = {
             'type': 'ir.actions.act_window',
             'name': 'Split Orders',

@@ -21,7 +21,6 @@ class SplitOrder(models.TransientModel):
         print("Hello!")
 
         selected_lines = self.sale_order_id.order_line.filtered(lambda l: l.tik_untick)
-
         lines_invoiced = selected_lines.filtered(lambda line: line.qty_invoiced > 0)
         lines_delivered = selected_lines.filtered(lambda line: line.qty_delivered > 0)
 
@@ -65,16 +64,6 @@ class SplitOrder(models.TransientModel):
         if lines_invoiced:
             print("Some quantity is invoiced")
 
-            # picking = self.sale_order_id.picking_ids.filtered(lambda p: p.picking_type_code == 'outgoing' and p.state == 'done')
-
-            # picking = self.sale_order_id.picking_ids.filtered(
-            #     lambda p: p.picking_type_code == 'outgoing'
-            #               and p.state == 'done' or 'assigned'
-            #               and any(prd in p.move_ids.mapped('product_id') for prd in selected_lines.mapped('product_id'))
-            # )
-            # print(picking)
-            # picking = selected_lines.move_ids.picking_id
-
             picking = selected_lines.move_ids.mapped('picking_id').filtered(
                 lambda p: p.picking_type_code == 'outgoing'
             )
@@ -104,9 +93,6 @@ class SplitOrder(models.TransientModel):
                     line.quantity = 0
 
             new_picking = return_picking._create_return()
-
-            # print(result)
-            # new_picking = self.env['stock.picking'].browse(result.get('res_id'))
 
             new_picking.action_confirm()
             new_picking.action_assign()
@@ -143,7 +129,7 @@ class SplitOrder(models.TransientModel):
             'partner_id': self.sale_order_id.partner_id.id,
             'origin': self.sale_order_id.name,
             'company_id': self.sale_order_id.company_id.id,
-            'origin_order_id': self.sale_order_id.id,
+            'origin_so_id': self.sale_order_id.id,
         })
 
         for line in self.order_line_ids:

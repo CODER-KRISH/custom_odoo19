@@ -24,7 +24,7 @@ class saleOrder(models.Model):
 
     html_timesheet = fields.Html(
         string='Timesheet',
-        default="No Timesheet Data Available!",
+        default="<h2>No Timesheet Data Available!</h2>",
         copy=False,
         store=True
     )
@@ -59,7 +59,7 @@ class saleOrder(models.Model):
             )
 
             if not current_month_timesheets:
-                self.html_timesheet = "No Timesheet Data Available!"
+                self.html_timesheet = "<h2>No Timesheet Data Available!</h2>"
                 continue
 
             # Last Month Timesheets

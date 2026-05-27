@@ -29,38 +29,6 @@ class saleOrder(models.Model):
         store=True
     )
 
-    # def _get_empty_timesheet_table(self):
-    #     """The Method runs when the new record is created and html_timesheet is fully filled"""
-    #
-    #     start = self.start or ''
-    #     end = self.end or ''
-    #
-    #     return f"""
-    #     <h3>Timesheet Usage by Task from {start} to {end}</h3>
-    #     <table style="width:100%; border-collapse:collapse; font-size:13px;">
-    #         <thead>
-    #             <tr>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Task</th>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Parent Task</th>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocation Source</th>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Allocated Hours</th>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Source Allocated Hours</th>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Hours</th>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Total Used Last Month</th>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Used Hours Period</th>
-    #                 <th style="background-color:#714b67; color:white; padding:2px 8px; text-align:left;">Remaining Hours</th>
-    #             </tr>
-    #         </thead>
-    #         <tbody>
-    #             <tr>
-    #                 <td colspan="9" style="text-align:center; padding:10px;">
-    #                     No timesheet data available
-    #                 </td>
-    #             </tr>
-    #         </tbody>
-    #     </table>
-    #     """
-
     def update_timesheet_server_action(self):
         """The method runs when the server action runs and fetch the data from the selected time period (start and end)
          of the created tasks of this sale order object"""

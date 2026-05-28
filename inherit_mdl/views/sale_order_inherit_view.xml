@@ -40,7 +40,7 @@
             <!-- xpath for statusbar visible for manager and boss approval -->
             <!-- ========================================================= -->
             <xpath expr="//field[@name='state']" position="attributes">
-                <attribute name="statusbar_visible">draft,sent,manager,boss,sale</attribute>
+                <attribute name="statusbar_visible">draft,sent,manager,boss,block,sale</attribute>
             </xpath>
 
             <!-- =============================================================== -->
@@ -65,6 +65,18 @@
                         string="Split"
                         class="btn-secondary"
                         type="object"
+                />
+
+                <!-- ================================================================== -->
+                <!-- xpath for Buttons Manager that he can confirm the block sale order -->
+                <!-- ================================================================== -->
+
+                <button name="mngr_allow_block_so"
+                        type="object"
+                        string="Confirm Block Order"
+                        class="btn-primary"
+                        invisible="state != 'block'"
+                        groups="inherit_mdl.group_sale_manager"
                 />
             </xpath>
 

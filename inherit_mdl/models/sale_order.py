@@ -13,7 +13,7 @@ class saleOrder(models.Model):
     progress_point = fields.Float(string='Progress', default=0)
     state = fields.Selection(
         selection_add=[
-            ('manager', 'Manager Approved'), ('boss', 'Boss Approved'), ('sale',)
+            ('manager', 'Manager Approved'), ('boss', 'Boss Approved'), ('block', 'Blocked'), ('sale',)
         ]
     )
 
@@ -338,3 +338,26 @@ class saleOrder(models.Model):
             })
 
         return action
+
+    def action_confirm(self):
+        for order in self:
+            root = order.partner_id.commercial_partner_id
+
+            new_credit = root.credit + order.amount_total
+
+            if root.credit_limit and new_credit > root.credit_limit:
+                order.state = 'block'
+                return False
+
+        return super().action_confirm()
+
+    def mngr_allow_block_so(self):
+        self.state = 'draft'
+        return super().action_confirm()
+
+    def cron_auto_confirm_blocked_so(self):
+        blocked_orders = self.env['sale.order'].search([('state', '=', 'block')])
+
+        for order in blocked_orders:
+            partner = order.partner_id.commercial_partner_id
+            

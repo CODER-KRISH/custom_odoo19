@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <odoo>
+
+    <!-- Cron that check the last date of activity -->
     <record id="ir_cron_engagement_tracker" model="ir.cron">
         <field name="name">CRM Engagement Tracker</field>
         <field name="model_id" ref="crm.model_crm_lead"/>
         <field name="state">code</field>
         <field name="code">model.cron_create_activity_based_on_last_date()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+
+    <!-- Cron that check the all blocked SO -->
+    <record id="ir_cron_blocked_so_tracker" model="ir.cron">
+        <field name="name">Blocked Sale Order Tracker</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="state">code</field>
+        <field name="code">model.action_cron_check_blocked_so()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
         <field name="active" eval="True"/>

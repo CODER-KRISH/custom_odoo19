@@ -353,10 +353,10 @@ class saleOrder(models.Model):
                 ('partner_id.commercial_partner_id', '=', company)
             ]).mapped('amount_total')
 
-            company_due_amount = sum(company_total_so_amount) - company.total_invoiced
-            print(f"Credit Limit: {company_credit_limit}, Used Limit: {company_due_amount}")
+            company_used_limit = sum(company_total_so_amount) - company.total_invoiced
+            print(f"Credit Limit: {company_credit_limit}, Used Limit: {company_used_limit}")
 
-            if company_due_amount > company_credit_limit:
+            if company_used_limit > company_credit_limit:
                 self.state = 'block'
                 return False
 
@@ -385,11 +385,11 @@ class saleOrder(models.Model):
                 ('partner_id.commercial_partner_id', '=', company)
             ]).mapped('amount_total')
 
-            company_total_so_amount = sum(company_total_so)
+            company_used_limit = sum(company_total_so)
 
-            left_limit = company_credit_limit - company_total_so_amount
+            company_left_limit = company_credit_limit - company_used_limit
 
-            if left_limit > 0:
+            if company_left_limit > 0:
 
                 company_blocked_so = self.env['sale.order'].search([
                     ('partner_id', '=', company),
@@ -397,7 +397,7 @@ class saleOrder(models.Model):
                 ])
 
                 for order in company_blocked_so:
-                    if order.amount_total < left_limit:
+                    if order.amount_total < company_left_limit:
                         order.state = 'draft'
                         order.action_confirm()
                     continue

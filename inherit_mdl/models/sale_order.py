@@ -355,7 +355,7 @@ class saleOrder(models.Model):
 
             company_used_limit = sum(company_total_so_amount) - company.total_invoiced
             company_left_limit = company_credit_limit - company_used_limit
-            print(f"Credit Limit: {company_credit_limit}, Used Limit: {company_used_limit}, Left Limit: {company_left_limit}")
+            print(f"Credit Limit: {company_credit_limit}, Used Limit: {company_used_limit}, Left Limit: {company_left_limit}, Current SO Amount: {self.amount_total}")
 
             if company_left_limit < self.amount_total:
                 self.state = 'block'

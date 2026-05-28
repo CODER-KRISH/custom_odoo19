@@ -350,21 +350,21 @@ class saleOrder(models.Model):
             company_credit_limit = company.credit_limit
 
             company_total_so_amount = self.env['sale.order'].search([
-                ('partner_id.commercial_partner_id', '=', company)
+                ('partner_id.commercial_partner_id', '=', company),
+                ('invoice_status', '=', 'to invoice')
             ]).mapped('amount_total')
 
             company_used_limit = sum(company_total_so_amount) - company.total_invoiced
-            company_left_limit = company_credit_limit - company_used_limit
-            print(f"Credit Limit: {company_credit_limit}, Used Limit: {company_used_limit}, Left Limit: {company_left_limit}, Current SO Amount: {self.amount_total}")
+            print(f"Credit Limit: {company_credit_limit}, Used Limit: {company_used_limit}")
 
-            if company_left_limit < self.amount_total:
+            if company_used_limit >= company_credit_limit or self.amount_total > company_credit_limit:
                 self.state = 'block'
                 return False
 
         return super().action_confirm()
 
     def mngr_allow_block_so(self):
-        """ Only Manager can allow blocked sale order """
+        """ Only Manager can confirm blocked sale order """
         self.state = 'draft'
         return super().action_confirm()
 
@@ -373,8 +373,13 @@ class saleOrder(models.Model):
          if there is any blocked sale order found and the customer are eligible to confirm that
          sale order then a sale order(whose amount is under credit limit) is auto confirmed """
 
-        blocked_so = self.env['sale.order'].search([('state', '=', 'block')])
+        cron_company = self.env.user.company_id
 
+        SaleOrder = self.env['sale.order'].with_company(cron_company)
+
+        blocked_so = SaleOrder.search([('state', '=', 'block')])
+
+        print(blocked_so)
         if not blocked_so:
             return False
 
@@ -382,25 +387,30 @@ class saleOrder(models.Model):
             company = order.partner_id.commercial_partner_id
             company_credit_limit = company.credit_limit
 
-            company_total_so = self.env['sale.order'].search([
-                ('partner_id.commercial_partner_id', '=', company)
+            print(self.env.company.name)
+
+            company_total_so = SaleOrder.search([
+                ('partner_id.commercial_partner_id', '=', company),
+                ('state', '=', 'block'),
+                ('company_id', '=', cron_company.id)
             ]).mapped('amount_total')
 
-            company_used_limit = sum(company_total_so)
-
+            company_used_limit = sum(company_total_so) - company.total_invoiced
             company_left_limit = company_credit_limit - company_used_limit
 
             if company_left_limit > 0:
 
-                company_blocked_so = self.env['sale.order'].search([
-                    ('partner_id', '=', company),
+                company_blocked_so = SaleOrder.search([
+                    ('partner_id.commercial_partner_id', '=', company),
                     ('state', '=', 'block'),
+                    ('company_id', '=', cron_company.id)
                 ])
 
-                for order in company_blocked_so:
-                    if order.amount_total < company_left_limit:
-                        order.state = 'draft'
-                        order.action_confirm()
+                for block_order in company_blocked_so:
+                    if block_order.amount_total <= company_left_limit:
+                        block_order.state = 'draft'
+                        block_order.action_confirm()
+                        company_left_limit -= block_order.amount_total
                     continue
 
             else:

@@ -340,24 +340,30 @@ class saleOrder(models.Model):
         return action
 
     def action_confirm(self):
-        for order in self:
-            root = order.partner_id.commercial_partner_id
+        """ Super Call of action_confirm() that check the company credit limit.
+        if company credit limit is exceed the assigned credit limit then sale order is blocked."""
 
-            new_credit = root.credit + order.amount_total
+        company = self.partner_id.commercial_partner_id
 
-            if root.credit_limit and new_credit > root.credit_limit:
-                order.state = 'block'
+        if company.credit_limit:
+
+            owner_credit_limit = company.credit_limit
+
+            owner_all_so = self.env['sale.order'].search([
+                ('partner_id.commercial_partner_id', '=', company)
+            ])
+
+            owner_used_limit = sum(owner_all_so.mapped('amount_total'))
+
+            if owner_used_limit > owner_credit_limit:
+                self.state = 'block'
                 return False
 
         return super().action_confirm()
 
     def mngr_allow_block_so(self):
+        """ Only Manager can allow blocked sale order """
         self.state = 'draft'
         return super().action_confirm()
 
-    def cron_auto_confirm_blocked_so(self):
-        blocked_orders = self.env['sale.order'].search([('state', '=', 'block')])
-
-        for order in blocked_orders:
-            partner = order.partner_id.commercial_partner_id
             

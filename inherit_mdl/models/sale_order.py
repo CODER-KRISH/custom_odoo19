@@ -343,21 +343,22 @@ class saleOrder(models.Model):
         """ Super Call of action_confirm() that check the company credit limit.
         if company credit limit is exceed the assigned credit limit then sale order is blocked."""
 
-        company = self.partner_id.commercial_partner_id
+        parent = self.partner_id.commercial_partner_id.with_company(self.company_id)
 
-        if company.credit_limit:
+        if parent.use_partner_credit_limit:
 
-            company_credit_limit = company.credit_limit
-
-            company_total_so_amount = self.env['sale.order'].search([
-                ('partner_id.commercial_partner_id', '=', company),
-                ('invoice_status', '=', 'to invoice')
+            parent_total_so_amount = self.env['sale.order'].search([
+                ('partner_id.commercial_partner_id', '=', parent.id),
+                ('state', '=', 'sale'),
+                ('company_id', '=', self.company_id.id),
+                ('id', '!=', self.id),
             ]).mapped('amount_total')
 
-            company_used_limit = sum(company_total_so_amount) - company.total_invoiced
-            print(f"Credit Limit: {company_credit_limit}, Used Limit: {company_used_limit}")
+            parent_credit_limit = parent.credit_limit
+            parent_used_limit = sum(parent_total_so_amount) - parent.total_invoiced
+            parent_left_limit = parent_credit_limit - parent_used_limit
 
-            if company_used_limit >= company_credit_limit or self.amount_total > company_credit_limit:
+            if self.amount_total > parent_left_limit or self.amount_total > parent_credit_limit:
                 self.state = 'block'
                 return False
 
@@ -373,45 +374,47 @@ class saleOrder(models.Model):
          if there is any blocked sale order found and the customer are eligible to confirm that
          sale order then a sale order(whose amount is under credit limit) is auto confirmed """
 
-        cron_company = self.env.user.company_id
+        companies = self.env['res.company'].search([])
 
-        SaleOrder = self.env['sale.order'].with_company(cron_company)
+        for company in companies:
 
-        blocked_so = SaleOrder.search([('state', '=', 'block')])
-
-        print(blocked_so)
-        if not blocked_so:
-            return False
-
-        for order in blocked_so:
-            company = order.partner_id.commercial_partner_id
-            company_credit_limit = company.credit_limit
-
-            print(self.env.company.name)
-
-            company_total_so = SaleOrder.search([
-                ('partner_id.commercial_partner_id', '=', company),
+            blocked_so = self.env['sale.order'].search([
                 ('state', '=', 'block'),
-                ('company_id', '=', cron_company.id)
-            ]).mapped('amount_total')
+                ('company_id', '=', company.id)
+            ])
 
-            company_used_limit = sum(company_total_so) - company.total_invoiced
-            company_left_limit = company_credit_limit - company_used_limit
+            if not blocked_so:
+                continue
 
-            if company_left_limit > 0:
+            for order in blocked_so:
+                parent = order.partner_id.commercial_partner_id.with_company(company)
 
-                company_blocked_so = SaleOrder.search([
-                    ('partner_id.commercial_partner_id', '=', company),
-                    ('state', '=', 'block'),
-                    ('company_id', '=', cron_company.id)
-                ])
-
-                for block_order in company_blocked_so:
-                    if block_order.amount_total <= company_left_limit:
-                        block_order.state = 'draft'
-                        block_order.action_confirm()
-                        company_left_limit -= block_order.amount_total
+                if not parent.use_partner_credit_limit:
                     continue
 
-            else:
-                return False
+                parent_total_so = self.env['sale.order'].search([
+                    ('partner_id.commercial_partner_id', '=', parent.id),
+                    ('state', '=', 'sale'),
+                    ('company_id', '=', company.id)
+                ]).mapped('amount_total')
+
+                parent_credit_limit = parent.credit_limit
+                parent_used_limit = sum(parent_total_so) - parent.total_invoiced
+                parent_left_limit = parent_credit_limit - parent_used_limit
+
+                if parent_left_limit > 0:
+
+                    parent_blocked_so = self.env['sale.order'].search([
+                        ('partner_id.commercial_partner_id', '=', parent.id),
+                        ('state', '=', 'block'),
+                        ('company_id', '=', company.id)
+                    ])
+
+                    for b_so in parent_blocked_so:
+                        if b_so.amount_total <= parent_left_limit:
+                            b_so.state = 'draft'
+                            b_so.action_confirm()
+                            parent_left_limit -= b_so.amount_total
+
+                else:
+                    continue

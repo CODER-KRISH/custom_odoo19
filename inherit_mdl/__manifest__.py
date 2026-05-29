@@ -4,7 +4,7 @@
     'author': 'Krish Prajapati',
     'category': 'Inherit',
     'version': '19.0.1.0.0',
-    'depends': ['base', 'contacts', 'mail', 'sale', 'stock', 'mrp', 'helpdesk', 'project', 'helpdesk_fsm', 'crm'],
+    'depends': ['base', 'contacts', 'mail', 'sale', 'stock', 'mrp', 'helpdesk', 'project', 'helpdesk_fsm', 'crm', 'account'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

@@ -28,14 +28,12 @@ class ResPartner(models.Model):
 
     def check_any_member_has_address(self):
 
-        root = self._origin
-
-        while root.parent_id:
-            root = root.parent_id
+        root = self._origin.commercial_partner_id
 
         all_members = self.search([
             ('id', 'child_of', root.id),
-        ]) - self._origin
+            ('id', '!=', self.id),
+        ])
 
         is_any_has_delivery_address = all_members.filtered(lambda l: l.is_delivery_address)
 
@@ -50,4 +48,4 @@ class ResPartner(models.Model):
         address_found = self.check_any_member_has_address()
 
         if address_found:
-            raise ValidationError(f"{address_found.name} has Address!")
+            raise ValidationError(f"Any Member has Address!")

@@ -33,7 +33,7 @@ class ResPartner(models.Model):
         all_members = self.search([
             ('id', 'child_of', root.id),
             ('id', '!=', self.id),
-        ])
+        ]) - self._origin
 
         is_any_has_delivery_address = all_members.filtered(lambda l: l.is_delivery_address)
 

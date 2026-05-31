@@ -368,7 +368,7 @@ class saleOrder(models.Model):
 
         return super().action_confirm()
 
-    def mngr_allow_block_so(self):
+    def mgr_allow_block_so(self):
         """ Only Manager can confirm blocked sale order """
         self.state = 'draft'
         return super().action_confirm()

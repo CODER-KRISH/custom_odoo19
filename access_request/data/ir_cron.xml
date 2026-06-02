@@ -7,7 +7,7 @@
         <field name="name">Access Request Revocation Reminder</field>
         <field name="model_id" ref="model_odoo_sh_access_request"/>
         <field name="state">code</field>
-        <field name="code">model._cron_create_revocation_reminders()</field>
+        <field name="code">model.cron_create_revocation_reminders()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
         <field name="active">True</field>

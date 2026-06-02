@@ -276,8 +276,7 @@ class OdooSHAccessRequest(models.Model):
             "context": {"create": False},
         }
 
-    @api.model
-    def _cron_create_revocation_reminders(self):
+    def cron_create_revocation_reminders(self):
         """Create revocation reminder activities for expired approved requests."""
         today = fields.Date.today()
 

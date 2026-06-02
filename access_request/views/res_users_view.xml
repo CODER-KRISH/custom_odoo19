@@ -8,7 +8,7 @@
         <field name="inherit_id" ref="base.view_users_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet/group/field[@name='partner_id']" position="after">
-                <field name="github_username" readonly="1"/>
+                <field name="github_username"/>
             </xpath>
         </field>
     </record>

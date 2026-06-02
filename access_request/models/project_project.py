@@ -71,7 +71,7 @@ class Project(models.Model):
             "name": "Access Register",
             "res_model": "odoo.sh.access.request",
             "view_mode": "list,form",
-            "domain": [("id", "in", register_ids)],
+            "domain": [("id", "in", register_ids.ids)],
             "context": {
                 "default_project_id": self.id,
                 "create": False,

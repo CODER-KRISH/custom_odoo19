@@ -73,7 +73,7 @@
                                    readonly="state != 'draft'"
                                    domain="[('project_id', '=', project_id)]"/>
                             <field name="user_id" readonly="state != 'draft'"/>
-                            <field name="github_username" readonly="state != 'draft'"/>
+                            <field name="github_username" readonly="1"/>
                         </group>
 
                         <!-- Access Details -->

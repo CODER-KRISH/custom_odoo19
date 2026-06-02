@@ -49,7 +49,7 @@ class OdooSHAccessRequest(models.Model):
     @api.onchange('project_id')
     def _onchange_project_id(self):
         if self.project_id:
-            self.approver_ids = [(6, 0, self.project_id.approver_ids)]
+            self.approver_ids = [(6, 0, self.project_id.approver_ids.ids)]
         else:
             self.approver_ids = [(5, 0, 0)]
 
@@ -110,6 +110,7 @@ class OdooSHAccessRequest(models.Model):
     github_username = fields.Char(
         string="GitHub Username",
         tracking=True,
+        related='user_id.github_username'
     )
 
     rejection_reason = fields.Text(
@@ -134,16 +135,17 @@ class OdooSHAccessRequest(models.Model):
 
         return super().create(vals_list)
 
-    def write(self, vals):
-        """Update access request and sync GitHub username on user."""
-        res = super().write(vals)
-
-        if vals.get('github_username'):
-            for record in self:
-                if record.user_id and record.github_username:
-                    record.user_id.github_username = record.github_username
-
-        return res
+    #
+    # def write(self, vals):
+    #     """Update access request and sync GitHub username on user."""
+    #     res = super().write(vals)
+    #
+    #     if vals.get('user_id'):
+    #         for record in self:
+    #             if record.user_id.github_username:
+    #                 record.github_username = record.user_id.github_username
+    #
+    #     return res
 
     @api.constrains("start_date", "end_date")
     def _check_dates(self):
@@ -161,7 +163,39 @@ class OdooSHAccessRequest(models.Model):
 
             record.state = "submitted"
 
+            record.action_send_mail()
+
         return True
+
+    def action_send_mail(self):
+        for rec in self:
+            mail_values = {
+                'subject': f'Access Request Approval {rec.name}',
+                'body_html': f"""
+                    <p>Hello,</p>
+                    <p>Your Approval is needed for {rec.name}</p>
+                """,
+                'email_to': rec.user_id.email,
+                'email_from': self.env.user.email,
+            }
+
+            mail = self.env['mail.mail'].sudo().create(mail_values)
+            mail.send()
+
+    def action_send_mail(self):
+        for rec in self:
+            mail_values = {
+                'subject': f'Access Request Approval {rec.name}',
+                'body_html': f"""
+                    <p>Hello,</p>
+                    <p>Your Approval is needed for {rec.name} to access {rec.access_type}</p>
+                """,
+                'email_to': rec.user_id.email,
+                'email_from': self.env.user.email,
+            }
+
+            mail = self.env['mail.mail'].sudo().create(mail_values)
+            mail.send()
 
     def action_approve(self):
         """Approve submitted access request."""
@@ -197,12 +231,6 @@ class OdooSHAccessRequest(models.Model):
         if self.state != "submitted":
             raise UserError("Only submitted requests can be rejected.")
 
-        if (
-                self.env.user not in self.project_id.approver_ids
-                and not self.env.user.has_group("project.group_project_manager")
-        ):
-            raise UserError("You are not allowed to reject this request.")
-
         return {
             "type": "ir.actions.act_window",
             "name": "Reject Access Request",
@@ -228,7 +256,7 @@ class OdooSHAccessRequest(models.Model):
         """Reset approved or rejected request to draft."""
         for record in self:
             if record.state not in ["approved", "rejected", "submitted"]:
-                raise UserError("Only approved or rejected requests can be reset to draft.")
+                raise UserError("Only approved, submitted or rejected requests can be reset to draft.")
 
             record.write({
                 "state": "draft",
@@ -239,42 +267,13 @@ class OdooSHAccessRequest(models.Model):
     @api.model
     def _get_access_register_ids(self, project_id=False):
         """Return latest active approved request IDs per user and project."""
-        domain = [("state", "=", "approved")]
 
-        if project_id:
-            domain.append(("project_id", "=", project_id))
+        approved_requests = self.env["odoo.sh.access.request"].search([
+            ('state', '=', 'approved'),
+            ("project_id", "=", project_id)
+        ])
 
-        approved_requests = self.search(domain, order="user_id, project_id, end_date desc, id desc")
-
-        register_ids = []
-        grouped_data = {}
-
-        for request in approved_requests:
-            key = (request.project_id.id, request.user_id.id)
-            grouped_data.setdefault(key, []).append(request)
-
-        for requests in grouped_data.values():
-            no_end_date_request = requests.filtered(lambda r: not r.end_date)
-            if no_end_date_request:
-                register_ids.append(no_end_date_request[0].id)
-            else:
-                register_ids.append(requests[0].id)
-
-        return register_ids
-
-    @api.model
-    def action_open_global_access_register(self):
-        """Open global access register records."""
-        register_ids = self._get_access_register_ids()
-
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Access Register",
-            "res_model": "odoo.sh.access.request",
-            "view_mode": "list,form",
-            "domain": [("id", "in", register_ids)],
-            "context": {"create": False},
-        }
+        return approved_requests
 
     def cron_create_revocation_reminders(self):
         """Create revocation reminder activities for expired approved requests."""

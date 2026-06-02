@@ -158,14 +158,6 @@ class OdooSHAccessRequest(models.Model):
                 if record.end_date < record.start_date:
                     raise ValidationError("End Date cannot be earlier than Start Date.")
 
-    @api.constrains("access_type", "environment")
-    def _check_environment_required(self):
-        """Require environment for Odoo.sh access requests."""
-        for record in self:
-            if record.access_type in ["odoo_sh", "git_odoo_sh"]:
-                if not record.environment:
-                    raise ValidationError("Environment is required for Odoo.sh access.")
-
     def action_submit(self):
         """Submit draft request and send approval email."""
         for record in self:
@@ -173,7 +165,6 @@ class OdooSHAccessRequest(models.Model):
                 raise UserError("Only draft requests can be submitted.")
 
             record.state = "submitted"
-            record._send_approval_email()
 
         return True
 
@@ -253,17 +244,6 @@ class OdooSHAccessRequest(models.Model):
             })
 
         return True
-
-    def _send_approval_email(self):
-        """Send approval email to selected approver."""
-        template = self.env.ref(
-            "access_request.mail_template_access_request_approval",
-            raise_if_not_found=False,
-        )
-
-        if template:
-            for record in self:
-                template.send_mail(record.id, force_send=True)
 
     @api.model
     def _get_access_register_ids(self, project_id=False):

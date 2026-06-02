@@ -10,6 +10,7 @@
         'views/odoo_sh_access_request_view.xml',
         'views/res_users_view.xml',
         'views/project_project_view.xml',
+        'views/project_task.xml',
         'data/sequence.xml',
         'data/ir_cron.xml',
         'wizard/access_request_reason_view.xml',

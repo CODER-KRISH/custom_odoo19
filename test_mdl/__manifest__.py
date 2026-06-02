@@ -6,7 +6,9 @@
     'version': '19.0.1.0.0',
     'depends': ['base', 'product'],
     'data': [
-        'views/product_template_view.xml'
+        'security/ir.model.access.csv',
+        'views/bank_view.xml',
+        'views/menu.xml',
     ],
     "application": True,
     "installable": True,

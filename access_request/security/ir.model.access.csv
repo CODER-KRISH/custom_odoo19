@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_odoo_sh_access_request,access_odoo_sh_access_request,access_request.model_odoo_sh_access_request,,1,1,1,1
+access_access_request_reason,access_access_request_reason,access_request.model_access_request_reason,,1,1,1,1

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="seq_access_request" model="ir.sequence">
+        <field name="name">Access Request Sequence</field>
+        <field name="code">odoo.sh.access.request</field>
+        <field name="prefix">AR</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

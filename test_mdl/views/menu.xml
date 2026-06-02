@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <menuitem name="My Finance"
+              id="parent_menu"
+              web_icon="test_mdl,static/description/icon.png"
+              sequence="2"
+    />
+
+    <menuitem name="Configuration"
+              id="config_menu"
+              parent="parent_menu"
+              action="test_mdl.action_bank"
+              sequence="1"
+    />
+</odoo>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_odoo_sh_access_request_form" model="ir.ui.view">
+        <field name="name">view.odoo.sh.access.request.form</field>
+        <field name="model">odoo.sh.access.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                    />
+
+                    <button name="action_approve"
+                            string="Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'submitted'"
+                    />
+
+                    <button name="action_reject"
+                            string="Reject"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state != 'submitted'"
+                    />
+
+                    <button name="action_revoke"
+                            string="Revoke"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'approved'"
+                    />
+
+                    <button name="action_set_to_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state in ['draft', 'revoked']"
+                    />
+
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,submitted,approved"
+                           invisible="state == 'rejected' or state == 'revoked'"
+                    />
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,revoked"
+                           invisible="state != 'revoked'"
+                    />
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,submitted,rejected"
+                           invisible="state != 'rejected'"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <!-- Request Details -->
+                        <group string="Request Details">
+                            <field name="project_id" readonly="state != 'draft'"/>
+                            <field name="task_id"
+                                   readonly="state != 'draft'"
+                                   domain="[('project_id', '=', project_id)]"/>
+                            <field name="user_id" readonly="state != 'draft'"/>
+                            <field name="github_username" readonly="state != 'draft'"/>
+                        </group>
+
+                        <!-- Access Details -->
+                        <group string="Access Details">
+                            <field name="access_type" readonly="state != 'draft'"/>
+                            <field name="environment"
+                                   readonly="state != 'draft'"
+                                   invisible="access_type != 'odoo_sh'"/>
+                            <field name="role" readonly="state != 'draft'"/>
+                            <field name="access_token" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <!-- Approval Details -->
+                        <group string="Approval Details">
+                            <field name="approver_ids"
+                                   widget="many2many_avatar_user"
+                                   readonly="state != 'draft'"/>
+
+                            <field name="approved_by_id"
+                                   readonly="1"
+                                   invisible="state != 'approved'"/>
+
+                            <field name="approved_on"
+                                   readonly="1"
+                                   invisible="state != 'approved'"/>
+                        </group>
+
+                        <!-- Validity Period -->
+                        <group string="Validity Period">
+                            <field name="start_date"
+                                   string="Access Period"
+                                   widget="daterange"
+                                   readonly="state != 'draft'"
+                                   options="{'end_date_field': 'end_date', 'always_range': true}"/>
+                        </group>
+                    </group>
+
+                    <group invisible="state != 'rejected'">
+                        <group string="Rejection Details">
+                            <field name="rejection_reason" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_odoo_sh_access_request_list" model="ir.ui.view">
+        <field name="name">view.odoo.sh.access.request.list</field>
+        <field name="model">odoo.sh.access.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" class="fw-bold"/>
+                <field name="project_id" width="150"/>
+                <field name="task_id" width="150"/>
+                <field name="access_type" string="Access Request" class="fw-bold"/>
+                <field name="user_id" string="User" class="fw-bold"/>
+                <field name="github_username" string="Github"/>
+                <field name="approved_by_id" string="Approved By" width="100" class="fw-bold"/>
+                <field name="approved_on" string="Date"/>
+                <field name="state" widget="badge" string="Status" decoration-info="state == 'submitted'"
+                       decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"
+                       decoration-muted="state == 'revoked'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_odoo_sh_ar" model="ir.actions.act_window">
+        <field name="name">Access Requests</field>
+        <field name="res_model">odoo.sh.access.request</field>
+        <field name="view_mode">list,form,search</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <menuitem name="Access Requests"
+              id="parent_menu"
+              sequence="3"
+    />
+
+    <menuitem name="Requests"
+              id="requests_menu"
+              parent="parent_menu"
+              action="access_request.action_odoo_sh_ar"
+              sequence="1"
+    />
+
+    <menuitem name="Access Requests"
+              id="ar_project_menu"
+              parent="project.menu_main_pm"
+              action="access_request.action_odoo_sh_ar"
+              sequence="98"
+    />
+
+</odoo>

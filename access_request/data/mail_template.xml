@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="mail_template_access_request_approval" model="mail.template">
+        <field name="name">Access Request Approval Email</field>
+        <field name="model_id" ref="model_odoo_sh_access_request"/>
+        <field name="subject">Access Request Approval - {{ object.name }}</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ ','.join(object.approver_ids.mapped('email')) }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello,</p>
+
+                <p>Approval is needed for the following access request:</p>
+
+                <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                    <tr>
+                        <th style="text-align:left;">Field</th>
+                        <th style="text-align:left;">Value</th>
+                    </tr>
+                    <tr>
+                        <td><b>Request Reference</b></td>
+                        <td><t t-out="object.name"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Project</b></td>
+                        <td><t t-out="object.project_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Task</b></td>
+                        <td><t t-out="object.task_id.name or ''"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Requesting User</b></td>
+                        <td><t t-out="object.user_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Approvers</b></td>
+                        <td><t t-out="', '.join(object.approver_ids.mapped('name'))"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Access Type</b></td>
+                        <td><t t-out="dict(object._fields['access_type'].selection).get(object.access_type)"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Environment</b></td>
+                        <td><t t-out="dict(object._fields['environment'].selection).get(object.environment) or ''"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Role</b></td>
+                        <td><t t-out="dict(object._fields['role'].selection).get(object.role)"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Start Date</b></td>
+                        <td><t t-out="object.start_date"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>End Date</b></td>
+                        <td><t t-out="object.end_date or ''"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>Status</b></td>
+                        <td><t t-out="dict(object._fields['state'].selection).get(object.state)"/></td>
+                    </tr>
+                    <tr>
+                        <td><b>GitHub Username</b></td>
+                        <td><t t-out="object.github_username or ''"/></td>
+                    </tr>
+                </table>
+
+                <p>Please review and approve/reject this request.</p>
+            </div>
+        </field>
+    </record>
+
+</odoo>

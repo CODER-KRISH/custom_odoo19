@@ -13,6 +13,7 @@
         'views/project_task.xml',
         'data/sequence.xml',
         'data/ir_cron.xml',
+        'data/mail_template.xml',
         'wizard/access_request_reason_view.xml',
         'views/menu.xml',
     ],

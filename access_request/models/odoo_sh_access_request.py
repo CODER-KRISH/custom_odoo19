@@ -135,25 +135,16 @@ class OdooSHAccessRequest(models.Model):
 
         return super().create(vals_list)
 
-    #
-    # def write(self, vals):
-    #     """Update access request and sync GitHub username on user."""
-    #     res = super().write(vals)
-    #
-    #     if vals.get('user_id'):
-    #         for record in self:
-    #             if record.user_id.github_username:
-    #                 record.github_username = record.user_id.github_username
-    #
-    #     return res
-
-    @api.constrains("start_date", "end_date")
-    def _check_dates(self):
+    @api.constrains("start_date", "end_date", "github_username")
+    def _validations(self):
         """Validate that end date is not earlier than start date."""
         for record in self:
             if record.start_date and record.end_date:
                 if record.end_date < record.start_date:
                     raise ValidationError("End Date cannot be earlier than Start Date.")
+
+            if not record.github_username:
+                raise UserError("Github Username is not found!")
 
     def action_submit(self):
         """Submit draft request and send approval email."""
@@ -162,40 +153,29 @@ class OdooSHAccessRequest(models.Model):
                 raise UserError("Only draft requests can be submitted.")
 
             record.state = "submitted"
-
             record.action_send_mail()
 
-        return True
-
     def action_send_mail(self):
+        """Send approval email using mail template."""
+
+        template = self.env.ref(
+            "access_request.mail_template_access_request_approval",
+            raise_if_not_found=False
+        )
+
         for rec in self:
-            mail_values = {
-                'subject': f'Access Request Approval {rec.name}',
-                'body_html': f"""
-                    <p>Hello,</p>
-                    <p>Your Approval is needed for {rec.name}</p>
-                """,
-                'email_to': rec.user_id.email,
-                'email_from': self.env.user.email,
-            }
+            approver_emails = ",".join(
+                rec.approver_ids.mapped("email")
+            )
 
-            mail = self.env['mail.mail'].sudo().create(mail_values)
-            mail.send()
-
-    def action_send_mail(self):
-        for rec in self:
-            mail_values = {
-                'subject': f'Access Request Approval {rec.name}',
-                'body_html': f"""
-                    <p>Hello,</p>
-                    <p>Your Approval is needed for {rec.name} to access {rec.access_type}</p>
-                """,
-                'email_to': rec.user_id.email,
-                'email_from': self.env.user.email,
-            }
-
-            mail = self.env['mail.mail'].sudo().create(mail_values)
-            mail.send()
+            if template:
+                template.send_mail(
+                    rec.id,
+                    force_send=True,
+                    email_values={
+                        "email_to": approver_emails,
+                    }
+                )
 
     def action_approve(self):
         """Approve submitted access request."""
@@ -221,8 +201,6 @@ class OdooSHAccessRequest(models.Model):
                 "approved_on": fields.Datetime.now(),
                 "rejection_reason": False,
             })
-
-        return True
 
     def action_reject(self):
         """Open rejection wizard for submitted request."""
@@ -250,8 +228,6 @@ class OdooSHAccessRequest(models.Model):
 
             record.state = "revoked"
 
-        return True
-
     def action_set_to_draft(self):
         """Reset approved or rejected request to draft."""
         for record in self:
@@ -261,8 +237,6 @@ class OdooSHAccessRequest(models.Model):
             record.write({
                 "state": "draft",
             })
-
-        return True
 
     @api.model
     def _get_access_register_ids(self, project_id=False):

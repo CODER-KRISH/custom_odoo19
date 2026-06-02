@@ -49,12 +49,7 @@ class OdooSHAccessRequest(models.Model):
     @api.onchange('project_id')
     def _onchange_project_id(self):
         if self.project_id:
-            approver_ids = self.project_id.approver_ids.ids
-
-            if self.project_id.user_id:
-                approver_ids.append(self.project_id.user_id.id)
-
-            self.approver_ids = [(6, 0, list(set(approver_ids)))]
+            self.approver_ids = [(6, 0, self.project_id.approver_ids)]
         else:
             self.approver_ids = [(5, 0, 0)]
 
@@ -177,10 +172,6 @@ class OdooSHAccessRequest(models.Model):
             if record.user_id == self.env.user:
                 raise ValidationError("You cannot approve your own request.")
 
-            if self.env.user not in record.project_id.approver_ids and not self.env.user.has_group(
-                    "project.group_project_manager"):
-                raise UserError("You are not allowed to approve this request.")
-
             old_requests = self.search([
                 ("id", "!=", record.id),
                 ("project_id", "=", record.project_id.id),
@@ -299,8 +290,6 @@ class OdooSHAccessRequest(models.Model):
         activity_type = self.env.ref("mail.mail_activity_data_todo")
 
         for request in expired_requests:
-            # if not request.approver_id:
-            #     continue
 
             existing_activity = self.env["mail.activity"].search([
                 ("res_model", "=", self._name),

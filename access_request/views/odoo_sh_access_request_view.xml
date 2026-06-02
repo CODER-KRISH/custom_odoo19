@@ -18,28 +18,28 @@
                             string="Approve"
                             type="object"
                             class="btn-primary"
-                            invisible="state != 'submitted'"
+                            invisible="state != 'submitted' or not is_current_user_approver"
                     />
 
                     <button name="action_reject"
                             string="Reject"
                             type="object"
                             class="btn-secondary"
-                            invisible="state != 'submitted'"
+                            invisible="state != 'submitted' or not is_current_user_approver"
                     />
 
                     <button name="action_revoke"
                             string="Revoke"
                             type="object"
                             class="btn-primary"
-                            invisible="state != 'approved'"
+                            invisible="state != 'approved' or not is_current_user_approver"
                     />
 
                     <button name="action_set_to_draft"
                             string="Reset to Draft"
                             type="object"
                             class="btn-secondary"
-                            invisible="state in ['draft', 'revoked']"
+                            invisible="state in ['draft', 'revoked'] or not is_current_user_approver"
                     />
 
                     <field name="state"
@@ -68,21 +68,21 @@
                     <group>
                         <!-- Request Details -->
                         <group string="Request Details">
-                            <field name="project_id" readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="state != 'draft'" required="1"/>
                             <field name="task_id"
                                    readonly="state != 'draft'"
-                                   domain="[('project_id', '=', project_id)]"/>
+                                   domain="[('project_id', '=', project_id)]" required="1"/>
                             <field name="user_id" readonly="state != 'draft'"/>
                             <field name="github_username" readonly="1"/>
                         </group>
 
                         <!-- Access Details -->
                         <group string="Access Details">
-                            <field name="access_type" readonly="state != 'draft'"/>
+                            <field name="access_type" readonly="state != 'draft'" required="1"/>
                             <field name="environment"
                                    readonly="state != 'draft'"
                                    invisible="access_type != 'odoo_sh'"/>
-                            <field name="role" readonly="state != 'draft'"/>
+                            <field name="role" readonly="state != 'draft'" required="1"/>
                             <field name="access_token" readonly="1"/>
                         </group>
                     </group>
@@ -92,7 +92,7 @@
                         <group string="Approval Details">
                             <field name="approver_ids"
                                    widget="many2many_avatar_user"
-                                   readonly="state != 'draft'"/>
+                                   readonly="1"/>
 
                             <field name="approved_by_id"
                                    readonly="1"
@@ -109,7 +109,7 @@
                                    string="Access Period"
                                    widget="daterange"
                                    readonly="state != 'draft'"
-                                   options="{'end_date_field': 'end_date', 'always_range': true}"/>
+                                   options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>
                         </group>
                     </group>
 

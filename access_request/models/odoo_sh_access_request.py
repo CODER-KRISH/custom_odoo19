@@ -124,6 +124,14 @@ class OdooSHAccessRequest(models.Model):
         tracking=True,
     )
 
+    is_current_user_approver = fields.Boolean(
+        compute="_compute_is_current_user_approver"
+    )
+
+    def _compute_is_current_user_approver(self):
+        for rec in self:
+            rec.is_current_user_approver = self.env.user in rec.approver_ids or self.env.user.id == self.project_id.user_id.id
+
     @api.model_create_multi
     def create(self, vals_list):
         """Create access request and assign sequence/access token."""
@@ -135,16 +143,13 @@ class OdooSHAccessRequest(models.Model):
 
         return super().create(vals_list)
 
-    @api.constrains("start_date", "end_date", "github_username")
+    @api.constrains("start_date", "end_date")
     def _validations(self):
         """Validate that end date is not earlier than start date."""
         for record in self:
             if record.start_date and record.end_date:
                 if record.end_date < record.start_date:
                     raise ValidationError("End Date cannot be earlier than Start Date.")
-
-            if not record.github_username:
-                raise UserError("Github Username is not found!")
 
     def action_submit(self):
         """Submit draft request and send approval email."""
@@ -186,21 +191,25 @@ class OdooSHAccessRequest(models.Model):
             if record.user_id == self.env.user:
                 raise ValidationError("You cannot approve your own request.")
 
-            old_requests = self.search([
-                ("id", "!=", record.id),
-                ("project_id", "=", record.project_id.id),
-                ("user_id", "=", record.user_id.id),
-                ("state", "=", "approved"),
-            ])
+            if self.env.user not in record.approver_ids:
+                raise UserError("You are not a part of approvers.\nYou cannot approve the request!")
 
-            old_requests.write({"state": "revoked"})
+            if self.env.user == record.project_id.user_id or self.env.user in record.approver_ids:
+                old_requests = self.search([
+                    ("id", "!=", record.id),
+                    ("project_id", "=", record.project_id.id),
+                    ("user_id", "=", record.user_id.id),
+                    ("state", "=", "approved"),
+                ])
 
-            record.write({
-                "state": "approved",
-                "approved_by_id": self.env.user.id,
-                "approved_on": fields.Datetime.now(),
-                "rejection_reason": False,
-            })
+                old_requests.write({"state": "revoked"})
+
+                record.write({
+                    "state": "approved",
+                    "approved_by_id": self.env.user.id,
+                    "approved_on": fields.Datetime.now(),
+                    "rejection_reason": False,
+                })
 
     def action_reject(self):
         """Open rejection wizard for submitted request."""

@@ -59,10 +59,6 @@
                         <td><t t-out="object.end_date or ''"/></td>
                     </tr>
                     <tr>
-                        <td><b>Status</b></td>
-                        <td><t t-out="dict(object._fields['state'].selection).get(object.state)"/></td>
-                    </tr>
-                    <tr>
                         <td><b>GitHub Username</b></td>
                         <td><t t-out="object.github_username or ''"/></td>
                     </tr>

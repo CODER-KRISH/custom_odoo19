@@ -39,7 +39,7 @@
                             string="Reset to Draft"
                             type="object"
                             class="btn-secondary"
-                            invisible="state in ['draft', 'revoked'] or not is_current_user_approver"
+                            invisible="state == 'draft' or not is_current_user_approver"
                     />
 
                     <field name="state"
@@ -133,7 +133,7 @@
                 <field name="project_id" width="150"/>
                 <field name="task_id" width="150"/>
                 <field name="access_type" string="Access Request" class="fw-bold"/>
-                <field name="user_id" string="User" class="fw-bold"/>
+                <field name="user_id" string="Requester" class="fw-bold"/>
                 <field name="github_username" string="Github"/>
                 <field name="approved_by_id" string="Approved By" width="100" class="fw-bold"/>
                 <field name="approved_on" string="Date"/>
@@ -145,9 +145,41 @@
     </record>
 
     <record id="action_odoo_sh_ar" model="ir.actions.act_window">
-        <field name="name">Access Requests</field>
+        <field name="name">All Requests</field>
         <field name="res_model">odoo.sh.access.request</field>
         <field name="view_mode">list,form,search</field>
+    </record>
+
+    <record id="action_odoo_access_register" model="ir.actions.act_window">
+        <field name="name">Approved Registers</field>
+        <field name="res_model">odoo.sh.access.request</field>
+        <field name="domain">[('state', '=', 'approved')]</field>
+        <field name="context">{'create': 0}</field>
+        <field name="view_mode">list,form,search</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Template found
+            </p>
+            <p>
+                Let's create one
+            </p>
+        </field>
+    </record>
+
+    <record id="action_odoo_revoked_access" model="ir.actions.act_window">
+        <field name="name">Revoked Requests</field>
+        <field name="res_model">odoo.sh.access.request</field>
+        <field name="domain">[('state', '=', 'revoked')]</field>
+        <field name="context">{'create': 0}</field>
+        <field name="view_mode">list,form,search</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Template found
+            </p>
+            <p>
+                No Revoked Access Found!
+            </p>
+        </field>
     </record>
 
 </odoo>

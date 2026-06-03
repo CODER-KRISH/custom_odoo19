@@ -133,7 +133,9 @@ class OdooSHAccessRequest(models.Model):
 
     def _compute_is_current_user_approver(self):
         for rec in self:
-            rec.is_current_user_approver = self.env.user in rec.approver_ids or self.env.user.id == rec.project_id.user_id.id
+            rec.is_current_user_approver = (self.env.user in rec.approver_ids or
+                                            self.env.user.id == rec.project_id.user_id.id or
+                                            self.env.user.has_group('access_request.group_ar_admin'))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -191,13 +193,19 @@ class OdooSHAccessRequest(models.Model):
             if record.state != "submitted":
                 raise UserError("Only submitted requests can be approved.")
 
-            if record.user_id == self.env.user:
+            if (record.user_id == self.env.user and not
+            self.env.user.has_group('access_request.group_ar_admin')):
                 raise ValidationError("You cannot approve your own request.")
 
-            if self.env.user not in record.approver_ids:
+            if (self.env.user not in record.approver_ids and not
+            self.env.user.has_group('access_request.group_ar_admin')):
                 raise UserError("You are not a part of approvers.\nYou cannot approve the request!")
 
-            if self.env.user == record.project_id.user_id or self.env.user in record.approver_ids:
+            if (
+                    self.env.user == record.project_id.user_id or
+                    self.env.user in record.approver_ids or
+                    self.env.user.has_group('access_request.group_ar_admin')
+            ):
                 old_requests = self.search([
                     ("id", "!=", record.id),
                     ("project_id", "=", record.project_id.id),
@@ -218,37 +226,53 @@ class OdooSHAccessRequest(models.Model):
         """Open rejection wizard for submitted request."""
         self.ensure_one()
 
-        if self.state != "submitted":
-            raise UserError("Only submitted requests can be rejected.")
+        if (
+                self.env.user == self.project_id.user_id or
+                self.env.user in self.approver_ids or
+                self.env.user.has_group('access_request.group_ar_admin')
+        ):
 
-        return {
-            "type": "ir.actions.act_window",
-            "name": "Reject Access Request",
-            "res_model": "access.request.reason",
-            "view_mode": "form",
-            "target": "new",
-            "context": {
-                "default_request_id": self.id,
-            },
-        }
+            if self.state != "submitted":
+                raise UserError("Only submitted requests can be rejected.")
+
+            return {
+                "type": "ir.actions.act_window",
+                "name": "Reject Access Request",
+                "res_model": "access.request.reason",
+                "view_mode": "form",
+                "target": "new",
+                "context": {
+                    "default_request_id": self.id,
+                },
+            }
 
     def action_revoke(self):
         """Revoke approved access request."""
         for record in self:
-            if record.state != "approved":
-                raise UserError("Only approved requests can be revoked.")
+            if (
+                    self.env.user == record.project_id.user_id or
+                    self.env.user in record.approver_ids or
+                    self.env.user.has_group('access_request.group_ar_admin')
+            ):
+                if record.state != "approved":
+                    raise UserError("Only approved requests can be revoked.")
 
-            record.state = "revoked"
+                record.state = "revoked"
 
     def action_set_to_draft(self):
         """Reset approved or rejected request to draft."""
         for record in self:
-            if record.state not in ["approved", "rejected", "submitted"]:
-                raise UserError("Only approved, submitted or rejected requests can be reset to draft.")
+            if (
+                    self.env.user == self.project_id.user_id or
+                    self.env.user in self.approver_ids or
+                    self.env.user.has_group('access_request.group_ar_admin')
+            ):
+                if record.state not in ["approved", "rejected", "submitted"]:
+                    raise UserError("Only approved, submitted or rejected requests can be reset to draft.")
 
-            record.write({
-                "state": "draft",
-            })
+                record.write({
+                    "state": "draft",
+                })
 
     @api.model
     def _get_access_register_ids(self, project_id=False):

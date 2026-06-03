@@ -7,6 +7,7 @@
     'depends': ['base', 'mail', 'project'],
     'data': [
         'security/ir.model.access.csv',
+        'security/odoo_sh_access_request_rules.xml',
         'views/odoo_sh_access_request_view.xml',
         'views/res_users_view.xml',
         'views/project_project_view.xml',

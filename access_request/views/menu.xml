@@ -5,16 +5,31 @@
     <menuitem name="Access Requests"
               id="parent_menu"
               sequence="3"
-    />
+    >
 
-    <menuitem name="Requests"
-              id="requests_menu"
-              parent="parent_menu"
-              action="access_request.action_odoo_sh_ar"
-              sequence="1"
-    />
+        <menuitem name="Requests"
+                  id="requests_menu"
+                  action="access_request.action_odoo_sh_ar"
+                  sequence="1"
+        />
+        <menuitem name="Access Register"
+                  id="access_register_menu"
+                  action="access_request.action_odoo_access_register"
+                  sequence="2"
+                  groups="access_request.group_ar_admin"
+        />
+        <menuitem name="Revoked Access"
+                  id="access_revoked_menu"
+                  action="access_request.action_odoo_revoked_access"
+                  sequence="3"
+                  groups="access_request.group_ar_admin"
+        />
 
-    <menuitem name="Access Requests"
+    </menuitem>
+
+
+    <!-- Menu for Project Module -->
+    <menuitem name="Access Request"
               id="ar_project_menu"
               parent="project.menu_main_pm"
               action="access_request.action_odoo_sh_ar"

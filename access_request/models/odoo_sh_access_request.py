@@ -62,6 +62,12 @@ class OdooSHAccessRequest(models.Model):
         tracking=True,
     )
 
+    rejected_by_id = fields.Many2one(
+        "res.users",
+        string="Rejected By",
+        tracking=True,
+    )
+
     access_type = fields.Selection([
         ("git", "Git"),
         ("odoo_sh", "Odoo.sh"),
@@ -122,8 +128,8 @@ class OdooSHAccessRequest(models.Model):
         help="Reason entered by approver when request is rejected.",
     )
 
-    approved_on = fields.Datetime(
-        string="Approved On",
+    processed_time = fields.Datetime(
+        string="Processed On",
         tracking=True,
     )
 
@@ -229,7 +235,7 @@ class OdooSHAccessRequest(models.Model):
                 record.write({
                     "state": "approved",
                     "approved_by_id": self.env.user.id,
-                    "approved_on": fields.Datetime.now(),
+                    "processed_time": fields.Datetime.now(),
                     "rejection_reason": False,
                 })
 

@@ -34,4 +34,6 @@ class AccessRequestReason(models.TransientModel):
         self.request_id.write({
             "state": "rejected",
             "rejection_reason": self.reason,
+            "rejected_by_id": self.env.user.id,
+            "processed_time": fields.Date.today()
         })

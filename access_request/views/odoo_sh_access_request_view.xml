@@ -96,11 +96,18 @@
 
                             <field name="approved_by_id"
                                    readonly="1"
-                                   invisible="state != 'approved'"/>
+                                   invisible="state not in ['approved', 'revoked']"/>
 
-                            <field name="approved_on"
+                            <field name="rejected_by_id"
                                    readonly="1"
-                                   invisible="state != 'approved'"/>
+                                   invisible="state != 'rejected'"/>
+
+                            <field name="processed_time"
+                                   readonly="1"
+                                   string="Time"
+                                   invisible="state not in ['rejected', 'approved', 'revoked']"/>
+
+                            <field name="rejection_reason" readonly="1" invisible="state != 'rejected'"/>
                         </group>
 
                         <!-- Validity Period -->
@@ -110,12 +117,6 @@
                                    widget="daterange"
                                    readonly="state != 'draft'"
                                    options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>
-                        </group>
-                    </group>
-
-                    <group invisible="state != 'rejected'">
-                        <group string="Rejection Details">
-                            <field name="rejection_reason" readonly="1"/>
                         </group>
                     </group>
                 </sheet>
@@ -136,7 +137,8 @@
                 <field name="user_id" string="Requester" class="fw-bold"/>
                 <field name="github_username" string="Github"/>
                 <field name="approved_by_id" string="Approved By" width="100" class="fw-bold"/>
-                <field name="approved_on" string="Date"/>
+                <field name="rejected_by_id" string="Rejected By" width="100" class="fw-bold"/>
+                <field name="processed_time" string="Time"/>
                 <field name="state" widget="badge" string="Status" decoration-info="state == 'submitted'"
                        decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"
                        decoration-muted="state == 'revoked'"/>

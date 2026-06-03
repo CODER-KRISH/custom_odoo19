@@ -151,7 +151,7 @@
     </record>
 
     <record id="action_odoo_access_register" model="ir.actions.act_window">
-        <field name="name">Approved Registers</field>
+        <field name="name">Approved Requests</field>
         <field name="res_model">odoo.sh.access.request</field>
         <field name="domain">[('state', '=', 'approved')]</field>
         <field name="context">{'create': 0}</field>

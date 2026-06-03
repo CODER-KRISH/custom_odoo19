@@ -187,6 +187,17 @@ class OdooSHAccessRequest(models.Model):
                     }
                 )
 
+    def action_view_request_from_mail(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Access Request",
+            "res_model": "odoo.sh.access.request",
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
     def action_approve(self):
         """Approve submitted access request."""
         for record in self:

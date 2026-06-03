@@ -19,52 +19,111 @@
                         <th style="text-align:left;">Value</th>
                     </tr>
                     <tr>
-                        <td><b>Request Reference</b></td>
-                        <td><t t-out="object.name"/></td>
+                        <td>
+                            <b>Request Reference</b>
+                        </td>
+                        <td>
+                            <t t-out="object.name"/>
+                        </td>
                     </tr>
                     <tr>
-                        <td><b>Project</b></td>
-                        <td><t t-out="object.project_id.name"/></td>
+                        <td>
+                            <b>Project</b>
+                        </td>
+                        <td>
+                            <t t-out="object.project_id.name"/>
+                        </td>
                     </tr>
                     <tr>
-                        <td><b>Task</b></td>
-                        <td><t t-out="object.task_id.name or ''"/></td>
+                        <td>
+                            <b>Task</b>
+                        </td>
+                        <td>
+                            <t t-out="object.task_id.name or ''"/>
+                        </td>
                     </tr>
                     <tr>
-                        <td><b>Requesting User</b></td>
-                        <td><t t-out="object.user_id.name"/></td>
+                        <td>
+                            <b>Requesting User</b>
+                        </td>
+                        <td>
+                            <t t-out="object.user_id.name"/>
+                        </td>
                     </tr>
                     <tr>
-                        <td><b>Approvers</b></td>
-                        <td><t t-out="', '.join(object.approver_ids.mapped('name'))"/></td>
+                        <td>
+                            <b>Approvers</b>
+                        </td>
+                        <td>
+                            <t t-out="', '.join(object.approver_ids.mapped('name'))"/>
+                        </td>
                     </tr>
                     <tr>
-                        <td><b>Access Type</b></td>
-                        <td><t t-out="dict(object._fields['access_type'].selection).get(object.access_type)"/></td>
+                        <td>
+                            <b>Access Type</b>
+                        </td>
+                        <td>
+                            <t t-out="dict(object._fields['access_type'].selection).get(object.access_type)"/>
+                        </td>
+                    </tr>
+                    <t t-if="object.environment">
+                        <tr>
+                            <td>
+                                <b>Environment</b>
+                            </td>
+                            <td>
+                                <t t-out="dict(object._fields['environment'].selection).get(object.environment) or ''"/>
+                            </td>
+                        </tr>
+                    </t>
+                    <tr>
+                        <td>
+                            <b>Role</b>
+                        </td>
+                        <td>
+                            <t t-out="dict(object._fields['role'].selection).get(object.role)"/>
+                        </td>
                     </tr>
                     <tr>
-                        <td><b>Environment</b></td>
-                        <td><t t-out="dict(object._fields['environment'].selection).get(object.environment) or ''"/></td>
+                        <td>
+                            <b>Start Date</b>
+                        </td>
+                        <td>
+                            <t t-out="object.start_date"/>
+                        </td>
                     </tr>
                     <tr>
-                        <td><b>Role</b></td>
-                        <td><t t-out="dict(object._fields['role'].selection).get(object.role)"/></td>
+                        <td>
+                            <b>End Date</b>
+                        </td>
+                        <td>
+                            <t t-out="object.end_date or ''"/>
+                        </td>
                     </tr>
                     <tr>
-                        <td><b>Start Date</b></td>
-                        <td><t t-out="object.start_date"/></td>
-                    </tr>
-                    <tr>
-                        <td><b>End Date</b></td>
-                        <td><t t-out="object.end_date or ''"/></td>
-                    </tr>
-                    <tr>
-                        <td><b>GitHub Username</b></td>
-                        <td><t t-out="object.github_username or ''"/></td>
+                        <td>
+                            <b>GitHub Username</b>
+                        </td>
+                        <td>
+                            <t t-out="object.github_username or ''"/>
+                        </td>
                     </tr>
                 </table>
 
                 <p>Please review and approve/reject this request.</p>
+
+                <p style="margin-top: 20px;">
+                    <a t-attf-href="{{ object.get_base_url() }}/web#id={{ object.id }}&amp;model=odoo.sh.access.request&amp;view_type=form"
+                       style="background-color:#875A7B;
+                          color:white;
+                          padding:8px;
+                          text-decoration:none;
+                          border-radius:4px;
+                          font-weight:bold;
+                          display:inline-block;">
+                        View Request
+                    </a>
+                </p>
             </div>
         </field>
     </record>

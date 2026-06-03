@@ -39,7 +39,7 @@
                             string="Reset to Draft"
                             type="object"
                             class="btn-secondary"
-                            invisible="state == 'draft' or not is_current_user_approver"
+                            invisible="state in ['draft', 'revoked'] or not is_current_user_approver"
                     />
 
                     <field name="state"

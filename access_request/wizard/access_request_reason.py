@@ -26,14 +26,12 @@ class AccessRequestReason(models.TransientModel):
         self.ensure_one()
 
         if not self.reason:
-            raise ValidationError(_("Rejection reason is required."))
+            raise ValidationError("Rejection reason is required.")
 
         if self.request_id.state != "submitted":
-            raise UserError(_("Only submitted requests can be rejected."))
+            raise UserError("Only submitted requests can be rejected.")
 
         self.request_id.write({
             "state": "rejected",
             "rejection_reason": self.reason,
         })
-
-        return {"type": "ir.actions.act_window_close"}

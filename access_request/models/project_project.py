@@ -63,8 +63,7 @@ class Project(models.Model):
         """Open latest active approved access register for this project."""
         self.ensure_one()
 
-        AccessRequest = self.env["odoo.sh.access.request"]
-        register_ids = AccessRequest._get_access_register_ids(self.id)
+        register_ids = self.env["odoo.sh.access.request"]._get_access_register_ids(self.id)
 
         return {
             "type": "ir.actions.act_window",

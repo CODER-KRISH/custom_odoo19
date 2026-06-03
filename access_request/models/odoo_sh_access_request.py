@@ -37,6 +37,8 @@ class OdooSHAccessRequest(models.Model):
     approver_ids = fields.Many2many(
         "res.users",
         string="Approvers",
+        compute='_compute_project_id',
+        store='True',
         tracking=True,
     )
 
@@ -46,12 +48,13 @@ class OdooSHAccessRequest(models.Model):
         help="Unique access token for approval link or portal access.",
     )
 
-    @api.onchange('project_id')
-    def _onchange_project_id(self):
-        if self.project_id:
-            self.approver_ids = [(6, 0, self.project_id.approver_ids.ids)]
-        else:
-            self.approver_ids = [(5, 0, 0)]
+    @api.depends('project_id')
+    def _compute_project_id(self):
+        for rec in self:
+            if rec.project_id:
+                rec.approver_ids = [(6, 0, rec.project_id.approver_ids.ids)]
+            else:
+                rec.approver_ids = [(5, 0, 0)]
 
     approved_by_id = fields.Many2one(
         "res.users",
@@ -130,7 +133,7 @@ class OdooSHAccessRequest(models.Model):
 
     def _compute_is_current_user_approver(self):
         for rec in self:
-            rec.is_current_user_approver = self.env.user in rec.approver_ids or self.env.user.id == self.project_id.user_id.id
+            rec.is_current_user_approver = self.env.user in rec.approver_ids or self.env.user.id == rec.project_id.user_id.id
 
     @api.model_create_multi
     def create(self, vals_list):

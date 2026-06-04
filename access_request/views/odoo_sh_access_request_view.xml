@@ -156,7 +156,7 @@
         <field name="res_model">odoo.sh.access.request</field>
         <field name="view_mode">list,form,search</field>
     </record>
-
+    
     <record id="action_odoo_access_register" model="ir.actions.act_window">
         <field name="name">Approved Requests</field>
         <field name="res_model">odoo.sh.access.request</field>

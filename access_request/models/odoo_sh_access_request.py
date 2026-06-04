@@ -68,6 +68,12 @@ class OdooSHAccessRequest(models.Model):
         tracking=True,
     )
 
+    revoked_by_id = fields.Many2one(
+        "res.users",
+        string="Revoked By",
+        tracking=True,
+    )
+
     access_type = fields.Selection([
         ("git", "Git"),
         ("odoo_sh", "Odoo.sh"),
@@ -128,10 +134,11 @@ class OdooSHAccessRequest(models.Model):
         help="Reason entered by approver when request is rejected.",
     )
 
-    processed_time = fields.Datetime(
-        string="Processed On",
-        tracking=True,
-    )
+    processed_time = fields.Datetime(string="Processed On", tracking=True)
+
+    request_creation_time = fields.Datetime(string="Create Time")
+
+    revoked_time = fields.Datetime(string="Revoked Time")
 
     is_current_user_approver = fields.Boolean(
         compute="_compute_is_current_user_approver"
@@ -169,6 +176,10 @@ class OdooSHAccessRequest(models.Model):
                 raise UserError("Only draft requests can be submitted.")
 
             record.state = "submitted"
+            record.write({
+                'state': 'submitted',
+                'request_creation_time': fields.Datetime.now()
+            })
             record.action_send_mail()
 
     def action_send_mail(self):
@@ -274,7 +285,11 @@ class OdooSHAccessRequest(models.Model):
                 if record.state != "approved":
                     raise UserError("Only approved requests can be revoked.")
 
-                record.state = "revoked"
+                record.write({
+                    'state': 'revoked',
+                    'revoked_time': fields.Datetime.now(),
+                    'revoked_by_id': self.env.user.id,
+                })
 
     def action_set_to_draft(self):
         """Reset approved or rejected request to draft."""

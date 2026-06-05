@@ -1,0 +1,13 @@
+<odoo>
+
+    <record id="ir_cron_check_draft_auto_purchase_order" model="ir.cron">
+        <field name="name">Check Draft Purchase Orders</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_action_draft_pos()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>

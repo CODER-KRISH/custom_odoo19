@@ -71,7 +71,7 @@
                 <!-- xpath for Buttons Manager that he can confirm the block sale order -->
                 <!-- ================================================================== -->
 
-                <button name="mngr_allow_block_so"
+                <button name="mgr_allow_block_so"
                         type="object"
                         string="Confirm Block Order"
                         class="btn-primary"

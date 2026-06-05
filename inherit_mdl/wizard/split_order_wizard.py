@@ -102,7 +102,7 @@ class SplitOrder(models.TransientModel):
 
             if invoice:
                 reversal = self.env['account.move.reversal'].create({
-                    'move_ids': [(6, 0, [invoice.id])],
+                    'move_ids': [(6, 0, [invoice.ids])],
                     'reason': 'Return of goods',
                     'journal_id': invoice.journal_id.id,
                 })

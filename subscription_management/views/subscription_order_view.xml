@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- List View -->
+    <record id="view_subscription_order_list" model="ir.ui.view">
+        <field name="name">subscription.order.list</field>
+        <field name="model">subscription.order</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Reference"/>
+                <field name="user_id" string="Customer"/>
+                <field name="account_manager_id" string="Sales Person"/>
+                <field name="start_date" string="From"/>
+                <field name="end_date" string="To"/>
+                <field name="grand_total" string="Amount"/>
+                <field name="state" string="Status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_subscription_order_form" model="ir.ui.view">
+        <field name="name">subscription.order.form</field>
+        <field name="model">subscription.order</field>
+        <field name="arch" type="xml">
+            <form string="Subscription Order">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,review,approved"
+                           invisible="state not in ['draft', 'review', 'approved']"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,approved,expired"
+                           invisible="state != 'expired'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,review,cancelled"
+                           invisible="state != 'expired'"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="user_id" string="Customer"/>
+                            <field name="account_manager_id" string="Account Manager"/>
+                            <field name="start_date"
+                                   string="Access Period"
+                                   widget="daterange"
+                                   readonly="state != 'draft'"
+                                   options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Subscription Lines">
+                            <field name="line_ids">
+                                <list editable="bottom" no_open="1">
+                                    <field name="product_id"/>
+                                    <field name="currency_id" nolabel="1" invisible="1"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit" widget="monetary"/>
+                                    <field name="subtotal" widget="monetary"/>
+                                </list>
+                            </field>
+
+                            <group col="4">
+
+                                <group class="oe_subtotal_footer oe_right">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="amount_total"
+                                           string="Total"
+                                           readonly="1"
+                                           widget="monetary"
+                                           class="oe_inline fw-bold"
+                                           style="font-weight: bold;"
+                                    />
+                                    <field name="discount"
+                                           string="Discount"
+                                           readonly="1"
+                                           invisible="amount_total &gt;= 10000"
+                                           widget="monetary"
+                                    />
+                                    <field name="discount"
+                                           string="Discount 10%"
+                                           invisible="amount_total &lt; 10000"
+                                           widget="monetary"
+                                    />
+                                    <field name="grand_total"
+                                           string="Amount"
+                                           readonly="1"
+                                           class="fw-bold"
+                                           widget="monetary"
+                                           style="font-weight: bold;"
+                                    />
+
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_subscription_order" model="ir.actions.act_window">
+        <field name="name">Subscription Orders</field>
+        <field name="res_model">subscription.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="root_menu"
+              name="Subscription Management"
+              sequence="1"/>
+
+    <menuitem id="subs_menu"
+              name="Subscriptions"
+              parent="root_menu"
+              action="action_subscription_order"
+              sequence="1"/>
+
+</odoo> 

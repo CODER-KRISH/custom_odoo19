@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="crm_lead_form_view" model="ir.ui.view">
+        <field name="name">crm.lead.form.view</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form/sheet/div[@name='button_box']/button[@name='action_schedule_meeting']" position="after">
+                <button name="action_view_sale_orders" type="object"
+                        class="oe_stat_button" icon="fa-pencil">
+                    <field string="Sale Orders" name="sale_order_count" widget="statinfo"/>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="crm_kanban_inherit_view" model="ir.ui.view">
+        <field name="name">crm.kanban.inherit.view</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//kanban" position="inside">
+                <field name="sale_order_count"/>
+            </xpath>
+
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="sale_order_count" widget="badge" string="Sale Orders"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

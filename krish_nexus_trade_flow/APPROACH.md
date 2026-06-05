@@ -1,0 +1,1 @@
+Yes There is sale_id field in sale_stock module so i Just use it for my task

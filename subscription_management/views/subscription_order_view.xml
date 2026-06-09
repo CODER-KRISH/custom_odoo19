@@ -12,8 +12,11 @@
                 <field name="account_manager_id" string="Sales Person"/>
                 <field name="start_date" string="From"/>
                 <field name="end_date" string="To"/>
+                <field name="currency_id" nolabel="1" invisible="1"/>
                 <field name="grand_total" string="Amount"/>
-                <field name="state" string="Status" widget="badge"/>
+                <field name="state" string="Status" widget="badge" decoration-info="state == 'review'"
+                       decoration-success="state == 'approved'"
+                />
             </list>
         </field>
     </record>
@@ -25,6 +28,19 @@
         <field name="arch" type="xml">
             <form string="Subscription Order">
                 <header>
+                    <button name="state_to_review"
+                            string="Submit"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                    />
+                    <button name="state_to_approve"
+                            string="Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'review'"
+                            groups="subscription_management.group_subs_admin"
+                    />
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,review,approved"
                            invisible="state not in ['draft', 'review', 'approved']"/>
@@ -45,8 +61,8 @@
 
                     <group>
                         <group>
-                            <field name="user_id" string="Customer"/>
-                            <field name="account_manager_id" string="Account Manager"/>
+                            <field name="user_id" string="Customer" readonly="state != 'draft'"/>
+                            <field name="account_manager_id" string="Account Manager" readonly="state != 'draft'"/>
                             <field name="start_date"
                                    string="Access Period"
                                    widget="daterange"
@@ -57,7 +73,7 @@
 
                     <notebook>
                         <page string="Subscription Lines">
-                            <field name="line_ids">
+                            <field name="line_ids" readonly="state != 'draft'">
                                 <list editable="bottom" no_open="1">
                                     <field name="product_id"/>
                                     <field name="currency_id" nolabel="1" invisible="1"/>
@@ -80,7 +96,9 @@
                                            class="oe_inline fw-bold"
                                            style="font-weight: bold;"
                                     />
-                                    <span for="discount" style="font-size: 16px;">Discount:</span>
+                                    <span for="discount" invisible="amount_total &gt;= 10000" style="font-size: 16px;">
+                                        Discount:
+                                    </span>
                                     <field name="discount"
                                            string="Discount"
                                            readonly="1"
@@ -88,6 +106,9 @@
                                            invisible="amount_total &gt;= 10000"
                                            widget="monetary"
                                     />
+                                    <span for="discount" invisible="amount_total &lt; 10000" style="font-size: 16px;">
+                                        Discount 10%:
+                                    </span>
                                     <field name="discount"
                                            string="Discount 10%"
                                            nolabel="1"
@@ -122,10 +143,7 @@
                 <templates>
                     <t t-name="card">
                         <div class="row mb4">
-                            <div class="mb-1">
-                                <strong>Name:&amp;nbsp;</strong>
-                                <field name="name"/>
-                            </div>
+                            <field name="name" class="fw-bold"/>
                             <div>
                                 <strong>Customer:&amp;nbsp;</strong>
                                 <field name="user_id"/>

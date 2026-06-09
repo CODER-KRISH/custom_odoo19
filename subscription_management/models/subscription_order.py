@@ -56,3 +56,11 @@ class SubscriptionOrder(models.Model):
                 rec.discount = amount_total * 10 / 100
 
             rec.grand_total = amount_total - rec.discount
+
+    def state_to_review(self):
+        for rec in self:
+            rec.state = "review"
+
+    def state_to_approve(self):
+        for rec in self:
+            rec.state = "approved"

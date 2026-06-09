@@ -3,6 +3,7 @@ from odoo import fields, models, api
 class ResourceSubscriptionLine(models.Model):
     _name = "subscription.order.line"
     _description = "Subscription Order Line"
+    _rec_name = 'product_id'
 
     subscription_id = fields.Many2one("subscription.order", ondelete="cascade")
 

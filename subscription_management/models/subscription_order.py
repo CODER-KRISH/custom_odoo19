@@ -18,9 +18,12 @@ class SubscriptionOrder(models.Model):
     line_ids = fields.One2many("subscription.order.line", "subscription_id", tracking=True)
 
     currency_id = fields.Many2one("res.currency", default=lambda self: self.env.company.currency_id, tracking=True)
-    amount_total = fields.Monetary(currency_field='currency_id', tracking=True, compute='_compute_amount_total', store=True)
-    grand_total = fields.Monetary(currency_field='currency_id', tracking=True, compute='_compute_amount_total', store=True)
-    discount = fields.Monetary(string='Discount', tracking=True, default=0.00, compute='_compute_amount_total', store=True)
+    amount_total = fields.Monetary(currency_field='currency_id', default=0.00, tracking=True,
+                                   compute='_compute_amount_total', store=False)
+    grand_total = fields.Monetary(currency_field='currency_id', default=0.00, tracking=True,
+                                  compute='_compute_amount_total', store=False)
+    discount = fields.Monetary(string='Discount', tracking=True, default=0.00, compute='_compute_amount_total',
+                               store=False)
 
     state = fields.Selection([
         ("draft", "Draft"),
@@ -38,15 +41,18 @@ class SubscriptionOrder(models.Model):
 
         return super().create(vals_list)
 
-    @api.depends('line_ids')
+    @api.depends('line_ids.subtotal')
     def _compute_amount_total(self):
         for rec in self:
-            if rec.line_ids:
-                line_total_amount = rec.line_ids.mapped('subtotal')
-                rec.amount_total = sum(line_total_amount)
+            rec.amount_total = 0.0
+            rec.discount = 0.0
+            rec.grand_total = 0.0
 
-            if rec.amount_total >= 10000:
-                rec.discount = (rec.amount_total * 10) / 100
-                rec.grand_total = rec.amount_total - rec.discount
-            elif rec.amount_total < 10000:
-                rec.grand_total = rec.amount_total
+            amount_total = sum(rec.line_ids.mapped('subtotal'))
+
+            rec.amount_total = amount_total
+
+            if amount_total >= 10000:
+                rec.discount = amount_total * 10 / 100
+
+            rec.grand_total = amount_total - rec.discount

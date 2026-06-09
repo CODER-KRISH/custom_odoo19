@@ -144,7 +144,7 @@
             <field name="name">admission.kanban.view</field>
             <field name="model">admission</field>
             <field name="arch" type="xml">
-                <kanban class="o_kanban_mobile">
+                <kanban class="o_kanban_mobile" default_group_by="state">
                     <templates>
                         <t t-name="card">
                             <div class="row mb4">

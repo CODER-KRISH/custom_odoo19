@@ -122,8 +122,16 @@
               sequence="45"
               id="exam_structure_menu"
               parent="exam_menu"
-              action="exam_action"
+              action="exam_admin_and_teacher_action"
               groups="school_management_system.group_school_mgt_teacher"
+    />
+
+    <menuitem name="Exam Timetables"
+              sequence="46"
+              id="exam_structure_menu_student"
+              parent="exam_menu"
+              action="exam_student_action"
+              groups="school_management_system.group_school_student"
     />
 
     <menuitem name="Student Results"
@@ -260,7 +268,7 @@
     <menuitem name="Exam Timetables"
               id="menu_exam_timetable_student_user"
               parent="menu_root_timetable_student_user"
-              action="exam_action"
+              action="exam_student_action"
               sequence="2"
               groups="school_management_system.group_school_student"
     />

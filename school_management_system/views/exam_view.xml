@@ -99,7 +99,7 @@
         </field>
     </record>
 
-    <record id="exam_action" model="ir.actions.act_window">
+    <record id="exam_student_action" model="ir.actions.act_window">
         <field name="name">Exam Timetables</field>
         <field name="res_model">exam</field>
         <field name="view_mode">list,form</field>
@@ -108,6 +108,17 @@
             'search_default_my_filter': 1
             }
         </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Exam!
+            </p>
+        </field>
+    </record>
+
+    <record id="exam_admin_and_teacher_action" model="ir.actions.act_window">
+        <field name="name">Exam Timetables</field>
+        <field name="res_model">exam</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first Exam!

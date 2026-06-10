@@ -17,7 +17,7 @@
         'views/menu.xml',
     ],
     "installable": True,
-    "application": False,
+    "application": True,
     "auto_install": False,
-    "sequence": -1000,
+    "sequence": -10000,
 }

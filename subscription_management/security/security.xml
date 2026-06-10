@@ -34,16 +34,14 @@
         <field name="name">Subscription - Own Records</field>
         <field name="model_id" ref="model_subscription_order"/>
         <field name="domain_force">
-            [('account_manager_id', '=', user.id)]
+            [('account_manager_id', '=', user.partner_id.id)]
         </field>
-        <field name="groups" eval="[(4, ref('subscription_management.group_subs_user'))]"/>
     </record>
 
     <record id="subscription_order_manager_rule" model="ir.rule">
         <field name="name">Subscription - Manager All Records</field>
         <field name="model_id" ref="model_subscription_order"/>
         <field name="domain_force">[(1,'=',1)]</field>
-        <field name="groups" eval="[(4, ref('subscription_management.group_subs_admin'))]"/>
     </record>
 
 </odoo> 

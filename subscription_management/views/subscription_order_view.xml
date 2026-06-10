@@ -7,7 +7,7 @@
         <field name="model">subscription.order</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name" string="Reference"/>
+                <field name="name" string="Reference" class="fw-bold"/>
                 <field name="partner_id" string="Customer"/>
                 <field name="account_manager_id" string="Sales Person"/>
                 <field name="start_date" string="From"/>

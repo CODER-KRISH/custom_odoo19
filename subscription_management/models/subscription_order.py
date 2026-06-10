@@ -36,6 +36,8 @@ class SubscriptionOrder(models.Model):
     payment_term_id = fields.Many2one("account.payment.term", related='user_id.partner_id.property_payment_term_id',
                                       tracking=True, store=True)
 
+    mail_sent = fields.Boolean(default=False, copy=False)
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -105,7 +107,17 @@ class SubscriptionOrder(models.Model):
             ('end_date', '=', today),
         ])
 
+        template = self.env.ref(
+            'subscription_management.mail_template_subscription_expiry',
+            raise_if_not_found=False
+        )
+
         for order in expiry_orders:
+            if template and not order.mail_sent:
+
+                template.send_mail(order.id, force_send=True)
+                order.mail_sent = True
+
             order.state = "expired"
 
     def unlink(self):

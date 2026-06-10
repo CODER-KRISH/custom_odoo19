@@ -33,6 +33,8 @@ class SubscriptionOrder(models.Model):
         ("cancelled", "Cancelled"),
     ], default="draft", tracking=True)
 
+    payment_term_id = fields.Many2one("account.payment.term", related='user_id.partner_id.property_payment_term_id', tracking=True, store=True)
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -63,4 +65,23 @@ class SubscriptionOrder(models.Model):
 
     def state_to_approve(self):
         for rec in self:
+            for line in rec.line_ids:
+                if not line.product_id:
+                    continue
+
+                overlapping_subscription = self.search([
+                    ('id', '!=', rec.id),
+                    ('state', '=', 'approved'),
+                    ('line_ids.product_id', '=', line.product_id.id),
+                    ('start_date', '<=', rec.end_date),
+                    ('end_date', '>=', rec.start_date),
+                ], limit=1)
+
+                if overlapping_subscription:
+                    raise ValidationError(
+                        f"Product '{line.product_id.display_name}' is already subscribed "
+                        f"in subscription '{overlapping_subscription.name}' "
+                        f"for overlapping dates."
+                    )
+
             rec.state = "approved"

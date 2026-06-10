@@ -60,7 +60,8 @@
                     </div>
 
                     <group>
-                        <group>
+                    <!--  Group for the normal User  -->
+                        <group groups="!subscription_management.group_subs_admin">
                             <field name="user_id" string="Customer" readonly="state != 'draft'"/>
                             <field name="account_manager_id" string="Account Manager" readonly="state != 'draft'"/>
                             <field name="start_date"
@@ -68,6 +69,18 @@
                                    widget="daterange"
                                    readonly="state != 'draft'"
                                    options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>
+                            <field name="payment_term_id" readonly="state != 'draft'" string="Payment Terms"/>
+                        </group>
+
+                        <group groups="subscription_management.group_subs_admin">
+                            <field name="user_id" string="Customer" readonly="0"/>
+                            <field name="account_manager_id" string="Account Manager" readonly="0"/>
+                            <field name="start_date"
+                                   string="Access Period"
+                                   widget="daterange"
+                                   readonly="0"
+                                   options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>
+                            <field name="payment_term_id" readonly="0" string="Payment Terms"/>
                         </group>
                     </group>
 
@@ -141,7 +154,9 @@
         <field name="arch" type="xml">
             <kanban class="o_kanban_mobile" default_group_by="state">
                 <templates>
-                    <t t-name="card">
+<!--                    <t t-name="menu">-->
+<!--                    </t>-->
+                    <t t-name="card" style="gap: 10px;">
                         <div class="row mb4">
                             <field name="name" class="fw-bold"/>
                             <div>

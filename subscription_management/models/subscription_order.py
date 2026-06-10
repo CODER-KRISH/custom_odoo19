@@ -96,3 +96,6 @@ class SubscriptionOrder(models.Model):
 
         for order in expiry_orders:
             order.state = "expired"
+
+    def print_order_receipt(self):
+        return self.env.ref('subscription_management.action_report_order_receipt').report_action(self)

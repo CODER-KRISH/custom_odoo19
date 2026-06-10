@@ -41,6 +41,12 @@
                             invisible="state != 'review'"
                             groups="subscription_management.group_subs_admin"
                     />
+                    <button name="print_order_receipt"
+                            string="Download Receipt"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'approved'"
+                    />
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,review,approved"
                            invisible="state in ['expired', 'cancelled']"/>

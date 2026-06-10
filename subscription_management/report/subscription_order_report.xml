@@ -1,0 +1,131 @@
+<odoo>
+    <template id="report_subscription_receipt">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page" style="font-family: arial;">
+
+                        <p style="font-size: 35px; text-align: center;">
+                            <b>Subscription Order Receipt</b>
+                        </p>
+
+                        <br/>
+                        <br/>
+
+                        <p style="font-size:24px">
+                            <strong>Receipt No.:</strong>
+                            <span t-field="o.name"/>
+                        </p>
+
+                        <br/>
+
+                        <h4 class="text-left" style="border-bottom: 1px solid lightgrey">Customer Info</h4>
+
+                        <div class="row">
+
+                            <!-- Left Side -->
+                            <div class="col-6">
+
+                                <p>
+                                    <strong>Customer Name:</strong>
+                                    <span t-field="o.user_id.name"/>
+                                </p>
+
+                                <p>
+                                    <strong>Account Manager:</strong>
+                                    <span t-field="o.account_manager_id.name"/>
+                                </p>
+
+                            </div>
+
+                            <!-- Right Side -->
+                            <div class="col-6">
+
+                                <p>
+                                    <strong>Start Date:</strong>
+                                    <span t-field="o.start_date"/>
+                                </p>
+
+                                <p>
+                                    <strong>End Date:</strong>
+                                    <span t-field="o.end_date"/>
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <br/>
+
+                        <h4 class="text-left" style="border-bottom: 1px solid lightgrey">Products Info</h4>
+
+                        <table class="table table-borderless">
+
+                            <thead style="display: table-row-group; border-bottom: 1px solid black;">
+
+                                <tr>
+                                    <th>
+                                        <strong>Products</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Qty</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Unit Price</strong>
+                                    </th>
+                                    <th>
+                                        <strong>Total</strong>
+                                    </th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <t t-foreach="o.line_ids" t-as="line">
+
+                                    <tr>
+                                        <td>
+                                            <span t-field="line.product_id.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="line.quantity"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.price_unit"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-field="line.subtotal"/>
+                                        </td>
+                                    </tr>
+
+                                </t>
+                                <tr>
+                                    <td style="text-align: center; border-top: 1px solid black;" colspan="3">
+                                        <strong>Total Amount Payable From You is</strong>
+                                    </td>
+                                    <td style="text-align: left; border-top: 1px solid black;">
+                                        <strong>
+                                            <span t-field="o.grand_total"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_order_receipt" model="ir.actions.report">
+        <field name="name">Subscription Order Receipt</field>
+        <field name="model">subscription.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">subscription_management.report_subscription_receipt</field>
+        <field name="report_file">subscription_management.report_subscription_receipt</field>
+        <field name="binding_model_id" ref="model_subscription_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

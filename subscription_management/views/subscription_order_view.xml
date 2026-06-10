@@ -66,7 +66,7 @@
                     </div>
 
                     <group>
-                    <!--  Group for the normal User  -->
+                        <!--  Group for the normal User  -->
                         <group groups="!subscription_management.group_subs_admin">
                             <field name="user_id" string="Customer" readonly="state != 'draft'"/>
                             <field name="account_manager_id" string="Account Manager" readonly="state != 'draft'"/>
@@ -102,7 +102,8 @@
                                 </list>
                             </field>
 
-                            <field name="line_ids" readonly="state != 'draft'" groups="!subscription_management.group_subs_admin">
+                            <field name="line_ids" readonly="state != 'draft'"
+                                   groups="!subscription_management.group_subs_admin">
                                 <list editable="bottom" no_open="1">
                                     <field name="product_id"/>
                                     <field name="currency_id" nolabel="1" invisible="1"/>
@@ -171,8 +172,6 @@
         <field name="arch" type="xml">
             <kanban class="o_kanban_mobile" default_group_by="state">
                 <templates>
-<!--                    <t t-name="menu">-->
-<!--                    </t>-->
                     <t t-name="card" style="gap: 10px;">
                         <div class="row mb4">
                             <field name="name" class="fw-bold"/>

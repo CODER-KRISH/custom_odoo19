@@ -1,56 +1,63 @@
-<record id="mail_template_subscription_expiry" model="mail.template">
-    <field name="name">Subscription Expiry Email</field>
-    <field name="model_id" ref="model_subscription_order"/>
-    <field name="subject">For Your Subscription Order ${object.name}</field>
-    <field name="email_from">${(user.email_formatted or '')}</field>
-    <field name="email_to">${object.user_id.partner_id.email}</field>
-    <field name="body_html" type="html">
-        <div>
-            <p>
-                Hello <strong>${object.user_id.partner_id.name}</strong>,
-                <br/>
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+
+    <record id="mail_template_subscription_expiry" model="mail.template">
+        <field name="name">Subscription Expiry Email</field>
+        <field name="model_id" ref="model_subscription_order"/>
+        <field name="subject">For Your Subscription Order ${object.name}</field>
+        <field name="email_from">${(user.email_formatted or '')}</field>
+        <field name="email_to">${object.user_id.partner_id.email or ''}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>
+                    Hello <strong>${object.user_id.partner_id.name}</strong>,
+                </p>
+
                 <p>
                     This is to inform you that your subscription order
                     <strong>${object.name}</strong>
-                    is expired today.
+                    has expired today.
                 </p>
-            </p>
-            <table border="1" cellpadding="5" cellspacing="0"
-                   style="border-collapse: collapse;">
-                <tr>
-                    <td>
-                        <strong>Subscription No.</strong>
-                    </td>
-                    <td>${object.name}</td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Start Date</strong>
-                    </td>
-                    <td>${object.start_date}</td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>End Date</strong>
-                    </td>
-                    <td>${object.end_date}</td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Total Amount</strong>
-                    </td>
-                    <td>${object.grand_total}</td>
-                </tr>
-            </table>
-            <br/>
-            <p>
-                Please contact us if you would like to renew your subscription.
-            </p>
-            <p>
-                Regards,
-                <br/>
-                ${object.account_manager_id.name or user.name}
-            </p>
-        </div>
-    </field>
-</record>
+
+                <table border="1" cellpadding="5" cellspacing="0"
+                       style="border-collapse: collapse;">
+                    <tr>
+                        <td>
+                            <strong>Subscription No.</strong>
+                        </td>
+                        <td>${object.name}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Start Date</strong>
+                        </td>
+                        <td>${format_date(object.start_date)}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>End Date</strong>
+                        </td>
+                        <td>${format_date(object.end_date)}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Total Amount</strong>
+                        </td>
+                        <td>${object.grand_total}</td>
+                    </tr>
+                </table>
+
+                <p>
+                    Please contact us if you would like to renew your subscription.
+                </p>
+
+                <p>
+                    Regards,
+                    <br/>
+                    ${object.account_manager_id.name or user.name}
+                </p>
+            </div>
+        </field>
+    </record>
+</odoo>

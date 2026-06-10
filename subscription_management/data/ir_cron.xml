@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Revocation Reminder Cron -->
+    <record id="ir_cron_review_subs_orders" model="ir.cron">
+        <field name="name">Subscription Order Reviews</field>
+        <field name="model_id" ref="model_subscription_order"/>
+        <field name="state">code</field>
+        <field name="code">model.action_cron_review_orders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>

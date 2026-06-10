@@ -11,6 +11,7 @@
         'views/subscription_order_view.xml',
         'views/res_user_view.xml',
         'data/sequence.xml',
+        'data/ir_cron.xml',
         'views/menu.xml',
     ],
     "application": True,

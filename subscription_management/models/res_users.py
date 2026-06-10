@@ -21,7 +21,7 @@ class res_users(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'Subscription Orders',
             'res_model': 'subscription.order',
-            'view_mode': 'list',
+            'view_mode': 'list,form',
             'domain': [
                 ('user_id', '=', self.id),
                 ('state', '=', 'approved'),

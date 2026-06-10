@@ -85,3 +85,15 @@ class SubscriptionOrder(models.Model):
                     )
 
             rec.state = "approved"
+
+    def action_cron_review_orders(self):
+        today = fields.Date.today()
+
+        expiry_orders = self.search([
+            ('state', '=', 'approved'),
+            ('end_date', '=', today),
+        ])
+
+        for order in expiry_orders:
+            order.state = "expired"
+            

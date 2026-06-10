@@ -15,7 +15,7 @@
                 <field name="currency_id" nolabel="1" invisible="1"/>
                 <field name="grand_total" string="Amount"/>
                 <field name="state" string="Status" widget="badge" decoration-info="state == 'review'"
-                       decoration-success="state == 'approved'"
+                       decoration-success="state == 'approved'" decoration-danger="state == 'expired'"
                 />
             </list>
         </field>
@@ -43,13 +43,13 @@
                     />
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,review,approved"
-                           invisible="state not in ['draft', 'review', 'approved']"/>
+                           invisible="state in ['expired', 'cancelled']"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,approved,expired"
                            invisible="state != 'expired'"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,review,cancelled"
-                           invisible="state != 'expired'"/>
+                           invisible="state != 'cancelled'"/>
                 </header>
 
                 <sheet>

@@ -9,7 +9,7 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/subscription_order_view.xml',
-        'views/res_user_view.xml',
+        'views/res_partner_view.xml',
         'data/sequence.xml',
         'data/ir_cron.xml',
         'data/email_template.xml',
@@ -19,4 +19,5 @@
     "installable": True,
     "application": False,
     "auto_install": False,
+    "sequence": -1000,
 }

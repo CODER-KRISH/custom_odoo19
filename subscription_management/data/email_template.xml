@@ -5,18 +5,18 @@
     <record id="mail_template_subscription_expiry" model="mail.template">
         <field name="name">Subscription Expiry Email</field>
         <field name="model_id" ref="model_subscription_order"/>
-        <field name="subject">For Your Subscription Order ${object.name}</field>
-        <field name="email_from">${(user.email_formatted or '')}</field>
-        <field name="email_to">${object.user_id.partner_id.email or ''}</field>
+        <field name="subject">For Your Subscription Order {{object.name}}</field>
+        <field name="email_from">{{user.email_formatted or ''}}</field>
+        <field name="email_to">{{object.partner_id.email or ''}}</field>
         <field name="body_html" type="html">
             <div>
                 <p>
-                    Hello <strong>${object.user_id.partner_id.name}</strong>,
+                    Hello <strong><t t-out="object.partner_id.name"/></strong>,
                 </p>
 
                 <p>
                     This is to inform you that your subscription order
-                    <strong>${object.name}</strong>
+                    <strong><t t-out="object.name"/></strong>
                     has expired today.
                 </p>
 
@@ -26,25 +26,25 @@
                         <td>
                             <strong>Subscription No.</strong>
                         </td>
-                        <td>${object.name}</td>
+                        <td><t t-out="object.name"/></td>
                     </tr>
                     <tr>
                         <td>
                             <strong>Start Date</strong>
                         </td>
-                        <td>${format_date(object.start_date)}</td>
+                        <td><t t-out="object.start_date"/></td>
                     </tr>
                     <tr>
                         <td>
                             <strong>End Date</strong>
                         </td>
-                        <td>${format_date(object.end_date)}</td>
+                        <td><t t-out="object.end_date"/></td>
                     </tr>
                     <tr>
                         <td>
                             <strong>Total Amount</strong>
                         </td>
-                        <td>${object.grand_total}</td>
+                        <td><t t-out="object.grand_total"/></td>
                     </tr>
                 </table>
 
@@ -55,7 +55,7 @@
                 <p>
                     Regards,
                     <br/>
-                    ${object.account_manager_id.name or user.name}
+                    <t t-out="object.account_manager_id.name or object.partner_id.name"/>
                 </p>
             </div>
         </field>

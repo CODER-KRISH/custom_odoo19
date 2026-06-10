@@ -29,7 +29,7 @@
 
                                 <p>
                                     <strong>Customer Name:</strong>
-                                    <span t-field="o.user_id.name"/>
+                                    <span t-field="o.partner_id.name"/>
                                 </p>
 
                                 <p>

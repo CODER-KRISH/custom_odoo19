@@ -2,12 +2,12 @@
 
 <odoo>
 
-    <record id="view_base_users_from" model="ir.ui.view">
-        <field name="name">view.base.users.from</field>
-        <field name="model">res.users</field>
-        <field name="inherit_id" ref="base.view_users_form"/>
+    <record id="view_base_partner_from" model="ir.ui.view">
+        <field name="name">view.base.partner.from</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.partner_view_buttons"/>
         <field name="arch" type="xml">
-            <xpath expr="//form/sheet/div[1]/button[@name='action_show_groups']" position="after">
+            <xpath expr="//button[@name='action_view_partner_invoices']" position="after">
                 <button name="view_subscriptions_order" type="object" class="oe_stat_button" icon="fa-dollar">
                     <field string="Active Subscriptions" name="subscription_counter" widget="statinfo"/>
                 </button>

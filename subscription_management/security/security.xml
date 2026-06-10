@@ -15,18 +15,35 @@
 
     <!-- Groups -->
 
-    <!-- Admin Group -->
-    <record id="group_subs_admin" model="res.groups">
-        <field name="name">Admin</field>
+    <!-- User Group -->
+    <record id="group_subs_user" model="res.groups">
+        <field name="name">User</field>
         <field name="sequence">1</field>
         <field name="privilege_id" ref="res_groups_subs"/>
     </record>
 
-    <!-- User Group -->
-    <record id="group_subs_user" model="res.groups">
-        <field name="name">User</field>
+    <!-- Admin as Manager Group -->
+    <record id="group_subs_admin" model="res.groups">
+        <field name="name">Admin</field>
         <field name="sequence">2</field>
         <field name="privilege_id" ref="res_groups_subs"/>
+        <field name="implied_ids" eval="[(4, ref('group_subs_user'))]"/>
+    </record>
+
+    <record id="subscription_order_user_rule" model="ir.rule">
+        <field name="name">Subscription - Own Records</field>
+        <field name="model_id" ref="model_subscription_order"/>
+        <field name="domain_force">
+            [('account_manager_id', '=', user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('subscription_management.group_subs_user'))]"/>
+    </record>
+
+    <record id="subscription_order_manager_rule" model="ir.rule">
+        <field name="name">Subscription - Manager All Records</field>
+        <field name="model_id" ref="model_subscription_order"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('subscription_management.group_subs_admin'))]"/>
     </record>
 
 </odoo> 

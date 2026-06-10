@@ -1,5 +1,6 @@
 from odoo import fields, models, api
 from odoo.exceptions import AccessError, ValidationError
+from openpyxl.worksheet import related
 
 
 class SubscriptionOrder(models.Model):
@@ -9,8 +10,8 @@ class SubscriptionOrder(models.Model):
 
     name = fields.Char(default="New", copy=False)
 
-    user_id = fields.Many2one("res.users", tracking=True)
-    account_manager_id = fields.Many2one("res.users", default=lambda self: self.env.user, string='Sales Person')
+    partner_id = fields.Many2one("res.partner", tracking=True)
+    account_manager_id = fields.Many2one("res.partner", default=lambda self: self.env.user, string='Sales Person')
 
     start_date = fields.Date(string='Start Date', tracking=True)
     end_date = fields.Date(string='End Date', tracking=True)
@@ -33,10 +34,17 @@ class SubscriptionOrder(models.Model):
         ("cancelled", "Cancelled"),
     ], default="draft", tracking=True)
 
-    payment_term_id = fields.Many2one("account.payment.term", related='user_id.partner_id.property_payment_term_id',
+    payment_term_id = fields.Many2one("account.payment.term", related='partner_id.property_payment_term_id',
                                       tracking=True, store=True)
 
     mail_sent = fields.Boolean(default=False, copy=False)
+
+    street = fields.Char(related='partner_id.street', store=True)
+    street2 = fields.Char(related='partner_id.street2', store=True)
+    city = fields.Char(related='partner_id.city', store=True)
+    state_id = fields.Many2one('res.country.state', related='partner_id.state_id', store=True)
+    zip = fields.Char(related='partner_id.zip', store=True)
+    country_id = fields.Many2one('res.country', related='partner_id.country_id', store=True)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -64,6 +72,8 @@ class SubscriptionOrder(models.Model):
 
     def state_to_review(self):
         for rec in self:
+            if not rec.line_ids:
+                raise ValidationError("Cannot review this order without any lines!")
             rec.state = "review"
 
     def state_to_approve(self):
@@ -128,3 +138,7 @@ class SubscriptionOrder(models.Model):
 
     def print_order_receipt(self):
         return self.env.ref('subscription_management.action_report_order_receipt').report_action(self)
+
+    def state_to_draft(self):
+        for rec in self:
+            rec.state = "draft"

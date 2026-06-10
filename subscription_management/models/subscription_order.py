@@ -7,7 +7,7 @@ class SubscriptionOrder(models.Model):
     _description = "Subscription Order Summery"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    name = fields.Char(default="New")
+    name = fields.Char(default="New", copy=False)
 
     user_id = fields.Many2one("res.users", tracking=True)
     account_manager_id = fields.Many2one("res.users", default=lambda self: self.env.user, string='Sales Person')
@@ -33,7 +33,8 @@ class SubscriptionOrder(models.Model):
         ("cancelled", "Cancelled"),
     ], default="draft", tracking=True)
 
-    payment_term_id = fields.Many2one("account.payment.term", related='user_id.partner_id.property_payment_term_id', tracking=True, store=True)
+    payment_term_id = fields.Many2one("account.payment.term", related='user_id.partner_id.property_payment_term_id',
+                                      tracking=True, store=True)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -65,6 +66,8 @@ class SubscriptionOrder(models.Model):
 
     def state_to_approve(self):
         for rec in self:
+            has_overlap = False
+
             for line in rec.line_ids:
                 if not line.product_id:
                     continue
@@ -78,13 +81,21 @@ class SubscriptionOrder(models.Model):
                 ], limit=1)
 
                 if overlapping_subscription:
-                    raise ValidationError(
-                        f"Product '{line.product_id.display_name}' is already subscribed "
-                        f"in subscription '{overlapping_subscription.name}' "
-                        f"for overlapping dates."
-                    )
+                    has_overlap = True
+                    break
 
-            rec.state = "approved"
+            if has_overlap:
+                rec.state = 'cancelled'
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'message': 'Another subscription already exists with the same product in the selected date range.',
+                        'type': 'danger',
+                        'sticky': False,
+                    }
+                }
+            else: rec.state = 'approved'
 
     def action_cron_review_orders(self):
         today = fields.Date.today()
@@ -96,6 +107,12 @@ class SubscriptionOrder(models.Model):
 
         for order in expiry_orders:
             order.state = "expired"
+
+    def unlink(self):
+        for rec in self:
+            if rec.state != "draft":
+                raise ValidationError("Only Draft State Orders can be deleted!")
+        return super().unlink()
 
     def print_order_receipt(self):
         return self.env.ref('subscription_management.action_report_order_receipt').report_action(self)

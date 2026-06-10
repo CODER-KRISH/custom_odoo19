@@ -101,10 +101,60 @@
 
                                 </t>
                                 <tr>
-                                    <td style="text-align: center; border-top: 1px solid black;" colspan="3">
-                                        <strong>Total Amount Payable From You is</strong>
+                                    <td style="text-align: center; border-top: 1px solid black;">
+                                    </td>
+                                    <td style="text-align: center; border-top: 1px solid black;">
+                                    </td>
+                                    <td style="text-align: center; border-top: 1px solid black;">
+                                        <span>Total Amount</span>
                                     </td>
                                     <td style="text-align: left; border-top: 1px solid black;">
+                                        <strong>
+                                            <span t-field="o.amount_total"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <t t-if="o.amount_total &lt; 10000">
+                                    <tr>
+                                        <td>
+                                        </td>
+                                        <td>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span>Discount</span>
+                                        </td>
+                                        <td style="text-align: left;">
+                                            <strong>
+                                                <span t-field="o.discount"/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="o.amount_total &gt;= 10000">
+                                    <tr>
+                                        <td>
+                                        </td>
+                                        <td>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span>Discount 10%</span>
+                                        </td>
+                                        <td style="text-align: left;">
+                                            <strong>
+                                                <span t-field="o.discount"/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <strong>Total Amount Payable from you is</strong>
+                                    </td>
+                                    <td style="text-align: left;">
                                         <strong>
                                             <span t-field="o.grand_total"/>
                                         </strong>

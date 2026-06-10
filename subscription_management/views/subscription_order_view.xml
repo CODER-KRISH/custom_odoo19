@@ -92,7 +92,17 @@
 
                     <notebook>
                         <page string="Subscription Lines">
-                            <field name="line_ids" readonly="state != 'draft'">
+                            <field name="line_ids" readonly="0" groups="subscription_management.group_subs_admin">
+                                <list editable="bottom" no_open="1">
+                                    <field name="product_id"/>
+                                    <field name="currency_id" nolabel="1" invisible="1"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit" widget="monetary"/>
+                                    <field name="subtotal" widget="monetary"/>
+                                </list>
+                            </field>
+
+                            <field name="line_ids" readonly="state != 'draft'" groups="!subscription_management.group_subs_admin">
                                 <list editable="bottom" no_open="1">
                                     <field name="product_id"/>
                                     <field name="currency_id" nolabel="1" invisible="1"/>
@@ -154,6 +164,7 @@
         </field>
     </record>
 
+    <!-- Kanban View -->
     <record id="subs_kanban_view" model="ir.ui.view">
         <field name="name">subs.kanban.view</field>
         <field name="model">subscription.order</field>
@@ -186,11 +197,22 @@
         </field>
     </record>
 
+    <!-- Search View -->
+    <record id="view_subscription_search" model="ir.ui.view">
+        <field name="name">view.subscription.search</field>
+        <field name="model">subscription.order</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Name" name="type" context="{'group_by':'name'}"/>
+            </search>
+        </field>
+    </record>
+
     <!-- Action -->
     <record id="action_subscription_order" model="ir.actions.act_window">
         <field name="name">Subscription Orders</field>
         <field name="res_model">subscription.order</field>
-        <field name="view_mode">list,form,kanban</field>
+        <field name="view_mode">list,form,search,kanban</field>
     </record>
 
 </odoo>

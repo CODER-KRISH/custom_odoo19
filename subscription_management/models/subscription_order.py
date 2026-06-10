@@ -96,4 +96,3 @@ class SubscriptionOrder(models.Model):
 
         for order in expiry_orders:
             order.state = "expired"
-            

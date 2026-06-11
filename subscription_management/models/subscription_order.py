@@ -49,14 +49,13 @@ class SubscriptionOrder(models.Model):
     @api.depends('partner_id')
     def _compute_address(self):
         for rec in self:
-            # if rec.partner_id:
             rec.update({
-                'street': rec.partner_id.street,
-                'street2': rec.partner_id.street2,
-                'city': rec.partner_id.city,
-                'state_id': rec.partner_id.state_id.id,
-                'zip': rec.partner_id.zip,
-                'country_id': rec.partner_id.country_id.id,
+                'street': rec.partner_id.street if rec.partner_id else '',
+                'street2': rec.partner_id.street2 if rec.partner_id else '',
+                'city': rec.partner_id.city if rec.partner_id else '',
+                'state_id': rec.partner_id.state_id.id if rec.partner_id else '',
+                'zip': rec.partner_id.zip if rec.partner_id else '',
+                'country_id': rec.partner_id.country_id.id if rec.partner_id else '',
             })
 
     @api.model_create_multi

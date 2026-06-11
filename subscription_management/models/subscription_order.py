@@ -96,7 +96,7 @@ class SubscriptionOrder(models.Model):
                 if not line.product_id:
                     continue
 
-                overlapping_subscription = self.search([
+                overlapping_subscription = self.env['subscription.order'].search([
                     ('id', '!=', rec.id),
                     ('state', '=', 'approved'),
                     ('line_ids.product_id', '=', line.product_id.id),

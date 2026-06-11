@@ -39,12 +39,25 @@ class SubscriptionOrder(models.Model):
 
     mail_sent = fields.Boolean(default=False, copy=False)
 
-    street = fields.Char(related='partner_id.street', store=True)
-    street2 = fields.Char(related='partner_id.street2', store=True)
-    city = fields.Char(related='partner_id.city', store=True)
-    state_id = fields.Many2one('res.country.state', related='partner_id.state_id', store=True)
-    zip = fields.Char(related='partner_id.zip', store=True)
-    country_id = fields.Many2one('res.country', related='partner_id.country_id', store=True)
+    street = fields.Char(compute='_compute_address', store=True)
+    street2 = fields.Char(compute='_compute_address', store=True)
+    city = fields.Char(compute='_compute_address', store=True)
+    state_id = fields.Many2one('res.country.state', compute='_compute_address', store=True)
+    zip = fields.Char(compute='_compute_address', store=True)
+    country_id = fields.Many2one('res.country', compute='_compute_address', store=True)
+
+    @api.depends('partner_id')
+    def _compute_address(self):
+        for rec in self:
+            # if rec.partner_id:
+            rec.update({
+                'street': rec.partner_id.street,
+                'street2': rec.partner_id.street2,
+                'city': rec.partner_id.city,
+                'state_id': rec.partner_id.state_id.id,
+                'zip': rec.partner_id.zip,
+                'country_id': rec.partner_id.country_id.id,
+            })
 
     @api.model_create_multi
     def create(self, vals_list):

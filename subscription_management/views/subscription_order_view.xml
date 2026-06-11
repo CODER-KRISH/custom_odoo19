@@ -78,7 +78,7 @@
                             <field name="partner_id" string="Customer" readonly="state != 'draft'" required="1"/>
                             <field name="account_manager_id" string="Account Manager" readonly="state != 'draft'"/>
                             <field name="start_date"
-                                   string="Access Period"
+                                   string="Time Period"
                                    widget="daterange"
                                    readonly="state != 'draft'"
                                    options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>
@@ -108,7 +108,7 @@
                             <field name="partner_id" string="Customer" readonly="state != 'draft'" required="1"/>
                             <field name="account_manager_id" string="Account Manager" readonly="state != 'draft'"/>
                             <field name="start_date"
-                                   string="Access Period"
+                                   string="Time Period"
                                    widget="daterange"
                                    readonly="state != 'draft'"
                                    options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>

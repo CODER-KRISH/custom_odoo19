@@ -34,7 +34,7 @@
         <field name="name">Subscription - Own Records</field>
         <field name="model_id" ref="model_subscription_order"/>
         <field name="domain_force">
-            ['|', ('account_manager_id', '=', user.partner_id.id), ('partner_id', '=', user.partner_id.id)]
+            ['|', ('account_manager_id', '=', user.id), ('partner_id', '=', user.partner_id.id)]
         </field>
     </record>
 

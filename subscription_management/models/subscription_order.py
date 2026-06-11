@@ -11,7 +11,7 @@ class SubscriptionOrder(models.Model):
     name = fields.Char(default="New", copy=False)
 
     partner_id = fields.Many2one("res.partner", tracking=True)
-    account_manager_id = fields.Many2one("res.partner", default=lambda self: self.env.user, string='Sales Person')
+    account_manager_id = fields.Many2one("res.users", default=lambda self: self.env.user, string='Sales Person')
     color = fields.Integer(string='Color')
     start_date = fields.Date(string='Start Date', tracking=True)
     end_date = fields.Date(string='End Date', tracking=True)

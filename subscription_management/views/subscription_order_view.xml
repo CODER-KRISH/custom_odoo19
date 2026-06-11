@@ -51,7 +51,7 @@
                             string="To Draft"
                             type="object"
                             class="btn-secondary"
-                            invisible="state == 'draft'"
+                            invisible="state in ['draft', 'cancelled', 'expired']"
                             groups="subscription_management.group_subs_admin"
                     />
                     <field name="state" widget="statusbar"
@@ -105,35 +105,39 @@
 
                         <!--  Group for the Admin User  -->
                         <group groups="subscription_management.group_subs_admin">
-                            <field name="partner_id" string="Customer" readonly="0" required="1"/>
-                            <field name="account_manager_id" string="Account Manager" readonly="0"/>
+                            <field name="partner_id" string="Customer" readonly="state != 'draft'" required="1"/>
+                            <field name="account_manager_id" string="Account Manager" readonly="state != 'draft'"/>
                             <field name="start_date"
                                    string="Access Period"
                                    widget="daterange"
-                                   readonly="0"
+                                   readonly="state != 'draft'"
                                    options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>
                             <span class="o_form_label o_td_label o_address_type" name="address_name">Address</span>
                             <div class="o_address_format">
-                                <field name="street" placeholder="Street..." class="o_address_street" readonly="0"/>
-                                <field name="street2" placeholder="Street 2..." class="o_address_street" readonly="0"/>
-                                <field name="city" placeholder="City" class="o_address_city" readonly="0"/>
+                                <field name="street" placeholder="Street..." class="o_address_street"
+                                       readonly="state != 'draft'"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"
+                                       readonly="state != 'draft'"/>
+                                <field name="city" placeholder="City" class="o_address_city"
+                                       readonly="state != 'draft'"/>
                                 <field name="state_id" placeholder="State" class="o_address_state"
                                        context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"
-                                       readonly="0"/>
-                                <field name="zip" placeholder="ZIP" class="o_address_zip" readonly="0"/>
+                                       readonly="state != 'draft'"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip" readonly="state != 'draft'"/>
                                 <div name="partner_address_country" class="d-flex justify-content-between">
                                     <field name="country_id" placeholder="Country" class="o_address_country"
                                            options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
-                                           readonly="0"/>
+                                           readonly="state != 'draft'"/>
                                 </div>
                             </div>
-                            <field name="payment_term_id" readonly="0" string="Payment Terms"/>
+                            <field name="payment_term_id" readonly="state != 'draft'" string="Payment Terms"/>
                         </group>
                     </group>
 
                     <notebook>
                         <page string="Subscription Lines">
-                            <field name="line_ids" readonly="0" groups="subscription_management.group_subs_admin">
+                            <field name="line_ids" readonly="state != 'draft'"
+                                   groups="subscription_management.group_subs_admin">
                                 <list editable="bottom" no_open="1">
                                     <field name="product_id"/>
                                     <field name="currency_id" nolabel="1" invisible="1"/>
@@ -211,25 +215,38 @@
         <field name="name">subs.kanban.view</field>
         <field name="model">subscription.order</field>
         <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile" default_group_by="state">
+            <kanban class="o_kanban_mobile" default_group_by="state" highlight_color="color">
                 <templates>
-                    <t t-name="card" style="gap: 10px;">
+
+                    <t t-name="menu">
+                        <div class="container">
+                            <div class="o_kanban_card_manage_settings row">
+                                <div role="menuitem" aria-haspopup="true" class="col-6">
+                                    <field name="color" widget="kanban_color_picker"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <t t-name="card">
                         <div class="row mb4">
-                            <field name="name" class="fw-bold"/>
-                            <div>
-                                <strong>Customer:&amp;nbsp;</strong>
-                                <field name="partner_id"/>
-                            </div>
-                            <div>
+                            <h4>
+                                <field name="name" class="fw-bold"/>
+                            </h4>
+                            <h5 class="text-muted d-flex align-items-baseline">
+                                <span class="fa fa-user me-2" aria-label="Partner"/>
+                                <field class="text-truncate" name="partner_id"/>
+                            </h5>
+                            <h5>
                                 <field name="line_ids" widget="many2many_tags"/>
-                            </div>
-                            <div style="display: flex; justify-content: flex-start; gap: 10px;">
+                            </h5>
+                            <h5 style="display: flex; justify-content: flex-start; gap: 10px;">
                                 <field name="start_date"
                                        string="Access Period"
                                        widget="daterange"
                                        readonly="state != 'draft'"
                                        options="{'end_date_field': 'end_date', 'always_range': true}" required="1"/>
-                            </div>
+                            </h5>
                         </div>
                     </t>
                 </templates>

@@ -19,6 +19,14 @@ class projectTask(models.Model):
 
     # bool field if type repair
     check_issue = fields.Boolean(default=False)
+    
+    # ----------------------- Fields for Task - auto create task while confirming the order -----------------------
+    
+    start_date = fields.Date(string='Start Date', help="Custom Module Time Period")
+    end_date = fields.Date(string='End Date')
+    so_line_id = fields.Many2one(comodel_name='sale.order.line')
+    
+    # -------------------------------------------------------------------------------------------------------------
 
     def write(self, vals):
         res = super().write(vals)

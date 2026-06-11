@@ -1,6 +1,7 @@
 from odoo import fields, models, api
 from odoo.exceptions import AccessError, ValidationError, UserError
 
+
 class saleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
@@ -25,7 +26,8 @@ class saleOrderLine(models.Model):
             print("Boss Logged In")
             self.is_approved = True
 
-        else: raise UserError("Manager or Boss Approval Required for Special Product Validation!")
+        else:
+            raise UserError("Manager or Boss Approval Required for Special Product Validation!")
 
     def create_copied_master_bom(self):
 
@@ -46,7 +48,7 @@ class saleOrderLine(models.Model):
             bom_all_lines = new_bom.mapped('bom_line_ids')
             print(bom_all_lines)
 
-            lines = self.fetch_all_components(new_bom,[])
+            lines = self.fetch_all_components(new_bom, [])
             print(lines)
 
             bom_lines_vals = []
@@ -103,3 +105,28 @@ class saleOrderLine(models.Model):
                 'target': 'new',
                 'res_id': self.create_copied_master_bom().id,
             }
+
+    def view_so_line_tasks(self):
+        tasks = self.env['project.task'].search([
+            ('so_line_id', '=', self.id)
+        ])
+
+        action = {
+            'type': 'ir.actions.act_window',
+            'name': 'Tasks',
+            'res_model': 'project.task',
+            'view_mode': 'kanban,list,form',
+            'target': 'current',
+            'domain': [('so_line_id', '=', self.id)],
+        }
+
+        if not tasks:
+            action.update({
+                'view_mode': 'form',
+                'context': {
+                    'default_so_line_id': self.id,
+                    'default_project_id': self.order_id.project_id.id if self.order_id.project_id else False,
+                },
+            })
+            return action
+        return action

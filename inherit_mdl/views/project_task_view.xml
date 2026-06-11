@@ -14,6 +14,16 @@
                 <field name="serial_number" string="Serial No."/>
                 <field name="check_issue" string="Issue" invisible="ticket_type != 'repair'"/>
             </xpath>
+
+            <!-- ========================================== -->
+            <!-- xpath for auto create task when SO Confirm -->
+            <!-- ========================================== -->
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="start_date"
+                       string="Time Period"
+                       widget="daterange"
+                       options="{'end_date_field': 'end_date', 'always_range': true}"/>
+            </xpath>
         </field>
     </record>
 

@@ -88,7 +88,7 @@
             </xpath>
 
             <!-- ====================================================== -->
-            <!-- xpath for Button to view master bom in sale order line -->
+            <!-- xpath for Button to view master bom and SO Line Tasks  -->
             <!-- ====================================================== -->
             <xpath expr="//notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='product_template_id']"
                    position="after">
@@ -96,6 +96,11 @@
                         name="view_copied_master_bom"
                         type="object"
                         class="btn-primary"
+                        invisible="1"
+                />
+                <button string="Tasks"
+                        name="view_so_line_tasks"
+                        type="object"
                 />
                 <field name="is_approved" string="Approved" readonly="1" optional="hide"/>
             </xpath>
@@ -166,7 +171,7 @@
             <!-- xpath to add notebook page after other Info -->
             <!-- =========================================== -->
             <xpath expr="//form/sheet/notebook/page[@name='other_information']" position="after">
-                <page string="Time Sheets" name="timesheet_updates" autofocus="autofocus">
+                <page string="Time Sheets" name="timesheet_updates" autofocus="0">
                     <field name="html_timesheet" placeholder="Update your timesheet here..." widget="html"
                            readonly="1"/>
                 </page>

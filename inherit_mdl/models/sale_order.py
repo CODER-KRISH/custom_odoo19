@@ -1,7 +1,6 @@
 from odoo import fields, models, api
 from odoo.exceptions import AccessError, ValidationError, UserError
 from dateutil.relativedelta import relativedelta
-from datetime import date
 
 
 class saleOrder(models.Model):
@@ -28,6 +27,23 @@ class saleOrder(models.Model):
         copy=False,
         store=True
     )
+
+    # ----------------------- Fields for Task - auto create task while confirming the order -----------------------
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+
+        for record in records:
+            project = self.env['project.project'].create({
+                'name': f"{record.name} - {record.partner_id.name}",
+            })
+
+            record.project_id = project.id
+
+        return records
+
+    # -------------------------------------------------------------------------------------------------------------
 
     def update_timesheet_server_action(self):
         """The method runs when the server action runs and fetch the data from the selected time period (start and end)

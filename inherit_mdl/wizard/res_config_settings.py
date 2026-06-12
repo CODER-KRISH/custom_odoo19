@@ -9,12 +9,19 @@ class ResConfigSettings(models.TransientModel):
     min_limit = fields.Monetary(string="Min Limit", currency_field='my_currency_id')
     max_limit = fields.Monetary(string="Max Limit", currency_field='my_currency_id')
 
+    first_task = fields.Boolean(string="First Task", copy=False)
+
     def set_values(self):
         super().set_values()
         params = self.env['ir.config_parameter'].sudo()
-        params.set_param('inherit_mdl.min_limit', str(self.min_limit) or 0.0)
-        params.set_param('inherit_mdl.max_limit', str(self.max_limit) or 0.0)
-        params.set_param('inherit_mdl.my_currency_id', self.my_currency_id.id or self.env.company.currency_id.id)
+
+        params.set_param('inherit_mdl.min_limit', self.min_limit or 0.0)
+        params.set_param('inherit_mdl.max_limit', self.max_limit or 0.0)
+        params.set_param(
+            'inherit_mdl.my_currency_id',
+            self.my_currency_id.id or self.env.company.currency_id.id
+        )
+        params.set_param('inherit_mdl.first_task', str(self.first_task))
 
     @api.model
     def get_values(self):
@@ -24,11 +31,13 @@ class ResConfigSettings(models.TransientModel):
         min_limit = params.get_param('inherit_mdl.min_limit', default='0.0')
         max_limit = params.get_param('inherit_mdl.max_limit', default='0.0')
         currency_id = params.get_param('inherit_mdl.my_currency_id')
+        first_task = params.get_param('inherit_mdl.first_task', default='False')
 
         res.update({
             'min_limit': float(min_limit) if min_limit else 0.0,
             'max_limit': float(max_limit) if max_limit else 0.0,
             'my_currency_id': int(currency_id) if currency_id else self.env.company.currency_id.id,
+            'first_task': ast.literal_eval(first_task),
         })
 
         return res

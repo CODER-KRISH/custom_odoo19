@@ -36,16 +36,18 @@ class saleOrder(models.Model):
         records = super().create(vals_list)
 
         for record in records:
-            project = self.env['project.project'].create({
-                'name': f"{record.name} - {record.partner_id.name}",
-                'partner_id': record.partner_id.id,
-                'allow_billable': True,
-                'sale_order_id': record.id,
-            })
 
-            record.project_id = project.id
-            record.show_project_button = True
-            record.show_create_project_button = True
+            if record.order_line:
+                project = self.env['project.project'].create({
+                    'name': f"{record.name} - {record.partner_id.name}",
+                    'partner_id': record.partner_id.id,
+                    'allow_billable': True,
+                    'sale_order_id': record.id,
+                })
+
+                record.project_id = project.id
+                record.show_project_button = True
+                record.show_create_project_button = True
 
         return records
 
@@ -96,49 +98,52 @@ class saleOrder(models.Model):
 
         # 3 Super call action_confirm() for task creation from SO Line Tasks
         for order in self:
-            for line in order.order_line:
-                task = self.env['project.task'].search([
-                    ('so_line_id', '=', line.id)
-                ], limit=1)
 
-                if not task or not task.start_date or not task.end_date:
-                    continue
+            if order.project_id:
 
-                existing_generated_tasks = self.env['project.task'].search_count([
-                    ('so_line_id', '=', line.id),
-                    ('id', '!=', task.id),
-                ])
+                for line in order.order_line:
+                    task = self.env['project.task'].search([
+                        ('so_line_id', '=', line.id)
+                    ], limit=1)
 
-                if existing_generated_tasks:
-                    continue
+                    if not task or not task.start_date or not task.end_date:
+                        continue
 
-                current_start = task.start_date
-                end = task.end_date
+                    existing_generated_tasks = self.env['project.task'].search_count([
+                        ('so_line_id', '=', line.id),
+                        ('id', '!=', task.id),
+                    ])
 
-                if (end - current_start).days >= 30:
-                    while current_start <= end:
-                        current_end = current_start + relativedelta(months=1) - relativedelta(days=1)
+                    if existing_generated_tasks:
+                        continue
 
-                        if current_end > end:
-                            current_end = end
+                    current_start = task.start_date
+                    end = task.end_date
 
+                    if (end - current_start).days >= 30:
+                        while current_start <= end:
+                            current_end = current_start + relativedelta(months=1) - relativedelta(days=1)
+
+                            if current_end > end:
+                                current_end = end
+
+                            self.env['project.task'].create({
+                                'name': f"{line.name} ({current_start} to {current_end})",
+                                'project_id': order.project_id.id,
+                                'so_line_id': line.id,
+                                'start_date': current_start,
+                                'end_date': current_end,
+                            })
+
+                            current_start = current_start + relativedelta(months=1)
+                    else:
                         self.env['project.task'].create({
-                            'name': f"{line.name} ({current_start} to {current_end})",
+                            'name': f"{line.name} ({current_start} to {end})",
                             'project_id': order.project_id.id,
                             'so_line_id': line.id,
                             'start_date': current_start,
-                            'end_date': current_end,
+                            'end_date': end,
                         })
-
-                        current_start = current_start + relativedelta(months=1)
-                else:
-                    self.env['project.task'].create({
-                        'name': f"{line.name} ({current_start} to {end})",
-                        'project_id': order.project_id.id,
-                        'so_line_id': line.id,
-                        'start_date': current_start,
-                        'end_date': end,
-                    })
         return res
 
     # -------------------------------------------------------------------------------------------------------------

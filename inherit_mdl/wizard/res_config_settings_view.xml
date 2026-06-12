@@ -6,7 +6,7 @@
         <field name="name">view.res.config.settings.inherit.form</field>
         <field name="model">res.config.settings</field>
         <field name="priority" eval="10"/>
-        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="inherit_id" ref="project.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//app/block[@id='pricing_setting_container']" position="inside">
                 <setting id="boss_and_manager_limit"
@@ -19,6 +19,22 @@
                     <label name="Max" for="max_limit"/>
                     <field name="max_limit" string="Max Limit"/>
                 </setting>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">view.res.config.settings.inherit.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="1"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app/div[@id='invite_users']" position="before">
+                <block title="Custom Project Task Settings">
+                    <setting string="Auto Create Project" help="Create Task">
+                        <field name="first_task"/>
+                    </setting>
+                </block>
             </xpath>
         </field>
     </record>

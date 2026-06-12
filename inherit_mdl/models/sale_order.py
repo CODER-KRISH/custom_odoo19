@@ -32,23 +32,28 @@ class saleOrder(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        """ Super Call of Create method which creates project with sale order """
         records = super().create(vals_list)
 
         for record in records:
             project = self.env['project.project'].create({
                 'name': f"{record.name} - {record.partner_id.name}",
+                'partner_id': record.partner_id.id,
+                'allow_billable': True,
+                'sale_order_id': record.id,
             })
 
             record.project_id = project.id
-            record.project_id.task_ids.project_sale_order_id = record.id
             record.show_project_button = True
+            record.show_create_project_button = True
 
         return records
 
     def action_confirm(self):
         for order in self:
 
-            """ super call action_confirm() for task manager and boss approval """
+            # 1. super call action_confirm() for task manager and boss approval
+
             special_product = order.order_line.filtered(lambda l: l.is_special)
             if special_product and order.order_line.filtered(lambda l: not l.is_approved):
                 raise ValidationError('Please Validate Special Product!')
@@ -68,7 +73,8 @@ class saleOrder(models.Model):
                     raise ValidationError(
                         f"Sale Amount: {converted} is greater than Max Amount: {max_limit}\nBoss Approval Required!")
 
-            """ Super Call of action_confirm() that check the company credit limit and Blocked So Task. """
+            # 2. Super Call of action_confirm() that check the company credit limit and Blocked So Task.
+
             parent = order.partner_id.commercial_partner_id.with_company(order.company_id)
 
             if parent.use_partner_credit_limit:
@@ -88,7 +94,7 @@ class saleOrder(models.Model):
 
         res = super().action_confirm()
 
-        """ Super call action_confirm() for task creation from SO Line Tasks """
+        # 3 Super call action_confirm() for task creation from SO Line Tasks
         for order in self:
             for line in order.order_line:
                 task = self.env['project.task'].search([
@@ -98,25 +104,41 @@ class saleOrder(models.Model):
                 if not task or not task.start_date or not task.end_date:
                     continue
 
+                existing_generated_tasks = self.env['project.task'].search_count([
+                    ('so_line_id', '=', line.id),
+                    ('id', '!=', task.id),
+                ])
+
+                if existing_generated_tasks:
+                    continue
+
                 current_start = task.start_date
                 end = task.end_date
 
-                while current_start <= end:
-                    current_end = current_start + relativedelta(months=1) - relativedelta(days=1)
+                if (end - current_start).days >= 30:
+                    while current_start <= end:
+                        current_end = current_start + relativedelta(months=1) - relativedelta(days=1)
 
-                    if current_end > end:
-                        current_end = end
+                        if current_end > end:
+                            current_end = end
 
+                        self.env['project.task'].create({
+                            'name': f"{line.name} ({current_start} to {current_end})",
+                            'project_id': order.project_id.id,
+                            'so_line_id': line.id,
+                            'start_date': current_start,
+                            'end_date': current_end,
+                        })
+
+                        current_start = current_start + relativedelta(months=1)
+                else:
                     self.env['project.task'].create({
-                        'name': f"{line.name} ({current_start} to {current_end})",
+                        'name': f"{line.name} ({current_start} to {end})",
                         'project_id': order.project_id.id,
                         'so_line_id': line.id,
                         'start_date': current_start,
-                        'end_date': current_end,
+                        'end_date': end,
                     })
-
-                    current_start = current_start + relativedelta(months=1)
-
         return res
 
     # -------------------------------------------------------------------------------------------------------------

@@ -23,6 +23,7 @@
                        string="Time Period"
                        widget="daterange"
                        options="{'end_date_field': 'end_date', 'always_range': true}"/>
+                <field name="so_line_id" readonly="1" invisible="not so_line_id" string="SO Line"/>
             </xpath>
         </field>
     </record>

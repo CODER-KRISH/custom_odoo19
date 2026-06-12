@@ -40,8 +40,84 @@ class saleOrder(models.Model):
             })
 
             record.project_id = project.id
+            record.project_id.task_ids.project_sale_order_id = record.id
+            record.show_project_button = True
 
         return records
+
+    def action_confirm(self):
+        for order in self:
+
+            """ super call action_confirm() for task manager and boss approval """
+            special_product = order.order_line.filtered(lambda l: l.is_special)
+            if special_product and order.order_line.filtered(lambda l: not l.is_approved):
+                raise ValidationError('Please Validate Special Product!')
+
+            currency = order.find_config_currency()
+            converted = order.amount_total * currency.rate
+
+            min_limit = order.check_min_limit()
+            max_limit = order.check_max_limit()
+
+            if min_limit or max_limit:
+                if min_limit < converted < max_limit and order.state not in ('manager', 'boss'):
+                    raise ValidationError(
+                        f"Sale Amount : {converted} is between Min Amount {min_limit} and Max Amount: {max_limit}\n Manager or Boss Approval Required!")
+
+                if converted > max_limit and order.state != 'boss':
+                    raise ValidationError(
+                        f"Sale Amount: {converted} is greater than Max Amount: {max_limit}\nBoss Approval Required!")
+
+            """ Super Call of action_confirm() that check the company credit limit and Blocked So Task. """
+            parent = order.partner_id.commercial_partner_id.with_company(order.company_id)
+
+            if parent.use_partner_credit_limit:
+                confirmed_so_amounts = self.env['sale.order'].search([
+                    ('partner_id.commercial_partner_id', '=', parent.id),
+                    ('state', '=', 'sale'),
+                    ('company_id', '=', order.company_id.id),
+                    ('id', '!=', order.id),
+                ]).mapped('amount_total')
+
+                parent_used_limit = sum(confirmed_so_amounts) - parent.total_invoiced
+                parent_left_limit = parent.credit_limit - parent_used_limit
+
+                if order.amount_total > parent_left_limit or order.amount_total > parent.credit_limit:
+                    order.state = 'block'
+                    return False
+
+        res = super().action_confirm()
+
+        """ Super call action_confirm() for task creation from SO Line Tasks """
+        for order in self:
+            for line in order.order_line:
+                task = self.env['project.task'].search([
+                    ('so_line_id', '=', line.id)
+                ], limit=1)
+
+                if not task or not task.start_date or not task.end_date:
+                    continue
+
+                current_start = task.start_date
+                end = task.end_date
+
+                while current_start <= end:
+                    current_end = current_start + relativedelta(months=1) - relativedelta(days=1)
+
+                    if current_end > end:
+                        current_end = end
+
+                    self.env['project.task'].create({
+                        'name': f"{line.name} ({current_start} to {current_end})",
+                        'project_id': order.project_id.id,
+                        'so_line_id': line.id,
+                        'start_date': current_start,
+                        'end_date': current_end,
+                    })
+
+                    current_start = current_start + relativedelta(months=1)
+
+        return res
 
     # -------------------------------------------------------------------------------------------------------------
 
@@ -260,44 +336,44 @@ class saleOrder(models.Model):
             # Condition for Boss Login
             self.state_to_boss()
 
-    def action_confirm(self):
-
-        for rec in self:
-
-            # Special product validation
-            special_product = rec.order_line.filtered(lambda l: l.is_special)
-            if special_product:
-                if rec.order_line.filtered(lambda l: not l.is_approved):
-                    raise ValidationError('Please Validate Special Product!')
-
-            currency = rec.find_config_currency()
-            converted = rec.amount_total * currency.rate
-
-            min_limit = rec.check_min_limit()
-            max_limit = rec.check_max_limit()
-
-            # Case 1: No limits configured
-            if min_limit == 0 and max_limit == 0:
-                continue
-
-            # Case 2: Below min
-            if converted < min_limit:
-                continue
-
-            # Case 3: Between min & max
-            if min_limit < converted < max_limit:
-                if rec.state not in ('manager', 'boss'):
-                    raise ValidationError(
-                        f"Sale Amount : {converted} is between Min Amount {min_limit} and Max Amount: {max_limit}\n Manager or Boss Approval Required!")
-
-            # Case 4: Above max
-            elif converted > max_limit:
-                if rec.state != 'boss':
-                    raise ValidationError(
-                        f"Sale Amount: {converted} is greater than Max Amount: {max_limit}\nBoss Approval Required!")
-
-        self.state = 'draft'
-        return super().action_confirm()
+    # def action_confirm(self):
+    #
+    #     for rec in self:
+    #
+    #         # Special product validation
+    #         special_product = rec.order_line.filtered(lambda l: l.is_special)
+    #         if special_product:
+    #             if rec.order_line.filtered(lambda l: not l.is_approved):
+    #                 raise ValidationError('Please Validate Special Product!')
+    #
+    #         currency = rec.find_config_currency()
+    #         converted = rec.amount_total * currency.rate
+    #
+    #         min_limit = rec.check_min_limit()
+    #         max_limit = rec.check_max_limit()
+    #
+    #         # Case 1: No limits configured
+    #         if min_limit == 0 and max_limit == 0:
+    #             continue
+    #
+    #         # Case 2: Below min
+    #         if converted < min_limit:
+    #             continue
+    #
+    #         # Case 3: Between min & max
+    #         if min_limit < converted < max_limit:
+    #             if rec.state not in ('manager', 'boss'):
+    #                 raise ValidationError(
+    #                     f"Sale Amount : {converted} is between Min Amount {min_limit} and Max Amount: {max_limit}\n Manager or Boss Approval Required!")
+    #
+    #         # Case 4: Above max
+    #         elif converted > max_limit:
+    #             if rec.state != 'boss':
+    #                 raise ValidationError(
+    #                     f"Sale Amount: {converted} is greater than Max Amount: {max_limit}\nBoss Approval Required!")
+    #
+    #     self.state = 'draft'
+    #     return super().action_confirm()
 
     def action_open_split_wizard(self):
         """Action that split the sale order"""
@@ -359,30 +435,30 @@ class saleOrder(models.Model):
 
         return action
 
-    def action_confirm(self):
-        """ Super Call of action_confirm() that check the company credit limit.
-        if company credit limit is exceed the assigned credit limit then sale order is blocked."""
-
-        parent = self.partner_id.commercial_partner_id.with_company(self.company_id)
-
-        if parent.use_partner_credit_limit:
-
-            parent_total_so_amount = self.env['sale.order'].search([
-                ('partner_id.commercial_partner_id', '=', parent.id),
-                ('state', '=', 'sale'),
-                ('company_id', '=', self.company_id.id),
-                ('id', '!=', self.id),
-            ]).mapped('amount_total')
-
-            parent_credit_limit = parent.credit_limit
-            parent_used_limit = sum(parent_total_so_amount) - parent.total_invoiced
-            parent_left_limit = parent_credit_limit - parent_used_limit
-
-            if self.amount_total > parent_left_limit or self.amount_total > parent_credit_limit:
-                self.state = 'block'
-                return False
-
-        return super().action_confirm()
+    # def action_confirm(self):
+    #     """ Super Call of action_confirm() that check the company credit limit.
+    #     if company credit limit is exceed the assigned credit limit then sale order is blocked."""
+    #
+    #     parent = self.partner_id.commercial_partner_id.with_company(self.company_id)
+    #
+    #     if parent.use_partner_credit_limit:
+    #
+    #         parent_total_so_amount = self.env['sale.order'].search([
+    #             ('partner_id.commercial_partner_id', '=', parent.id),
+    #             ('state', '=', 'sale'),
+    #             ('company_id', '=', self.company_id.id),
+    #             ('id', '!=', self.id),
+    #         ]).mapped('amount_total')
+    #
+    #         parent_credit_limit = parent.credit_limit
+    #         parent_used_limit = sum(parent_total_so_amount) - parent.total_invoiced
+    #         parent_left_limit = parent_credit_limit - parent_used_limit
+    #
+    #         if self.amount_total > parent_left_limit or self.amount_total > parent_credit_limit:
+    #             self.state = 'block'
+    #             return False
+    #
+    #     return super().action_confirm()
 
     def mgr_allow_block_so(self):
         """ Only Manager can confirm blocked sale order """

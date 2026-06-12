@@ -106,10 +106,56 @@ class saleOrderLine(models.Model):
                 'res_id': self.create_copied_master_bom().id,
             }
 
+    # def view_so_line_tasks(self):
+    #
+    #     project = self.order_id.project_id
+    #
+    #     tasks = self.env['project.task'].search([
+    #         ('so_line_id', '=', self.id)
+    #     ])
+    #
+    #     stages = self.env['project.task.type'].search([])
+    #
+    #     for stage in stages:
+    #         stage.write({
+    #             'project_ids': [(4, project.id)],
+    #         })
+    #
+    #     action = {
+    #         'type': 'ir.actions.act_window',
+    #         'name': 'Tasks',
+    #         'res_model': 'project.task',
+    #         'view_mode': 'kanban,list,form',
+    #         'target': 'current',
+    #         'domain': [('so_line_id', '=', self.id)],
+    #     }
+    #
+    #     if not tasks:
+    #         action.update({
+    #             'view_mode': 'form',
+    #         })
+    #         action['context'] = {
+    #             'default_so_line_id': self.id,
+    #             'default_project_id': project.id if project else False,
+    #         }
+    #         return action
+    #     return action
+
     def view_so_line_tasks(self):
+        self.ensure_one()
+
+        project = self.order_id.project_id
+
         tasks = self.env['project.task'].search([
             ('so_line_id', '=', self.id)
         ])
+
+        stages = self.env['project.task.type'].search([])
+
+        for stage in stages:
+            stage.write({
+                'project_ids': [(4, project.id)],
+            })
 
         action = {
             'type': 'ir.actions.act_window',
@@ -118,15 +164,13 @@ class saleOrderLine(models.Model):
             'view_mode': 'kanban,list,form',
             'target': 'current',
             'domain': [('so_line_id', '=', self.id)],
+            'context': {
+                'default_so_line_id': self.id,
+                'default_project_id': project.id if project else False,
+            }
         }
 
         if not tasks:
-            action.update({
-                'view_mode': 'form',
-                'context': {
-                    'default_so_line_id': self.id,
-                    'default_project_id': self.order_id.project_id.id if self.order_id.project_id else False,
-                },
-            })
-            return action
+            action['view_mode'] = 'form'
+
         return action
